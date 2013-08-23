@@ -1,0 +1,7 @@
+[
+    "I will sell this at the first opportunity.",
+    "Perhaps this will come in useful.",
+    "My daughter has always wanted one of these.",
+    "This may prove helpful.",
+    "I thank my stars today."
+]

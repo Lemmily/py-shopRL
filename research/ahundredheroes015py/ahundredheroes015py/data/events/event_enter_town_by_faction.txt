@@ -1,0 +1,38 @@
+{
+    "Merchants":[
+        "a pleasure to do business here."
+    ],
+    "Assassins":[
+        "I am sure I can find someone to kill."
+    ],
+    "Barbarians":[
+        "but first, dinner."
+    ],
+    "Druids":[
+        "there is an ill wind from the forest."
+    ],
+    "Thieves":[
+        "looks like a good place for loot."
+    ],
+    "Necromancers":[
+        "the smell of death lingers."
+    ],
+    "Temple":[
+        "and on to the Temple to pray."
+    ],
+    "Summoners":[
+        "I can sense the chaos in the air."
+    ],
+    "Swashbucklers":[
+        "I need a drink."
+    ],
+    "Fighters":[
+        "I hear these dungeons may test even me."
+    ],
+    "Church":[
+        "may God have mercy."
+    ],
+    "Mages Guild":[
+        "the opportunities seem promising here."
+    ]
+}

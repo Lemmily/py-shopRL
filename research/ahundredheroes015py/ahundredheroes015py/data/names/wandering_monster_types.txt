@@ -1,0 +1,10 @@
+[
+    "Balrog",
+    "Demonic Rhino",
+    "Reaper",
+    "Soulstealer",
+    "Harpy",
+    "Roc",
+    "Malevolent",
+    "Terrible"
+]

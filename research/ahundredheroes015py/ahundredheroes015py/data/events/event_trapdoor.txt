@@ -1,0 +1,4 @@
+[
+    "Curses! I have fallen through a trap door!",
+    "I stumble helplessly through a hidden door in the floor!"
+]

@@ -1,0 +1,17 @@
+[
+    " in a small alcove.",
+    " on the floor.",
+    " on an old corpse.",
+    " lying in the middle of the floor.",
+    " on a stone pedestal.",
+    ", reaching through some bars.",
+    " carried by a dead creature.",
+    " in an unlit brazier.",
+    " in an old wooden chest.",
+    " in an old crate.",
+    " in an old barrel.",
+    " in an iron barrel.",
+    " in a large chest.",
+    " in a bronze chest.",
+    " in an alcove."
+]

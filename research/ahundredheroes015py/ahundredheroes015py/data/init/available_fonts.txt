@@ -1,0 +1,6 @@
+[
+    "fonts/hunderthelden10.png",
+    "fonts/hunderthelden12.png",
+    "fonts/hunderthelden15.png",
+    "fonts/hunderthelden20.png"
+]

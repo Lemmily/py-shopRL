@@ -1,0 +1,5 @@
+[
+    "I slip in the shadows to avoid trouble.",
+    "I hide from a collection of beasts.",
+    "The shadows allow me to avoid an unwanted fight"
+]

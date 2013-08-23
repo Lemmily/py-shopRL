@@ -1,0 +1,1311 @@
+[
+    [
+        "RANDOM",
+        "light",
+        15,
+        1,
+        55,
+        45,
+        [
+            "Temple",
+            "Church",
+            "Mages Guild",
+            "Druids"
+        ],
+        [
+            1
+        ],
+        "Creates a pool of light.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "flame",
+        30,
+        2,
+        45,
+        45,
+        [
+            "Mages Guild",
+            "Thieves"
+        ],
+        [
+            1
+        ],
+        "Creates a small ball of fire to throw at things and hurt them.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "teleportation",
+        40,
+        3,
+        50,
+        45,
+        [
+            "Mages Guild",
+            "Thieves",
+            "Assassins"
+        ],
+        [
+            1
+        ],
+        "Allows for the spontaneous disassembly and reassembly of ones self at a remote location.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "phasing",
+        40,
+        3,
+        50,
+        45,
+        [
+            "Mages Guild",
+            "Thieves",
+            "Assassins",
+            "Druids"
+        ],
+        [
+            1
+        ],
+        "Ever wanted to walk through walls? Now you can with the Scroll of phasing.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "magic dart",
+        25,
+        2,
+        45,
+        45,
+        [
+            "Mages Guild",
+            "Thieves",
+            "Assassins"
+        ],
+        [
+            1
+        ],
+        "Whats better than throwing darts? Throwing magic darts.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "charm person",
+        35,
+        3,
+        45,
+        40,
+        [
+            "Thieves",
+            "Assassins",
+            "Druids",
+            "Merchants"
+        ],
+        [
+            1
+        ],
+        "Convincing someone of something has never been easier!",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "hold person",
+        40,
+        3,
+        50,
+        40,
+        [
+            "Temple",
+            "Church",
+            "Mages Guild"
+        ],
+        [
+            1
+        ],
+        "Keep them right where you want them.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "sunder mind",
+        30,
+        2,
+        40,
+        50,
+        [
+            "Church",
+            "Assassins"
+        ],
+        [
+            1
+        ],
+        "Watch them kneel in pain as their thoughts get the better of them!",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "beguile",
+        45,
+        4,
+        45,
+        45,
+        [
+            "Church",
+            "Assassins"
+        ],
+        [
+            1
+        ],
+        "Excellent for instigating a one sided conversation.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "charm animal",
+        30,
+        2,
+        55,
+        55,
+        [
+            "Druids",
+            "Mages Guild"
+        ],
+        [
+            1
+        ],
+        "Here kitty kitty ...",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "summon imp",
+        45,
+        3,
+        45,
+        45,
+        [
+            "Mages Guild",
+            "Summoners"
+        ],
+        [
+            1
+        ],
+        "Summon an imp to do your bidding. Or whatever he pleases. Take your chance ...",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "summon animal",
+        40,
+        3,
+        55,
+        55,
+        [
+            "Druids",
+            "Mages Guild",
+            "Summoners"
+        ],
+        [
+            1
+        ],
+        "Summons a small (sometimes cute) animal.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "summon demon",
+        120,
+        6,
+        30,
+        30,
+        [
+            "Summoners"
+        ],
+        [
+            1
+        ],
+        "Summons a powerful demon. Use with caution.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "summon djinn",
+        250,
+        9,
+        50,
+        35,
+        [],
+        [
+            1
+        ],
+        "Summons a djinn. Hopefully it will appreciate it, but be careful what you wish for",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "summon insect",
+        20,
+        1,
+        50,
+        50,
+        [
+            "Summoners",
+            "Mages Guild",
+            "Druids",
+            "Assassins"
+        ],
+        [
+            1
+        ],
+        "Summon forth a great insect to do your bidding. Hopefully.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "summon lost soul",
+        100,
+        5,
+        60,
+        40,
+        [
+            "Summoners"
+        ],
+        [
+            1
+        ],
+        "Returns a lost soul from purgatory back to the earth.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "ressurection",
+        200,
+        8,
+        65,
+        40,
+        [
+            "Temple",
+            "Church",
+            "Necromancers"
+        ],
+        [
+            1
+        ],
+        "Brings recently deceased individuals back to life. Corpse required.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "regeneration",
+        65,
+        4,
+        55,
+        45,
+        [
+            "Temple",
+            "Necromancers"
+        ],
+        [
+            1
+        ],
+        "Speeds up metabolic rate. Used for healing, and slimming.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "feather-fall",
+        25,
+        2,
+        50,
+        50,
+        [
+            "Thieves",
+            "Assassins"
+        ],
+        [
+            1
+        ],
+        "Allows for falling from a great height and landing safely.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "thievery",
+        25,
+        2,
+        50,
+        45,
+        [
+            "Thieves",
+            "Swashbucklers"
+        ],
+        [
+            1
+        ],
+        "Increases reflexes and manual dexterity.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "knock",
+        20,
+        2,
+        50,
+        50,
+        [
+            "Thieves",
+            "Assassins",
+            "Mages Guild"
+        ],
+        [
+            1
+        ],
+        "Magically opens locks. Useful for a night out after you have lost your keys.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "genocide",
+        300,
+        10,
+        15,
+        15,
+        [],
+        [
+            1
+        ],
+        "Best not put this in the wrong hands.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "poison bolt",
+        30,
+        2,
+        45,
+        45,
+        [
+            "Assassins",
+            "Mages Guild"
+        ],
+        [
+            1
+        ],
+        "Throw magic poison at your enemies!",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "fireball",
+        60,
+        4,
+        50,
+        45,
+        [
+            "Mages Guild"
+        ],
+        [
+            1
+        ],
+        "Heats up a remote spherical volume locally, including contents.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "lightning",
+        65,
+        4,
+        50,
+        50,
+        [
+            "Mages Guild"
+        ],
+        [
+            1
+        ],
+        "Ever wanted a huge blue arc of electricity to emanate from your fingertips? Useful in a fight.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "call lightning",
+        85,
+        5,
+        50,
+        50,
+        [
+            "Mages Guild",
+            "Druids"
+        ],
+        [
+            1
+        ],
+        "Take the weather forecast into your own hands.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "shock",
+        15,
+        1,
+        50,
+        50,
+        [
+            "Mages Guild",
+            "Druids"
+        ],
+        [
+            1
+        ],
+        "Useful for handshake-related practical jokes.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "stone to flesh",
+        65,
+        4,
+        55,
+        45,
+        [
+            "Mages Guild",
+            "Temple"
+        ],
+        [
+            1
+        ],
+        "Versatile scroll, de-petrify friends or create huge balls of meat.",
+        "scroll"
+    ],
+    [
+        "RANDOM",
+        "flesh to stone",
+        65,
+        4,
+        45,
+        55,
+        [
+            "Mages Guild",
+            "Church"
+        ],
+        [
+            1
+        ],
+        "The easy way to create statues.",
+        "scroll"
+    ],
+    [
+        "dagger",
+        "dirk",
+        12,
+        1,
+        45,
+        50,
+        [
+            "Fighters",
+            "Thieves",
+            "Assassins"
+        ],
+        [
+            1
+        ],
+        "A long bladed knife popular north of the border.",
+        "weapon"
+    ],
+    [
+        "dagger",
+        "kitchen knife",
+        8,
+        1,
+        50,
+        50,
+        [
+            "Merchants"
+        ],
+        [
+            1
+        ],
+        "Sharp edged, but short and ineffective in combat.",
+        "weapon"
+    ],
+    [
+        "dagger",
+        "stiletto",
+        20,
+        2,
+        45,
+        45,
+        [
+            "Assassins"
+        ],
+        [
+            1
+        ],
+        "A long, pointed spike with a handle and hilt. Not to be worn on the foot.",
+        "weapon"
+    ],
+    [
+        "dagger",
+        "left-handed dagger",
+        30,
+        3,
+        50,
+        55,
+        [
+            "Fighters",
+            "Swashbucklers"
+        ],
+        [
+            1
+        ],
+        "A large hilt and a rigid blade. This is designed for parrying and counterattacking.",
+        "weapon"
+    ],
+    [
+        "pointy sword",
+        "rapier",
+        10,
+        1,
+        55,
+        55,
+        [
+            "Fighters",
+            "Swashbucklers"
+        ],
+        [
+            1
+        ],
+        "A light, pointed sword with an edge, useful for stabbing and carving initials",
+        "weapon"
+    ],
+    [
+        "pointy sword",
+        "estoc",
+        15,
+        2,
+        55,
+        55,
+        [
+            "Fighters",
+            "Swashbucklers"
+        ],
+        [
+            1
+        ],
+        "A sharp rigid point of a sword, used for killing knights.",
+        "weapon"
+    ],
+    [
+        "curved sword",
+        "sabre",
+        10,
+        1,
+        55,
+        55,
+        [
+            "Fighters",
+            "Merchants"
+        ],
+        [
+            1
+        ],
+        "A slightly curved sword, the staple of cavalry everywhere.",
+        "weapon"
+    ],
+    [
+        "curved sword",
+        "scimitar",
+        15,
+        2,
+        50,
+        50,
+        [
+            "Fighters",
+            "Barbarians"
+        ],
+        [
+            1
+        ],
+        "A curved heavy blade, great for slashing.",
+        "weapon"
+    ],
+    [
+        "short sword",
+        "gladius",
+        10,
+        1,
+        55,
+        50,
+        [
+            "Fighters",
+            "Barbarians"
+        ],
+        [
+            1
+        ],
+        "Short, sturdy sword great for stabbing.",
+        "weapon"
+    ],
+    [
+        "short sword",
+        "wakizashi",
+        15,
+        2,
+        55,
+        55,
+        [
+            "Fighters",
+            "Assassins"
+        ],
+        [
+            1
+        ],
+        "Versatile short sword - stab, skewer or parry.",
+        "weapon"
+    ],
+    [
+        "small hammer",
+        "warhammer",
+        10,
+        1,
+        50,
+        50,
+        [
+            "Druids",
+            "Temple",
+            "Fighters",
+            "Barbarians"
+        ],
+        [
+            1
+        ],
+        "A heavy, pointed weight on the end of a long-ish handle.",
+        "weapon"
+    ],
+    [
+        "small hammer",
+        "military pick",
+        20,
+        2,
+        45,
+        55,
+        [
+            "Fighters"
+        ],
+        [
+            1
+        ],
+        "A dastardly looking spike on the end of a well balanced handle.",
+        "weapon"
+    ],
+    [
+        "small mace",
+        "flanged mace",
+        15,
+        1,
+        50,
+        55,
+        [
+            "Druids",
+            "Temple",
+            "Church",
+            "Fighters"
+        ],
+        [
+            1
+        ],
+        "Ribbed, heavy ended metal club, with leather straps bound for a handle.",
+        "weapon"
+    ],
+    [
+        "small mace",
+        "ceremonial mace",
+        20,
+        2,
+        55,
+        55,
+        [
+            "Merchants",
+            "Temple"
+        ],
+        [
+            1
+        ],
+        "A gilded, 2-foot long mace carried for ceremonial purposes.",
+        "weapon"
+    ],
+    [
+        "small mace",
+        "wooden club",
+        10,
+        1,
+        50,
+        50,
+        [
+            "Barbarians",
+            "Druids"
+        ],
+        [
+            1
+        ],
+        "Whilst well made, with decent balance, it is still essentially just a big stick.",
+        "weapon"
+    ],
+    [
+        "large hammer",
+        "maul",
+        25,
+        2,
+        40,
+        45,
+        [
+            "Barbarians"
+        ],
+        [
+            1
+        ],
+        "A heavy, large hammer with a big metal head. Nasty.",
+        "weapon"
+    ],
+    [
+        "large hammer",
+        "dire maul",
+        40,
+        3,
+        40,
+        40,
+        [
+            "Barbarians"
+        ],
+        [
+            1
+        ],
+        "An ornate, twisted set of spikes decorates the heavy head of this maul.",
+        "weapon"
+    ],
+    [
+        "large sword",
+        "hand-and-a-half sword",
+        25,
+        2,
+        55,
+        55,
+        [
+            "Fighters",
+            "Merchants",
+            "Swashbucklers"
+        ],
+        [
+            1
+        ],
+        "Bastard son of the longsword and the greatsword.",
+        "weapon"
+    ],
+    [
+        "large sword",
+        "greatsword",
+        35,
+        3,
+        55,
+        55,
+        [
+            "Fighters"
+        ],
+        [
+            1
+        ],
+        "This sword really is great.",
+        "weapon"
+    ],
+    [
+        "large sword",
+        "longsword",
+        20,
+        1,
+        50,
+        50,
+        [
+            "Fighters",
+            "Merchants",
+            "Summoners",
+            "Swashbucklers",
+            "Barbarians"
+        ],
+        [
+            1
+        ],
+        "A popular sword throughout the realm, despite questions of its existence.",
+        "weapon"
+    ],
+    [
+        "large sword",
+        "katana",
+        50,
+        4,
+        60,
+        65,
+        [
+            "Assassins",
+            "Fighters"
+        ],
+        [
+            1
+        ],
+        "A delicate curve to a finely honed blade, balanced perfectly. Only to be used for honourable killing activities.",
+        "weapon"
+    ],
+    [
+        "polearm",
+        "light spear",
+        10,
+        1,
+        50,
+        45,
+        [
+            "Merchants",
+            "Fighters"
+        ],
+        [
+            1
+        ],
+        "Peasant weaponry. Ghastly stuff.",
+        "weapon"
+    ],
+    [
+        "polearm",
+        "battle spear",
+        35,
+        3,
+        45,
+        45,
+        [
+            "Barbarians",
+            "Fighters",
+            "Merchants"
+        ],
+        [
+            1
+        ],
+        "A nice sharp thing on a long, well balanced haft. Groovy.",
+        "weapon"
+    ],
+    [
+        "polearm",
+        "halberd",
+        20,
+        2,
+        50,
+        45,
+        [
+            "Fighters",
+            "Merchants"
+        ],
+        [
+            1
+        ],
+        "A large flat blade on a long, pointed haft. Popular amongst the unwashed.",
+        "weapon"
+    ],
+    [
+        "polearm",
+        "war scythe",
+        15,
+        2,
+        45,
+        45,
+        [
+            "Barbarians",
+            "Druids"
+        ],
+        [
+            1
+        ],
+        "A modified agricultural tool.",
+        "weapon"
+    ],
+    [
+        "polearm",
+        "trident",
+        15,
+        1,
+        55,
+        55,
+        [
+            "Druids",
+            "Merchants"
+        ],
+        [
+            1
+        ],
+        "Fishing or fighting, these three prongs will not let you down.",
+        "weapon"
+    ],
+    [
+        "leather armor",
+        "hide armor",
+        10,
+        1,
+        45,
+        45,
+        [
+            "Barbarians"
+        ],
+        [
+            1
+        ],
+        "Some ragged animal skins strapped and braced in the general form to fit a man",
+        "armor"
+    ],
+    [
+        "leather armor",
+        "leather jerkin",
+        15,
+        2,
+        50,
+        50,
+        [
+            "Fighters",
+            "Merchants",
+            "Swashbucklers",
+            "Thieves"
+        ],
+        [
+            1
+        ],
+        "A finely fitted, hardened leather jacket.",
+        "armor"
+    ],
+    [
+        "leather armor",
+        "reinforced leather cuirass",
+        25,
+        2,
+        55,
+        50,
+        [
+            "Fighters",
+            "Swashbucklers"
+        ],
+        [
+            1
+        ],
+        "Leather and steel banding, fitted to a mans torso.",
+        "armor"
+    ],
+    [
+        "linked armor",
+        "ring mail",
+        20,
+        1,
+        50,
+        45,
+        [
+            "Fighters"
+        ],
+        [
+            1
+        ],
+        "Large rings, fixed and interlinked in place around a heavy cloth tunic",
+        "armor"
+    ],
+    [
+        "linked armor",
+        "scaled armor",
+        35,
+        2,
+        55,
+        50,
+        [
+            "Fighters",
+            "Merchants",
+            "Barbarians"
+        ],
+        [
+            1
+        ],
+        "Ornate enamelled-iron scaled armor. Heavy and fairly ineffective, but looks awesome.",
+        "armor"
+    ],
+    [
+        "linked armor",
+        "chain mail",
+        45,
+        2,
+        50,
+        50,
+        [
+            "Fighters",
+            "Merchants"
+        ],
+        [
+            1
+        ],
+        "Consisting of hundreds and hundreds of small iron rings, all closely interlinked.",
+        "armor"
+    ],
+    [
+        "linked armor",
+        "grand-scale",
+        65,
+        4,
+        55,
+        55,
+        [
+            "Fighters",
+            "Merchants",
+            "Summoners"
+        ],
+        [
+            1
+        ],
+        "Gold-dipped and white-enamelled suit of steel scales. Complete with a nice, sturdy belt.",
+        "armor"
+    ],
+    [
+        "breastplate",
+        "bronze cuirass",
+        22,
+        1,
+        50,
+        45,
+        [
+            "Fighters",
+            "Barbarians",
+            "Summoners"
+        ],
+        [
+            1
+        ],
+        "A polished bronze breast-plate, probably a few hundred years old.",
+        "armor"
+    ],
+    [
+        "breastplate",
+        "iron cuirass",
+        25,
+        1,
+        50,
+        55,
+        [
+            "Fighters",
+            "Swashbucklers"
+        ],
+        [
+            1
+        ],
+        "A beaten out shell of iron, used to protect bodies from being stabbed.",
+        "armor"
+    ],
+    [
+        "breastplate",
+        "steel cuirass",
+        35,
+        2,
+        50,
+        55,
+        [
+            "Fighters",
+            "Swashbucklers",
+            "Merchants"
+        ],
+        [
+            1
+        ],
+        "A nice, robust steel breastplate.",
+        "armor"
+    ],
+    [
+        "breastplate",
+        "ceremonial cuirass",
+        50,
+        3,
+        60,
+        60,
+        [
+            "Fighters",
+            "Merchants"
+        ],
+        [
+            1
+        ],
+        "The ideal gift for the rich, egomaniac warrior. Looks great, but protects poorly.",
+        "armor"
+    ],
+    [
+        "cloth robe",
+        "cloth wrappings",
+        5,
+        1,
+        50,
+        55,
+        [
+            "Assassins",
+            "Thieves",
+            "Mages Guild",
+            "Druids",
+            "Summoners"
+        ],
+        [
+            1
+        ],
+        "Cloth wrappings, in ceremonial colours.",
+        "clothing"
+    ],
+    [
+        "cloth robe",
+        "thick robe",
+        10,
+        1,
+        55,
+        45,
+        [
+            "Mages Guild",
+            "Druids",
+            "Summoners",
+            "Necromancers"
+        ],
+        [
+            1
+        ],
+        "A thick, heavy set robe. There is some nice detail around the collar.",
+        "clothing"
+    ],
+    [
+        "cloth robe",
+        "dark cloak",
+        15,
+        2,
+        45,
+        40,
+        [
+            "Assassins",
+            "Thieves",
+            "Summoners",
+            "Necromancers"
+        ],
+        [
+            1
+        ],
+        "Looks useful for hiding in the dark while doing naughty things.",
+        "clothing"
+    ],
+    [
+        "tunic",
+        "hawaiian shirt",
+        25,
+        2,
+        55,
+        50,
+        [
+            "Merchants"
+        ],
+        [
+            1
+        ],
+        "Such awful colours.",
+        "clothing"
+    ],
+    [
+        "tunic",
+        "silken tunic",
+        30,
+        2,
+        55,
+        55,
+        [
+            "Merchants",
+            "Church"
+        ],
+        [
+            1
+        ],
+        "A light, comfortable tunic befitting a gentleman or gentlelady.",
+        "clothing"
+    ],
+    [
+        "tunic",
+        "sack shirt",
+        5,
+        1,
+        50,
+        50,
+        [
+            "Druids"
+        ],
+        [
+            1
+        ],
+        "Looks itchy.",
+        "clothing"
+    ],
+    [
+        "tunic",
+        "heraldic tunic",
+        10,
+        1,
+        50,
+        60,
+        [
+            "Fighters",
+            "Church"
+        ],
+        [
+            1
+        ],
+        "Elegantly cut bitonal striped shirt, representing someone powerful.",
+        "clothing"
+    ],
+    [
+        "coat",
+        "heraldic coat",
+        20,
+        2,
+        50,
+        60,
+        [
+            "Fighters",
+            "Church"
+        ],
+        [
+            1
+        ],
+        "Bitonal striped coat, of a great house. Covers all the body.",
+        "clothing"
+    ],
+    [
+        "coat",
+        "dark coat",
+        20,
+        2,
+        45,
+        40,
+        [
+            "Assassins",
+            "Thieves"
+        ],
+        [
+            1
+        ],
+        "Dark and thick-set coat, complete with a fetching hood.",
+        "clothing"
+    ],
+    [
+        "coat",
+        "fur-lined coat",
+        25,
+        2,
+        50,
+        45,
+        [
+            "Barbarians",
+            "Merchants"
+        ],
+        [
+            1
+        ],
+        "A thick, white-fur lined coat. Looks really cosy.",
+        "clothing"
+    ]
+]

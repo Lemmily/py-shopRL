@@ -1,0 +1,38 @@
+{
+    "Merchants":[
+        "a pleasure to do business here."
+    ],
+    "Assassins":[
+        "perhaps a few more notches next time."
+    ],
+    "Barbarians":[
+        "hungrier than when I came."
+    ],
+    "Druids":[
+        "I hope for better things when I return."
+    ],
+    "Thieves":[
+        "I wish I could have taken more."
+    ],
+    "Necromancers":[
+        "a little worse than I left it."
+    ],
+    "Temple":[
+        "to return to my brothers."
+    ],
+    "Summoners":[
+        "I will miss the energy of the place."
+    ],
+    "Swashbucklers":[
+        "I will miss the women."
+    ],
+    "Fighters":[
+        "but I will come back stronger."
+    ],
+    "Church":[
+        "and God comes with me."
+    ],
+    "Mages Guild":[
+        "a little bit wiser, at least."
+    ]
+}

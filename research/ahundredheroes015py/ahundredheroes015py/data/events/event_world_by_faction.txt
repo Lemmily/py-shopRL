@@ -1,0 +1,55 @@
+{
+    "Merchants":[
+        "Money, money, money. More and more.",
+        "Another satisfied customer, and more gold for me.",
+        "I will double this bag of gold at the next port."
+    ],
+    "Assassins":[
+        "I feel like taking life on my own terms.",
+        "The darkness is my friend, everyone my enemy.",
+        "I look for the pleasure in the deaths of others.",
+        "Once this contract is done, I work for my own terms."
+    ],
+    "Barbarians":[
+        "My shoulders bear a heavy weight.",
+        "I make camp tonight, tomorrow I take on the world.",
+        "My camp is strong, but I am stronger."
+    ],
+    "Druids":[
+        "The world is becoming unbalanced, and I must redress it."
+    ],
+    "Thieves":[
+        "The life of a common thief is becoming tiring.",
+        "There must be better things out there for a man of my skills."
+    ],
+    "Necromancers":[
+        "I hear stories of death beneath the world.",
+        "One day soon, I will die. Sooner rather than later.",
+        "There is not enough death in this place, I shall move on."
+    ],
+    "Temple":[
+        "My temple are asking me to quest. It is my duty.",
+        "I hear stories of fear in another land, for me to cleanse."
+    ],
+    "Summoners":[
+        "What gifts lie in the dungeons beneath the world?",
+        "This plane or another, there must be more out there."
+    ],
+    "Swashbucklers":[
+        "This boat will dock soon, and I can seek my own fortune.",
+        "I need glory, not another filthy tavern-wench."
+    ],
+    "Fighters":[
+        "My martial training grows tiresome.",
+        "I grow tired of protecting this boorish merchant.",
+        "I need to put my sword arm to good use."
+    ],
+    "Church":[
+        "The godless spread throughout the land.",
+        "My gods will me to spread the word.",
+        "Evil beneath the world. I am called to end it."
+    ],
+    "Mages Guild":[
+        "My studies can only teach me so much."
+    ]
+}

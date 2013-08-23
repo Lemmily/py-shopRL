@@ -1,0 +1,83 @@
+v0.04 release notes
+Code clean-up to faction house / dungeon location functions
+Weekly Stock Take for non-player shops. Values reset every sunday night, by appraiser
+End of the month tax introduced
+Months now respect correct number of days
+Merchant behaviour / activity tweaked downwards
+Heroes rot after 15 days deceased, to be replaced by a new hero
+Some message tweaks
+Logging messages default to 'off'
+
+v0.05
+Tinkering with display.
+'Glow map' implemented.
+Heroes, Dungeons and Buildings 'Glow' based on level.
+Main menu & title screen implemented.
+Game saving functionality
+
+v0.06
+*Random map generation commenced. Semi-random town layout created on new game.
+ Town area centralised ... ongoing
+  Streets Set up
+  Auction House Positioned at Crossroads
+  Foundations built, stores placed for each faction, Levels etc. of stores not currently randomised.
+  Dungeons placed randomly, with additional extra future dungeon zones retained
+*Female forename database added, female heroes birthed in to the world (50/50)
+*Dungeon name databases added for randomisation
+*Mouse over shows heroes in main screen
+*Added 'Shop Open' and 'Taking Offers' global options (allows player to control how heroes interact with his/her shop)
+*Merchants entering town 'with a cargo' often bring the item type that the town shops have the least of - to try and keep heroes in certain types of equipment after a few months.
+*Dungeon population subject to 'churn' to try and maintain an ideal population of monsters over the long term.
+*Monster population increases locally on hero death and increased level.
+*Dungeon gold increases on increased level.
+*Added Individual hero information screen 'H'
+*Reworked activitylog. Heroes make notes as they do things.
+*World evil/chaos measure shown on screen.
+*Chaos counter introduced which spawns new dungeons based on a set rate
+*Evil counter introduced, currently unused.
+*More text added for more actions.
+*Help screen updated
+
+v0.10
+*End game when the Tax Man gets ya
+*Basic monster generation in
+*Monsters spawn from dungeons and roam towards town
+*Contract Interface System set up
+*Contracts implemented for dungeon delving. Hero's collect loot for the player (or shops)
+*Contracts for hunting monsters
+*Introduction Screen for new game
+*Game generally continues on destruction of shops
+*High Score Table
+*Player gets to put in their own name
+*Tweaks to balance all round
+
+v0.11
+*Hero 'AI' tweaks (returning heroes should be more dynamic, tweaked ascend / descend probabilities)
+*Bugfix - occasional crash when hero wanted to make a note of the item they just bought from the player
+*Possible bugfix if Auction House has been destroyed
+*Colour coded messages
+*Can now 'Call over' heroes. Tout for business for those engaging in retail-based activities. Cost to personal reputation with Hero.
+*Can cycle through text sizes with PAGEUP to 'change resolution'
+*Variable game speed (four speeds from slow to daft)
+*Re-balance on new behaviours
+
+v0.15
+*Hero AI rewrite, each guild gets different personalities based on Loot, Wealth, Leadership, Balance, Contracts, Glory, Social and Knowledge
+
+*Sales metrics introduced to better inform hero sales decisions, personality based; generally:
+-> Balance: Heroes seek out unpopular shops
+-> Wealth: Heroes seek out popular shops, lots of sales
+-> Loot: Heroes seek out shops, lots of purchases
+-> Social: Heroes seek out popular shops, attendance
+
+*Heroes come to town more often if the contract list is well populated (i.e. lots of work avaialable)
+*Dungeon crawling logic rewritten based on contracts and personalities
+*Phases of operation for heroes should clear up behaviour a little;
+*Better transparency for hero decision making in general
+*Basis laid for Mayoress, noticeboard, and contracts, implemented in part.
+*Some rumours started, but no effects on behaviour yet.
+*Contracts moved to a new class, data storage and methods etc.
+*Monsters moved to new contract / decision flow system.
+*Dungeons expanded slightly, with floor by floor features that can de discovered, with different effects for each feature.
+*First pass on game balance for new systems.
+*Numpad works where numbers are viable input.

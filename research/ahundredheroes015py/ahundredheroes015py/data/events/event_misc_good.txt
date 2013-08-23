@@ -1,0 +1,11 @@
+[
+    "Paintings adorn the walls here.",
+    "Blue, glowing smears of moss are covering the walls here.",
+    "A spectral flame is covering the room in a soft blue light.",
+    "A playful ghost is watching me from the shadows.",
+    "The walls in this place glow a pleasant soft blue.",
+    "The face of a smiling man is carved in this stone wall.",
+    "A woman embracing a tree is carved in this buff rock wall.",
+    "Blue granite streaks down through the stone walls.",
+    "This room contains a small pile of blue, rough rocks."
+]

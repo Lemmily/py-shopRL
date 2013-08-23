@@ -1,0 +1,9 @@
+[
+    "I have found a lair of foul beasts!",
+    "This place is crawling with evil creatures!",
+    "This foul pit stinks of creatures ...",
+    "I can hear the mumbling of many monsters!",
+    "This vile stench ... a creatures lair!",
+    "Great den of vulgarity! A lair!",
+    "Flea ridden monsters ... everywhere!"
+]

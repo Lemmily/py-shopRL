@@ -1,0 +1,5 @@
+[
+    "I am called over by an irritating shopkeeper.",
+    "A shopkeeper hassles me for my attention.",
+    "I follow an annoying shopkeeper."
+]

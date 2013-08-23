@@ -1,0 +1,37 @@
+[
+    [
+        "Keep",
+        "H",
+        "default"
+    ],
+    [
+        "Crypt",
+        "?",
+        "crypt"
+    ],
+    [
+        "Ruins",
+        "+",
+        "default"
+    ],
+    [
+        "Tomb",
+        "!",
+        "default"
+    ],
+    [
+        "Undercroft",
+        "|",
+        "default"
+    ],
+    [
+        "Barrow",
+        "~",
+        "crypt"
+    ],
+    [
+        "Cave",
+        "0",
+        "lair"
+    ]
+]

@@ -1,0 +1,283 @@
+ #|    ###\    ###\    #|  #|  #####|  ####\    ###\   #####|    ###|
+##|   #####\  #####\   #|  #|  #####|  #####|  #####\  #####|  #####|
+ #|   #|  #|  ##  #|   #|  #|  #|      #|  #|  ##  #|  #|      #/
+ #|   #|  #|  ##  #|   #####|  ###|    #####|  ##  #|  ###|    ##\
+ #|   #|  #|  ##  #|   #####|  ###|    ####/   ##  #|  ###|     ###\
+ #|   #|  #|  ##  #|   #|  #|  #|      #| #\   ##  #|  #|         ##|
+ #|   #|  #|  ##  #|   #|  #|  #|      #|  #|  ##  #|  #|          #|
+ #|   #|  #|  ##  #|   #|  #|  #|      #|  #|  ##  #|  #|         ##|
+###|  #####|  #####|   #|  #|  #####|  #|  #|  #####|  #####|  ####/
+###|   ###/    ###/    #|  #|  #####|  #|  ##\  ###/   #####|  ###/
+
+====   ====    ====    ==  ==  ======  ==  ===  ====   ======  ====
+ ==   ==  ==  ==  ==   ==  ==  ==      ==  ==  ==  ==  ==          ==
+ ==   ==  ==  ==  ==   ======  ====    =====   ==  ==  ====     ===
+ ==   ==  ==  ==  ==   ==  ==  ==      ==  ==  ==  ==  ==      ==
+---    ----    ----    --  --  ------  ----     ----   ------    ----
+
+---------------------------------------------------------------------
+
+  S   H   O   P   K   E   E   P   E   R     O   F     D   O   O   M
+
+---------------------------------------------------------------------
+
+                        THE OFFICIAL MANUAL
+---------------------------------------------------------------------
+
+
+
+EXPOSITION
+----------
+
+Welcome to the world of 100 Heroes.
+
+Having disassociated yourself with the life of an adventurer, after
+one too many stupid deaths, you find yourself with a bag of coin
+and a large appetite for exploiting people financially.
+
+A small commercial tenancy has opened up in the town next door, you
+jump at the chance to put a small deposit down and start trading.
+
+Unfortunately, you spent most of your time in the dungeon stood in
+one place repeatedly engraving 'Elbereth' on the floor, and paid
+little attention to the various items you randomly and haphazardly
+activated. You will have to start with nothing but the cash in your
+pocket - and the willingness to crush other peoples dreams in order
+to ensure your own financial security.
+
+
+
+THE BEGINNING OF THE GAME
+-------------------------
+
+You might find yourself confused by the initial appearance of the
+game. This is intended, as one of the basic tenets of any kind of
+Roguelike-inspired game is that it should be accessible to as few
+people as possible.
+
+Despite the damage being done to your eyes, if you take a second
+to examine the screen, you will see something like the following:
+
+             ##################################
+             #                |               #
+             #    TOWN MAP    |    INFO BAR   #
+             #                |               #
+             #                |---------------#
+             #                | HERO MESSAGES #
+             #--------------------------------#
+             #    GENERAL MESSAGES            #
+             #                                #
+             ##################################
+
+If you have caught the game during one of the more pleasant versions,
+there will be a small message welcoming you to the game in the
+GENERAL MESSAGES part of the screen. Other messages pop up here from
+time to time, informing you as to the happenings in the world.
+
+HERO MESSAGES pop up to show pertinent events related to the
+behavior of the Heroes - e.g. when they enter town, interact with
+your shop etc.
+
+The INFO BAR gives you information related to your own shop, any
+active auctions, as well as the presence of monsters or heroes as
+shown on the TOWN MAP.
+
+The TOWN MAP shows a small little town, where you are trading, and
+where other shops are trading. You are the Yellow shop.
+
+Other shops are shown by a deeper blue. Remember the particular
+factions by the different icons.
+
+A number of dungeons will exist, just outside the town in the forest.
+These are red, and give off a pleasant rougelike glow.
+
+Try entering your shop.
+
+You can do this by either:
+
+	a) left-clicking on your shop with the mouse.
+	b) pressing the 'i' key.
+
+You will then see a small dialog box asking you if you really DO want
+to enter the shop. This is partially to make sure that any action in
+the game takes as many key-presses as possible, but also as sometimes
+the shop owner will not be interested in letting you in to the shop.
+
+This can be remedied by increasing your reputation, or the decrease
+of that particular shops reputation.
+
+Other shops are entered by left-clicking on them.
+
+
+OTHER SHOPS
+-----------
+
+When in another shop, you can look at the items on sale by pressing
+the relevant number key associated with that item.
+
+When you are looking at a particular item, you can:
+
+	buy it at the listed price by pressing 'b'.
+
+You may notice at the start of the game that each item is limited
+in the display of pertinent information about the items. This is
+remedied by owning items, and examining them whilst in your own
+shop.
+
+
+EXAMINING STUFF
+---------------
+
+This process will enable you to tell whether a 'curved sword' is
+a sabre, or a scimitar. After playing the game a few times, you
+might also begin to realise that there are only two types of curved
+sword. This goes for everything else, and enables you to make
+considered bids on the various types of equipment.
+
+The first level of 'examining' things reveals the item type, and the
+base value. This can therefore be the most important stage of
+identification.
+
+This information persists through the game, so if you know what
+ONE sabre looks like, you can recognise every other sabre in the
+game.
+
+Scrolls are slightly different, in that the only real thing that
+separates them is the 'name' of the scroll. Here you will have to
+use a bit of judgement as to whether the price seems fair.
+
+
+LOOKING FOR A BARGAIN?
+----------------------
+
+You could possibly go through the various shop inventories and see if
+there are a number of scrolls for sale with the same name. In this
+case, the scroll listed at the lowest price is likely to be the best
+buy.
+
+
+
+AUCTION HOUSE
+-------------
+
+As you are likely to be entering it often, you can:
+
+	enter the Auction House by pressing the 'a' key.
+
+or alternatively clicking on it on the town map.
+
+Whilst in the Auction House, you will be presented with an option to
+place a bid on the current item offered for sale.
+
+	If you do want to place a bid press the 'p' key
+
+You have other options, if you want to try and be a bit more canny.
+
+	To view other potential bidders, press 'o'
+
+The Auctioneer will tell you who has visited the Auction House. These
+people may, or may not choose to place a bid, and new people visit all
+the time throughout a given day. You can use this information to decide
+how you want to pitch your bid. e.g. going up against a lot of Fighters,
+Swashbucklers and Barbarians for particular types of weapons will mean
+that it is likely that the item will go for somewhere around its real
+value.
+
+Conversely, bidding for a scroll against the same set of people will
+mean it is far more likely that you can get it at a low price.
+
+	To view future auctions, press the 'f' key.
+
+This enables you to judge whether you want to save more realistic
+bids for future auctions. If you really want that Ceremonial Cuirass
+that is coming up in a couple of days, save your money for that.
+
+This doesn't stop you from bidding low amounts every day, and you
+should always try and do this, as there are occasions where sometimes
+items are not won by anyone. In this case, for unexplained reasons,
+the item will be fed in its entirety to a Dragon.
+
+
+CONTRACTS
+---------
+
+Contracts are one of the ways you can directly affect the paths of the
+heroes (aside from offering bargain prices and unmatched after-sales
+service).
+
+Heroes get a chance to be involved in all sorts of contracts, but for
+now you, as a player, can only raise three different types.
+
+ITEM HUNT
+	asks a hero to go down in to a dungeon of your choosing, and
+pick out an item from one of the chests or alcoves where items tend
+to be lying about. If the hero is successful, he'll come and deliver
+it to your shop for the agreed price. You pay the hero after
+delivery, so the risk is fairly minimal to you. You won't always get
+a bargain, although if you are patient and frugal with your outgoings
+you shouldn't do too bad.
+
+MONSTER HUNT
+	If there are monsters patrolling the town looking to cause
+a bit of all-round havoc, raise one of these contracts to try and
+bring the little tike down a peg or two.
+
+DUNGEON DELVE
+	Raise one of these contracts if you just want the heroes to
+go and do a bit of general adventuring. There are no rewards, apart
+from the satisfaction of knowing you are directly involved in the
+murder of many creatures down in the depths.
+
+The Mayoress, and other shops, may raise contracts either on their own
+accord or if petitioned by visiting heroes.
+
+
+RUMOURS
+-------
+
+	Occasionally heroes will discover things about the world and
+the dungeons that they won't resist being able to talk about. Rumours
+may affect the way heroes choose to go about their business - be it to
+try and find treasure, evil altars or other such hidden abominations.
+
+
+HERO BEHAVIOUR
+--------------
+
+	Hero behaviour is affected by a number of things, notably their
+personalities and the general goings on in town. They make decisions on
+where to shop based generally on the perceived success of shops, or how
+suitable each shop is to meet their particular needs.
+
+	They are more likely to visit shops that are near them, stock
+the same sort of item they are trying to procure, and also will make a
+judgement (based on their personality) about the recent levels of
+activity happening in the shop. Try and make sure you are active in
+buying, selling and stocking items at all times to maximise your appeal.
+In any case, some heroes will also like to visit less busy shops, so
+you shouldn't ever get to a position whereby people are always
+completely ignoring you (although if you start on the perimeter of the
+town, it will be more difficult to attract visitors).
+
+
+MONSTERS
+--------
+
+	Every now and again, a monster will spring forth from one of the
+dungeons, and carry out some dastardly scheme on the town. They will
+generally try and get in to the guts of the town and cause a bit of
+carnage, ransacking shops.
+
+	The Mayoress will try and stop the monster by putting out
+contracts to destroy them, and you may choose to help her by putting out
+your own contracts to hasten their demise.
+
+	Currently, however, you do still need some willing participants
+to go and take the monster on - so good luck with that.
+
+------------------
+MANUAL IN PROGRESS
+------------------
+
+Please direct bug reports, suggestions etc. to the bay12 forum thread,
+	or at PAUL@JIMANDPAUL.NET.

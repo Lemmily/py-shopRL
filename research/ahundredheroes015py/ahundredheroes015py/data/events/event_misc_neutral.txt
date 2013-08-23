@@ -1,0 +1,3 @@
+[
+    "The walls are hung with old, frayed tapestries."
+]

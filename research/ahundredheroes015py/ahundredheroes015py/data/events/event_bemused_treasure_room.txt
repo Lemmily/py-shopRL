@@ -1,0 +1,5 @@
+[
+    "There is a strange relief of a golden bird on this wall.",
+    "Golden flying birds adorn this wall.",
+    "This wall glimmers with the shapes of yellow-gold birds."
+]

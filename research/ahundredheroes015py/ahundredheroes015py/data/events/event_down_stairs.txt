@@ -1,0 +1,10 @@
+[
+    "I must explore deeper!",
+    "I must investigate the curious moans.",
+    "the deeper levels promise more glory for me.",
+    "what else can this place offer?",
+    "this place must go on to hell ...",
+    "I must go deeper!",
+    "as I have no choice but to.",
+    "when will this place end?"
+]

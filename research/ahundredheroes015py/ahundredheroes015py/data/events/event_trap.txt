@@ -1,0 +1,5 @@
+[
+    "An axeblade swings from the ceiling and cuts my back!",
+    "A dart shoots out of the wall and hits me in the arm!",
+    "A trip wire! I escape coughing from a cloud of gas!"
+]

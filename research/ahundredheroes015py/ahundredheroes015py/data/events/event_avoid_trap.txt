@@ -1,0 +1,5 @@
+[
+    "A dart flies from the wall and I duck out of its path!",
+    "I notice a tripline in the shadows, and step over it!",
+    "I step back quickly to avoid an axeblade swinging from above!"
+]

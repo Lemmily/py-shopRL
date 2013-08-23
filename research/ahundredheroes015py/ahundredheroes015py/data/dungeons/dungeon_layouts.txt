@@ -1,0 +1,24 @@
+{
+    "default":{
+        "trap":10,
+        "treasure_room":10,
+        "secret_room":20,
+        "trap_door":20,
+        "mundane":200
+    },
+    "lair":{
+        "trap":20,
+        "lair":60,
+        "graveyard":10,
+        "mundane":100
+    },
+    "crypt":{
+        "trap":40,
+        "treasure_room":20,
+        "graveyard":20,
+        "puzzle":20,
+        "trap_door":10,
+        "cursed_altar":5,
+        "mundane":120
+    }
+}

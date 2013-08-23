@@ -1,0 +1,12 @@
+[
+    "I would have never has used it anyway.",
+    "A good deal, indeed.",
+    "I am happy to be rid of it.",
+    "I doubt I would have found a use for it.",
+    "It is not really my sort of thing.",
+    "I can put better use to the gold.",
+    "Perhaps someone else can find a use for it.",
+    "I can not think why I would need it.",
+    "I would prefer the gold.",
+    "Perhaps I will buy something nice with the gold."
+]

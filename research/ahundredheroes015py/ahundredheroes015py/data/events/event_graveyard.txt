@@ -1,0 +1,4 @@
+[
+    "This place is littered with burial stones ...",
+    "Burial stones and dark mounds as far as I can see ..."
+]

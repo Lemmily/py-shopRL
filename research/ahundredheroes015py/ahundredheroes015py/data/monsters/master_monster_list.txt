@@ -1,0 +1,122 @@
+{
+    "ghost":{
+        "description":"Appearing as an ethereal mist, a tormented soul of a long-dead sentient creature.",
+        "power":4,
+        "level":2,
+        "align":40,
+        "order":40,
+        "population":20
+    },
+    "ogre":{
+        "description":"A huge, green-skinned hulk of a humanoid creature. It seems to be doing a sudoku.",
+        "power":6,
+        "level":3,
+        "align":45,
+        "order":45,
+        "population":60
+    },
+    "whelp":{
+        "description":"A cave-adapted man, completely blind and seemingly really angry.",
+        "power":2,
+        "level":1,
+        "align":50,
+        "order":50,
+        "population":80
+    },
+    "direwolf":{
+        "description":"A large, heavy-set wolf with glowing green eyes.",
+        "power":6,
+        "level":2,
+        "align":50,
+        "order":45,
+        "population":20
+    },
+    "uruk-hai":{
+        "description":"A large orc-like creature with an earthen tint to her skin.",
+        "power":4,
+        "level":1,
+        "align":40,
+        "order":45,
+        "population":20
+    },
+    "kobold":{
+        "description":"Looks like a small malnourished dog standing on hind legs.",
+        "power":1,
+        "level":1,
+        "align":50,
+        "order":40,
+        "population":300
+    },
+    "goblin":{
+        "description":"A small, snivelling, stooping, green-skinned humanoid.",
+        "power":1,
+        "level":1,
+        "align":45,
+        "order":45,
+        "population":200
+    },
+    "orc":{
+        "description":"A large, green humanoid with a snarl.",
+        "power":2,
+        "level":1,
+        "align":40,
+        "order":45,
+        "population":100
+    },
+    "wraith":{
+        "description":"A walking corpse, animated by fear and driven by evil.",
+        "power":8,
+        "level":3,
+        "align":40,
+        "order":40,
+        "population":20
+    },
+    "troll":{
+        "description":"A wiry, tall creature fond of shadows and eating children.",
+        "power":4,
+        "level":2,
+        "align":45,
+        "order":45,
+        "population":35
+    },
+    "beastman":{
+        "description":"A man-sized creature with the proportions of a skinny gorilla. Weird.",
+        "power":3,
+        "level":1,
+        "align":50,
+        "order":50,
+        "population":40
+    },
+    "gnoll":{
+        "description":"An ugly creature with a large, hairy frame and a particularly odd elongated snout.",
+        "power":3,
+        "level":2,
+        "align":40,
+        "order":45,
+        "population":50
+    },
+    "hound":{
+        "description":"A huge dog about the size of a large dog.",
+        "power":3,
+        "level":1,
+        "align":50,
+        "order":50,
+        "population":20
+    },
+    "sniveller":{
+        "description":"A very small, unfortunate looking creature covered in scabs.",
+        "power":1,
+        "level":0,
+        "align":45,
+        "order":45,
+        "population":50
+    },
+    "imp":{
+        "description":"A small, extremely malevolent creature with magically enhanced biceps.",
+        "power":10,
+        "level":3,
+        "align":40,
+        "order":40,
+        "population":20
+    }
+}

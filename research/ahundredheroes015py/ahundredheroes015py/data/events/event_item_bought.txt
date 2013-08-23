@@ -1,0 +1,17 @@
+[
+    "An astute purchase, I am sure.",
+    "A bargain indeed.",
+    "I have always wanted one of those.",
+    "This will come in useful.",
+    "I can not wait to put this to use.",
+    "I have enough money, why not?",
+    "I can put it to good use.",
+    "No doubt it will come in useful.",
+    "The price seems reasonable.",
+    "I might put it on my mantelpiece at home.",
+    "I was taken by the colour, I suppose.",
+    "The Merchant was very friendly.",
+    "I like the Merchants of this town.",
+    "The Merchants here are well stocked.",
+    "I shall come back here again."
+]

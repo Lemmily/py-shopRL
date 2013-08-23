@@ -1,0 +1,8 @@
+[
+    " and I chat amiably.",
+    " is good company.",
+    " has led an interesting life.",
+    " is more fun than I imagined.",
+    " and I should talk more often.",
+    " is rather pleasant company."
+]

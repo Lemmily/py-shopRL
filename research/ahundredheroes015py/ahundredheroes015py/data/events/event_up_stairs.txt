@@ -1,0 +1,9 @@
+[
+    "I must go back up.",
+    "there is nothing left for me down here.",
+    "as I fear I must.",
+    "there are strange scratches on the steps.",
+    "an ominous sound follows me.",
+    "I am not ashamed to admit I am in fear.",
+    "there is a strange glow to above."
+]

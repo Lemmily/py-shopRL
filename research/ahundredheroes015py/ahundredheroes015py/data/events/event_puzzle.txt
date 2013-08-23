@@ -1,0 +1,14 @@
+[
+    "The twisting and turning corridors disorient me.",
+    "I think I have seen this wall before.",
+    "Repetitive markings line the walls. Have I seen this before?",
+    "There is a familiar feeling to this place.",
+    "These rooms are full of smoke.",
+    "I may have doubled back on myself ...",
+    "The corridor curves almost imperceptibly .. I think ...",
+    "I admit to feeling lost.",
+    "I fear I have only recently been to this very room.",
+    "The walls are moving ... I think I am lost ...",
+    "This dark and foul smelling room makes my head spin.",
+    "Another corner, another familiar marking. I am lost."
+]

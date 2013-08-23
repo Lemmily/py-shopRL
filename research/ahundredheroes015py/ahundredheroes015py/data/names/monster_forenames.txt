@@ -1,0 +1,18 @@
+[
+    "Grax",
+    "Mordant",
+    "Hellspawn",
+    "Moznot",
+    "Lickspittle",
+    "Grorr",
+    "Har Har",
+    "Gelthmenj",
+    "Ljarbain",
+    "Kastrix",
+    "Nutcut",
+    "Roger",
+    "Jordidge",
+    "Dexel",
+    "Inflatz",
+    "Copsib"
+]

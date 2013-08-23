@@ -1,0 +1,12 @@
+[
+    "I can feel myself growing stronger and stronger.",
+    "My knowledge and skills are developing.",
+    "There is nothing I can not do.",
+    "I feel I am ready for deeper challenges.",
+    "My skills are noticeably improving.",
+    "I am learning new skills all the time.",
+    "My goals get closer.",
+    "I grow strong, but it will never be enough.",
+    "I grow stronger.",
+    "I grow more powerful with every waking hour."
+]

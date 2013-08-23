@@ -1,0 +1,6 @@
+[
+    "I shoot the breeze with ",
+    "A pleasant chat with ",
+    "I enjoy the company of ",
+    "An enjoyable conversation with "
+]

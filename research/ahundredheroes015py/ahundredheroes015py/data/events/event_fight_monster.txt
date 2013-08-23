@@ -1,0 +1,6 @@
+[
+    "I am locked in mortal battle with a huge beast!",
+    "I trade blows with a risen abomination!",
+    "I fight desperately with a terrible creature!",
+    "I ready myself to battle this gruesome terror!"
+]

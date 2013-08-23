@@ -1,0 +1,10 @@
+[
+    "They scratch me, and bite me, but I carry on.",
+    "I will heal, but they will not.",
+    "I have sustained a flesh wound but my enemies have fallen.",
+    "My blood is spilled, but I will continue.",
+    "The pain of war is nothing compared to the joy of victory.",
+    "I have sustained a wound, but it is not mortal.",
+    "I received minor wounds in the fight.",
+    "I am hurt, but I can carry on."
+]

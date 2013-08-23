@@ -1,0 +1,45 @@
+{
+    "Merchants":{},
+    "Assassins":{
+        "1":"quick_witted",
+        "2":"agile",
+        "3":"backstab"
+    },
+    "Barbarians":{
+        "1":"warrior",
+        "2":"bravado"
+    },
+    "Druids":{
+        "1":"animal_empathy"
+    },
+    "Thieves":{
+        "1":"sneaky",
+        "2":"quick_witted"
+    },
+    "Necromancers":{
+        "1":"defiler"
+    },
+    "Temple":{
+        "1":"ascetic",
+        "2":"incorruptible"
+    },
+    "Summoners":{
+        "1":"quick_witted",
+        "3":"demon_worship"
+    },
+    "Swashbucklers":{
+        "1":"bravado",
+        "2":"agile",
+        "3":"warrior"
+    },
+    "Fighters":{
+        "2":"warrior"
+    },
+    "Church":{
+        "1":"healer"
+    },
+    "Mages Guild":{
+        "1":"wimp",
+        "3":"teleporter"
+    }
+}

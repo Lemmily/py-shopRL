@@ -1,0 +1,5 @@
+[
+    "The golden bird of Azritan! Treasure is nearby!",
+    "Azritan and her riches are nearby! I see her bird!",
+    "There is treasure around, I have seen her golden bird!"
+]
