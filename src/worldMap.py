@@ -963,7 +963,7 @@ class POI:
                            
 class Dungeon(POI):
     def __init__(self,x,y, level=1):
-        POI.__init__(self,x,y,libtcod.Color(libtcod.random_get_int(0,50,255),libtcod.random_get_int(0,0,100),libtcod.random_get_int(0,100,150)), "D")
+        POI.__init__(self,x,y,libtcod.Color(libtcod.random_get_int(0,50,255),libtcod.random_get_int(0,0,100),libtcod.random_get_int(0,100,150)), "#")
         self.component = dungeon.Dungeon(x,y,self)
         self.name = self.component.name
         print "dungeon!"

@@ -66,3 +66,6 @@ class Floor:
         self.map = [[0
                      for y in range(self.h)]
                         for x in range(self.w)]
+
+
+
