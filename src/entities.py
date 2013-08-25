@@ -29,6 +29,7 @@ class Object:
         self.y = y
         self.name = name
         self.char = char
+        self.type = "object"
         self.colour = colour
         self.blocks = blocks
         self.direction = "S"

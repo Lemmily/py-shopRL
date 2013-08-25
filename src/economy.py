@@ -1431,6 +1431,7 @@ class City_Economy(object):
             if good.name == token:
                 self.add_goods_producer(token)
                 return None
+            
     def find_most_profitable_agent_token(self):
         ### First build a dict of agents, their gold, and the # of agents
         # key = commodity, value = [gold, #_of_agents]

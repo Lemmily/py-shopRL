@@ -564,6 +564,7 @@ class Map:
         self.generate_mini_map(10)
         self.cities = []
         self.dungeons = []
+        self.pois = []
         self.generate_city(libtcod.random_get_int(0, 4, 10))
         self.generate_dungeons(10)
         
@@ -579,6 +580,7 @@ class Map:
                 if tile.POI is None and tile.blocked is not True:
                     tempCity = City(x,y)
                     self.cities.append(tempCity.component)
+                    self.pois.append(tempCity)
                     self.tiles[x][y].POI = tempCity
                     placed = True
                     print "City succeeded", x, y, tempCity.name
@@ -594,7 +596,8 @@ class Map:
                 tile = self.tiles[x][y]
                 if tile.POI is None and tile.blocked is not True:
                     temp = Dungeon(x,y)
-                    self.dungeons.append(temp)
+                    self.dungeons.append(temp.component)
+                    self.pois.append(temp)
                     self.tiles[x][y].POI = temp
                     placed = True
                     print "Dungeon succeeded", x, y, temp.name
@@ -949,32 +952,42 @@ class Map:
                 
                         
 class POI:             
-    def __init__(self,x,y, colour = None, char = "X"):
+    def __init__(self,x,y, colour = None, char="X", type="none"):
         self.x = x
         self.y = y
         self.colour = colour
         if self.colour == None:
             self.colour = libtcod.Color(libtcod.random_get_int(0,0,255),libtcod.random_get_int(0,0,255),libtcod.random_get_int(0,0,255))
         self.char = char     
+        self.type = type
         self.name = "named"
+        self.component = None
         
 #        if self.type == "Dungeon":
 #            self.component = Dungeon.Dungeon()
                            
 class Dungeon(POI):
     def __init__(self,x,y, level=1):
-        POI.__init__(self,x,y,libtcod.Color(libtcod.random_get_int(0,50,255),libtcod.random_get_int(0,0,100),libtcod.random_get_int(0,100,150)), "#")
+        POI.__init__(self,x,y,libtcod.Color(libtcod.random_get_int(0,50,255),libtcod.random_get_int(0,0,100),libtcod.random_get_int(0,200,255)), "#")
         self.component = dungeon.Dungeon(x,y,self)
         self.name = self.component.name
+        self.type = "dungeon"
         print "dungeon!"
+
+
+
+
 
 class City(POI):
     def __init__(self,x,y, level=1):
-        POI.__init__(self,x,y,libtcod.Color(libtcod.random_get_int(0,50,255),libtcod.random_get_int(0,0,100),libtcod.random_get_int(0,100,150)), "C")
+        POI.__init__(self,x,y,libtcod.Color(libtcod.random_get_int(0,50,255),libtcod.random_get_int(0,0,255),libtcod.random_get_int(0,100,255)), "C")
         self.component = city.City(x, y, self)
         self.name = self.component.name
+        self.type = "city"
         
-    
+
+
+   
 
 def place_on_land():
     placed = False

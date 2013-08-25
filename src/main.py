@@ -11,10 +11,11 @@ import R
 import UI
 import worldMap
 import entities
-from R import con_char, world, inf, cities
+from R import con_char, world, inf, cities, map
 
 import cProfile
 import pstats
+from worldMap import POI
 
 #import numpy as np
 #import numpy
@@ -30,7 +31,7 @@ pause = False
 traffic = False
 temperature = False
 
-
+local = False
 
 libtcod.namegen_parse('data/names.txt')
          
@@ -67,10 +68,10 @@ master_resource_list = [    "wool", "cloth", "clothes",
 
 def new_game():
     global game_msgs, test_msgs,  ui, game_state
-    global world, world_obj, cities, player, selected
+    global world, world_obj, cities, pois, player, selected
     global tiles, cam_x,cam_y
-    global key,mouse
-    
+    global key, mouse
+    global map, local
     mouse = libtcod.Mouse()
     key = libtcod.Key()
     
@@ -82,7 +83,7 @@ def new_game():
     world_obj = R.world_obj = []
     tiles = R.tiles = world.tiles
     #make_map()
-    
+    pois = R.pois = world.pois
     cities = R.cities = world.cities
     R.ui.message(str(len(cities)) + " cities have been made!", libtcod.green)
     for city in cities: 
@@ -96,7 +97,7 @@ def new_game():
 #    city = None
 #    for city in cities:
 #        city.createBaseRelationships(cities)
-    selected = cities[0]
+    selected = []
     player = R.player = entities.Object(name = "player", player = entities.Player())
     world_obj.append(player)
     for a in range(5):
@@ -114,7 +115,8 @@ def new_game():
 #    diction[(0,0)] = 10
 #    print str(diction[point])
     
-    
+    local = True
+    render_local()
     #path = hero.pather.find_path((10,10),(0,0))
     R.ui.message("welcome and prepare your mind.", libtcod.blue)
     
@@ -148,31 +150,43 @@ def play_game():
 
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS|libtcod.EVENT_MOUSE, key, mouse)
         #render the screen
-        render_all()
+        if not local:
+            render_all()
+            
+            for object_ in R.world_obj:
+                object_.clear(cam_x,cam_y)
+                
+            for city in cities:
+                for merchant in city.trade_house.caravans_out:
+                    merchant.clear(cam_x,cam_y)
+                  
+            #handles the keys and exit if needed.
+            player_action = handle_keys()
+            if player_action == "exit":
+                save_game()
+                break         
+            if not pause: #and not player_turn:
+                advance_time(); 
+            
+            handle_mouse()
+                
+        else:
+            render_local()
+            
+            #handles the keys and exit if needed.
+            player_action = handle_keys()
+            if player_action == "exit":
+                save_game()
+                break         
+            
+            handle_mouse()
         #update_info_bar()
         
         #erase all objectsat their old locations, before they move
         #for object in objects:
         #    object.clear(con)
-        
-        for object_ in R.world_obj:
-            object_.clear(cam_x,cam_y)
-            
-        for city in cities:
-            for merchant in city.trade_house.caravans_out:
-                merchant.clear(cam_x,cam_y)
-               
-        #handles the keys and exit if needed.
-        player_action = handle_keys()
-        if player_action == "exit":
-            save_game()
-            break   
-        
-        
-        if not pause: #and not player_turn:
-            advance_time(); 
-            
-        handle_mouse()
+          
+        #handle_mouse()
         
 def advance_time():
     global date, sub_turns, turns
@@ -222,18 +236,6 @@ def advance_time():
 #        names = 6
 #        for n in range(names):
 #            num = libtcod.random_get_int(0, 0, 5)
-#            if num == 0:
-#                colour = libtcod.white
-#            elif num == 1:
-#                colour = libtcod.dark_amber
-#            elif num == 2:
-#                colour = libtcod.light_blue
-#            elif num == 3:
-#                colour = libtcod.orange
-#            elif num == 4:
-#                colour = libtcod.purple
-#            else:
-#                colour = libtcod.green
 #            test_msgs.append([libtcod.namegen_generate("city"), colour])
             #print "blip"
               
@@ -301,6 +303,7 @@ def scrolling_map(p, hs, s, m):
         return m - s
     else:
         return p - hs                   
+    
 def render_all():
     global cam_x, cam_y
     
@@ -423,7 +426,86 @@ def render_all():
     libtcod.console_blit(minmap, 0, 0, R.INFO_BAR_WIDTH, R.PANEL_HEIGHT, 0,R.MAP_VIEW_WIDTH,R.PANEL_Y)
     libtcod.console_blit(message_bar, 0, 0, R.PANEL_WIDTH, R.PANEL_HEIGHT, 0 , 0, R.PANEL_Y)
     libtcod.console_flush()
-            
+
+
+def render_local():
+    global map
+      
+    cam_x = scrolling_map(player.x, R.MAP_VIEW_WIDTH/2, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
+    cam_y = scrolling_map(player.y, R.MAP_VIEW_HEIGHT/2, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
+    
+    if local:
+#        for y in range(min(R.MAP_VIEW_HEIGHT, len(R.map[0]))): #this refers to the SCREEN position. NOT map.
+#            for x in range(min(R.MAP_VIEW_WIDTH, len(R.map))):
+        
+        for x in range(len(R.map)):
+            for y in range(len(R.map[0])):
+                if is_wall(x, y):
+                    if is_wall(x, y+1) and is_wall(x, y-1):
+                        if is_wall(x+1, y) and is_wall(x-1, y):
+                            tile = 197
+                        elif is_wall(x+1, y):
+                            tile = 195
+                        elif is_wall(x-1, y):
+                            tile = 180
+                        else:
+                            tile = 179
+                    elif is_wall(x, y+1):
+                        if is_wall(x+1, y) and is_wall(x-1, y):
+                            tile = 194
+                        elif is_wall(x+1, y):
+                            tile = 218
+                        elif is_wall(x-1, y):
+                            tile = 191
+                        else:
+                            tile = 179
+                            
+                    elif is_wall(x, y-1):
+                        if is_wall(x+1, y) and is_wall(x-1, y):
+                            tile = 193
+                        elif is_wall(x+1, y):
+                            tile = 192
+                        elif is_wall(x-1, y):
+                            tile = 217
+                        else:
+                            tile = 179        
+                    else:
+                        if is_wall(x+1, y) and is_wall(x-1, y):
+                            tile = 196
+                        elif is_wall(x+1, y):
+                            tile = 196
+                        elif is_wall(x-1, y):
+                            tile = 196
+                        else:
+                            tile = 197
+                else:
+                    tile = 056
+                            
+                #libtcod.console_put_char(con, x, y, chr(tile), libtcod.BKGND_NONE)
+                libtcod.console_put_char_ex(con, x, y, chr(tile), libtcod.green, libtcod.dark_gray)
+#        for objects in R.locale.objects:
+#            pass
+    libtcod.console_blit(con, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0)
+    libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
+    libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0,R.MAP_VIEW_WIDTH,0)
+    libtcod.console_blit(minmap, 0, 0, R.INFO_BAR_WIDTH, R.PANEL_HEIGHT, 0,R.MAP_VIEW_WIDTH,R.PANEL_Y)
+    libtcod.console_blit(message_bar, 0, 0, R.PANEL_WIDTH, R.PANEL_HEIGHT, 0 , 0, R.PANEL_Y)
+    libtcod.console_flush()  
+    
+
+def is_wall(x, y, map = None):
+    
+    if map == None:
+        map = R.map
+        
+    if 0 <= x < len(map) and 0 <= y < len(map[x]):
+        if map[x][y] != 0:
+            return True
+        else:
+            return False
+    else:
+        return False
+     
 def update_info_bar():
     
     #TODO: seperate the UI updating into THIS function. the rest of the game updates in the render_all.
@@ -434,21 +516,24 @@ def update_info_bar():
     libtcod.console_clear(inf)
     y = 2 
             
-    if selected:
-        libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, selected.name)
-        y += 1
+    if len(selected) > 0:
+        for sel in selected:
+            libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, sel.name)
+            libtcod.console_print_ex(inf, 0, y+1, libtcod.BKGND_NONE, libtcod.LEFT, sel.type)
+            y += 2
+            
+            try: 
+                if sel.component.trade_house:
+                    libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, sel.char)
+                    resources = [obj + " " + str(sel.component.resources[obj][1]) for obj in sel.component.resources] 
+                    
+                    resources = "\n".join(resources)
+                    libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, resources)
+                    y += 1
+            except:
+                libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, sel.char)
         
-        try: 
-            if selected.trade_house:
-                resources = [obj + " " + str(selected.resources[obj][1]) for obj in selected.resources] 
-                
-                resources = "\n".join(resources)
-                libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, resources)
-                y += 1
-        except:
-            libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, selected.char)
-    
-    y += 4
+        y += 4
     for (line, colour) in test_msgs:
         
         libtcod.console_set_default_foreground(inf, colour)
@@ -464,21 +549,21 @@ def update_info_bar():
     
     libtcod.console_flush()
    
-def get_names_under_mouse():
-    global mouse
-
-    (x, y) = (mouse.cx, mouse.cy)
-    x += cam_x
-    y += cam_y
-    
-    names = [obj.name for obj in R.cities
-        if obj.x == x and obj.y == y] #and libtcod.map_is_in_fov(fov_map, obj.x, obj.y)]
-    if len(names) > 0:
-        names = ", ".join(names)
-        return names.capitalize() + str(x) + " " + str(y)
-    else:
-        return str(R.world.tiles[x][y].temperature)# 
-    
+#def get_names_under_mouse():
+#    global mouse
+#
+#    (x, y) = (mouse.cx, mouse.cy)
+#    x += cam_x
+#    y += cam_y
+#    
+#    names = [obj.name for obj in R.cities
+#        if obj.x == x and obj.y == y] #and libtcod.map_is_in_fov(fov_map, obj.x, obj.y)]
+#    if len(names) > 0:
+#        names = ", ".join(names)
+#        return names.capitalize() + str(x) + " " + str(y)
+#    else:
+#        return str(R.world.tiles[x][y].temperature)# 
+#    
  
 def handle_mouse():
     global selected
@@ -498,17 +583,24 @@ def handle_mouse():
     #pressed = 0 #clearing generic output signal from any logic
 
     if mouse.lbutton_pressed:
+        selected = []
         print "boop"
         found = False
-        for city in R.cities:
-            if city.x == x + cam_x and city.y == y + cam_y:
-                selected = city
+        for poi in R.pois:
+            if poi.x == x +cam_x and poi.y == y + cam_y:
+                selected.append(poi)
                 update_info_bar()
                 found = True
+#                
+#        for city in R.cities:
+#            if city.x == x + cam_x and city.y == y + cam_y:
+#                selected = city
+#                update_info_bar()
+#                found = True
                 
         for obj in R.world_obj:
             if obj.x == x and obj.y == y:
-                selected = obj
+                selected.append(obj)
                 update_info_bar()
                 found = True
         if found == False and R.world.w >= (x + cam_x) and R.world.h >= (y + cam_y):
@@ -540,7 +632,7 @@ def player_move_or_attack(dx, dy):
 
 
 def handle_keys():
-    global keys, player_turn, pause, game_speed, traffic, temperature
+    global keys, player_turn, pause, game_speed, traffic, temperature, local
 
     #key = libtcod.console_check_for_keypress()  #real-time
     #key = libtcod.console_wait_for_keypress(True)  #turn-based
@@ -634,6 +726,22 @@ def handle_keys():
                     traffic = True
                 elif traffic is True:
                     traffic = False
+                    
+            if key_char == "l":
+                if local == True:
+                    local = False
+                    
+                        
+                else:
+                    on_dun = False
+                    for dungeon in R.world.dungeons:
+                        if dungeon.x == player.x and dungeon.y == player.y:
+                            R.map = dungeon.floors[0].map
+                            on_dun = True
+                            
+                    if not on_dun or (R.map == None or len(R.map) <= 0):
+                        R.map = R.world.dungeons[0].floors[0].map
+                    local = True
         
         
 def city_production_menu():

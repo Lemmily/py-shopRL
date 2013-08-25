@@ -5,8 +5,8 @@ Created on 16 Mar 2013
 '''
 
 
-SCREEN_WIDTH = 100
-SCREEN_HEIGHT = 80
+SCREEN_WIDTH = 80
+SCREEN_HEIGHT = 60
 
 LIMIT_FPS = 20
 
@@ -49,8 +49,10 @@ ui = None
 
 game_msgs = []
 cities = []
+pois = []
 
 world = None
+map = []
 tiles = []
 world_obj = []
 
