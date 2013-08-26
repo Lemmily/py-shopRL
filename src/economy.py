@@ -201,6 +201,8 @@ def economy_test_run():
         
     for token, auction in economy.auctions.iteritems():
         print token, auction.price_history
+        
+        
 class TempCity(object):
     def __init__(self):
         self.name = "Fulwood"

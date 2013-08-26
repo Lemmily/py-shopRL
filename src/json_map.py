@@ -54,3 +54,16 @@ monsters = """{
                     "Kobold": []
                 }
     }"""
+
+
+objects = """{
+    "door":{ "blocks":"True",
+             "char": "D",
+             "colour": [00,00,00]
+            },
+            
+    "box":{ "blocks": "True",
+            "char": "B",
+            "colour": [00,00,00]
+          }
+    }"""

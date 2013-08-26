@@ -16,8 +16,8 @@ INFO_BAR_WIDTH = 25
 MAP_VIEW_WIDTH = SCREEN_WIDTH - INFO_BAR_WIDTH
 MAP_VIEW_HEIGHT = 40
 
-MAP_WIDTH = 50  
-MAP_HEIGHT = 40
+MAP_WIDTH = 120  
+MAP_HEIGHT = 80
 
 #BAR_WIDTH = 20
 PANEL_HEIGHT = SCREEN_HEIGHT - MAP_VIEW_HEIGHT
@@ -55,7 +55,9 @@ world = None
 map = []
 tiles = []
 world_obj = []
-
+locale = None
+locale_obj = []
+player_pos = (0,0)
 
 resource_list = [   "raw",
                     "produce",

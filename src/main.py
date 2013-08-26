@@ -71,7 +71,7 @@ def new_game():
     global world, world_obj, cities, pois, player, selected
     global tiles, cam_x,cam_y
     global key, mouse
-    global map, local
+    global map, local, fov_recompute
     mouse = libtcod.Mouse()
     key = libtcod.Key()
     
@@ -98,11 +98,11 @@ def new_game():
 #    for city in cities:
 #        city.createBaseRelationships(cities)
     selected = []
-    player = R.player = entities.Object(name = "player", player = entities.Player())
+    player = R.player = entities.Mover(name = "player", player = entities.Player())
     world_obj.append(player)
     for a in range(5):
         x, y = worldMap.place_on_land()
-        hero = R.hero = entities.Object(x=x,y=y,name = "hero " + str(a), pather = entities.Pather(), ai= entities.AI_Hero())
+        hero = R.hero = entities.Mover(x=x,y=y,name = "hero " + str(a), pather = entities.Pather(), ai= entities.AI_Hero())
         world_obj.append(hero)
     render_all()
     
@@ -115,8 +115,8 @@ def new_game():
 #    diction[(0,0)] = 10
 #    print str(diction[point])
     
-    local = True
-    render_local()
+    local = False
+    fov_recompute = False
     #path = hero.pather.find_path((10,10),(0,0))
     R.ui.message("welcome and prepare your mind.", libtcod.blue)
     
@@ -172,6 +172,11 @@ def play_game():
                 
         else:
             render_local()
+            
+            for object_ in R.locale_obj:
+                object_.clear(cam_x,cam_y)
+            
+            player.clear(cam_x, cam_y)
             
             #handles the keys and exit if needed.
             player_action = handle_keys()
@@ -327,13 +332,6 @@ def render_all():
                 map_pos_y = R.MAP_HEIGHT - 1
             
             tile = R.world.tiles[map_pos_x][map_pos_y]
-            #===============================================================
-            # try: 
-            #    tile = map[map_pos_x][map_pos_y]
-            # except: 
-            #    print str(map_pos_x) + " or " + str(map_pos_y) + " is out of bounds."
-            #    break
-            #===============================================================
              
             #visible = libtcod.map_is_in_fov(fov_map, tile.x, tile.y)
             visible = True
@@ -429,62 +427,42 @@ def render_all():
 
 
 def render_local():
-    global map
+    global map, fov_recompute
+    
       
     cam_x = scrolling_map(player.x, R.MAP_VIEW_WIDTH/2, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
     cam_y = scrolling_map(player.y, R.MAP_VIEW_HEIGHT/2, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
     
-    if local:
-#        for y in range(min(R.MAP_VIEW_HEIGHT, len(R.map[0]))): #this refers to the SCREEN position. NOT map.
-#            for x in range(min(R.MAP_VIEW_WIDTH, len(R.map))):
+    if fov_recompute:
+        fov_recompute = False
+        libtcod.map_compute_fov(R.locale.fov_map, player.x, player.y, 10, True, 0)
         
-        for x in range(len(R.map)):
-            for y in range(len(R.map[0])):
-                if is_wall(x, y):
-                    if is_wall(x, y+1) and is_wall(x, y-1):
-                        if is_wall(x+1, y) and is_wall(x-1, y):
-                            tile = 197
-                        elif is_wall(x+1, y):
-                            tile = 195
-                        elif is_wall(x-1, y):
-                            tile = 180
+        for sc_y in range(R.MAP_VIEW_HEIGHT): #this refers to the SCREEN position. NOT map.
+            for sc_x in range(R.MAP_VIEW_WIDTH):
+                x = sc_x + cam_x
+                y = sc_y + cam_y
+                
+                if sc_x < len(R.map) and sc_y < len(R.map[0]):  #if it's within the bounds of the map.
+                    tile = R.locale.tiles[x][y]
+                    visible = libtcod.map_is_in_fov(R.locale.fov_map, x, y)
+                    if not visible:
+                        if tile.explored:
+                            libtcod.console_put_char_ex(con, x, y, tile.char, libtcod.dark_green, libtcod.dark_gray)
                         else:
-                            tile = 179
-                    elif is_wall(x, y+1):
-                        if is_wall(x+1, y) and is_wall(x-1, y):
-                            tile = 194
-                        elif is_wall(x+1, y):
-                            tile = 218
-                        elif is_wall(x-1, y):
-                            tile = 191
-                        else:
-                            tile = 179
-                            
-                    elif is_wall(x, y-1):
-                        if is_wall(x+1, y) and is_wall(x-1, y):
-                            tile = 193
-                        elif is_wall(x+1, y):
-                            tile = 192
-                        elif is_wall(x-1, y):
-                            tile = 217
-                        else:
-                            tile = 179        
+                            libtcod.console_put_char_ex(con, x, y, " ", libtcod.black, libtcod.black)
+                        
                     else:
-                        if is_wall(x+1, y) and is_wall(x-1, y):
-                            tile = 196
-                        elif is_wall(x+1, y):
-                            tile = 196
-                        elif is_wall(x-1, y):
-                            tile = 196
-                        else:
-                            tile = 197
-                else:
-                    tile = 056
-                            
-                #libtcod.console_put_char(con, x, y, chr(tile), libtcod.BKGND_NONE)
-                libtcod.console_put_char_ex(con, x, y, chr(tile), libtcod.green, libtcod.dark_gray)
-#        for objects in R.locale.objects:
-#            pass
+                        libtcod.console_put_char_ex(con, x, y, tile.char, libtcod.green, libtcod.light_grey)
+                        tile.explored = True
+                        
+                        
+    for objects in R.locale_obj:
+        objects.clear(cam_x,cam_y)   
+        objects.draw(cam_x,cam_y)   
+              
+    player.clear(cam_x, cam_y)      
+    player.draw(cam_x, cam_y)
+    
     libtcod.console_blit(con, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0)
     libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
     libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0,R.MAP_VIEW_WIDTH,0)
@@ -623,7 +601,8 @@ def player_move_or_attack(dx, dy):
     if player.y > R.MAP_HEIGHT -  1:
         player.y = R.MAP_HEIGHT - 1
         
-    R.world.add_foot_traffic(player.x,player.y)
+    if not local:    
+        R.world.add_foot_traffic(player.x,player.y)
     #if R.world.tiles[x][y].blocked == False:
         #player.move(dx, dy)
         #fov_recompute = True 
@@ -716,28 +695,39 @@ def handle_keys():
                 city_production_menu()
             
             if key_char == "t":
+                #debug mode to look at temperature
                 if temperature is False:
                     temperature = True
                 elif temperature is True:
                     temperature = False
                     
             if key_char == "f":
+                #debug key to look at traffic maps.
                 if traffic is False:
                     traffic = True
                 elif traffic is True:
                     traffic = False
                     
             if key_char == "l":
+                #temp debug to visit local locations.
                 if local == True:
                     local = False
-                    
-                        
+                    player.x = R.player_pos[0]
+                    player.y = R.player_pos[1]
                 else:
+                    ## check to see if the player is stood on a visitable local POI. Atm, just dungeons.
                     on_dun = False
                     for dungeon in R.world.dungeons:
                         if dungeon.x == player.x and dungeon.y == player.y:
                             R.map = dungeon.floors[0].map
+                            R.locale = dungeon.floors[0]
+                            R.locale_obj = dungeon.floors[0].objects
+                            R.player_pos = (player.x, player.y)
+                            player.x = dungeon.floors[0].up[0]
+                            player.y = dungeon.floors[0].up[1]
+                            
                             on_dun = True
+                            break
                             
                     if not on_dun or (R.map == None or len(R.map) <= 0):
                         R.map = R.world.dungeons[0].floors[0].map

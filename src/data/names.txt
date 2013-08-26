@@ -48,5 +48,6 @@ name "city" {
 						"kath, khad, kor, lach, lar, ldil, ldir, leg, len, lin, mas, mnir, ndil, ndur, "
 						"neg, nik, ntir, rab, rach, rain, rak, ran, rand, rath, rek, rig, rim, rin, "
 						"rion, sin, sta, stir, sus, tar, thad, thel, tir, von, vor, yon, zor"
-	rules = "$s$v$80m$10m$10e, $s$v$50m$50e, $s$v$20c, $s$v$m-$s" //$s$v$50m$e-$s,
+	rules = "$s$v$80m$10m$10e, $s$v$50m$50e, $s$v$20c, $s$v$m-$s," //$s$v$50m$e-$s,
+			"$s$50v$e, $s$50v$50v$m"
 }

@@ -121,7 +121,7 @@ class City:
     def consume(self):
         #consumption_rate = 0.0
         CR = float(self.population) / 10.0
-        consumption_rate = math.ceil(CR * 100.0) / 100.0
+        consumption_rate = (math.ceil(CR * 100.0) / 100.0)*2
         for commodity in self.resources:
             if self.resources[commodity][1] > consumption_rate:
                 self.resources[commodity][1] -= consumption_rate

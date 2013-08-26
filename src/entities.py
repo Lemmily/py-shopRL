@@ -20,10 +20,12 @@ PATH = 5
 
 
 MOTIVATIONS = ["none", "health", "wealth", "buy", "sell", "adventure", "comfort"] 
+
+
 class Object:
     
     def __init__(self, x=0, y=0, char="@", name="blob", colour=libtcod.white, blocks=False, always_visible=False,
-                    item=None, fighter=None, player=None, pather=None, ai=None):
+                    item=None):
         
         self.x = x
         self.y = y
@@ -32,32 +34,13 @@ class Object:
         self.type = "object"
         self.colour = colour
         self.blocks = blocks
-        self.direction = "S"
         self.always_visible = always_visible
         
-        self.activity_log = {"history": [], "kills": [], "travels": [], "transactions":[]}
         
-        self.fighter = fighter
-        if fighter:
-            self.fighter.parent = self
-
         self.item = item
         if item:
             self.item.parent = self
-        
-        self.player = player
-        if player:
-            self.player.parent = self
-            
-        #THIS HAS BEEN MOVED INTO AI. AS thIS IS WHERE IT WILL BE USED.
-        self.pather = pather
-        if pather:
-            self.pather.parent = self
-         
-        self.ai = ai   
-        if ai:
-            self.ai.parent = self
-        
+
         
     def clear(self, cam_x = 0, cam_y =0): 
         #erase the character that represents this object
@@ -82,6 +65,66 @@ class Object:
 #                libtcod.console_set_default_background(R.con_char, libtcod.white)
 #                libtcod.console_put_char(R.con_char, pos_x, pos_y, self.char, libtcod.BKGND_NONE)#ADDALPHA(0.0))
 
+
+#    def move(self, dx, dy):
+#        #move by the given quantity, if the destination is not blocked
+#        if not is_blocked(self.x + dx, self.y + dy):
+#            self.x += dx
+#            self.y += dy
+#            return True
+#        return False
+#     
+#    def move_p(self, dx, dy):
+#        #move by the given quantity
+#        self.x += dx
+#        self.y += dy
+#       
+#    def move_towards(self, target_x, target_y):
+#        #vector from this object to the other and the distance
+#        dx = target_x - self.x
+#        dy = target_y - self.y
+#        distance = math.sqrt(dx ** 2 + dy ** 2)
+#
+#        dx = int(round(dx / distance))
+#        dy = int(round(dy / distance))
+#        self.move(dx, dy)
+#
+#    def distance(self, x, y):
+#        #return the distance to some coordinates
+#        return math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
+#
+#    def distance_to(self, other):
+#        dx = other.x - self.x
+#        dy = other.y - self.y
+#        return math.sqrt(dx ** 2 + dy ** 2)
+
+
+class Mover(Object):
+    def __init__(self, x=0, y=0, char="@", name="blob", colour=libtcod.white, blocks=False, always_visible=False,
+                        fighter=None, player=None, pather=None, ai=None):
+        Object.__init__(self, x, y, char, name, colour, blocks, always_visible)
+        self.direction = "S"
+        
+        self.activity_log = {"history": [], "kills": [], "travels": [], "transactions":[]}
+        
+        self.fighter = fighter
+        if fighter:
+            self.fighter.parent = self
+
+        
+        self.player = player
+        if player:
+            self.player.parent = self
+            
+        #THIS HAS BEEN MOVED INTO AI. AS thIS IS WHERE IT WILL BE USED.
+        self.pather = pather
+        if pather:
+            self.pather.parent = self
+         
+        self.ai = ai   
+        if ai:
+            self.ai.parent = self
+        
 
     def move(self, dx, dy):
         #move by the given quantity, if the destination is not blocked
@@ -115,6 +158,9 @@ class Object:
         dy = other.y - self.y
         return math.sqrt(dx ** 2 + dy ** 2)
 
+    
+
+
 class Player:
     
     def __init__(self, d_l = 0):
@@ -136,6 +182,8 @@ def is_blocked(x, y):
             return True
  
     return False
+
+
 class Hero():
     def __init__(self):
         self.dungeon_level = 0
