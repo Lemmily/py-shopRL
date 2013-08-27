@@ -41,13 +41,31 @@ class Object:
         if item:
             self.item.parent = self
 
+    
+    def _set_x(self,x):
+        self.x = x
+    def _set_y(self,y):
+        self.y = y
+    def _get_x(self):
+        return self.x
+    def _get_y(self):
+        return self.y
         
     def clear(self, cam_x = 0, cam_y =0): 
         #erase the character that represents this object
         libtcod.console_put_char(R.con_char, self.x -cam_x, self.y- cam_y, " ", libtcod.BKGND_NONE)
         #libtcod.console_set_default_foreground(con, color_light_ground)
         #libtcod.console_put_char(con, x, y, libtcod.CHAR_BLOCK2, libtcod.black)
-       
+        
+    def draw_faded(self, cam_x, cam_y): 
+        pos_x = self.x - cam_x
+        pos_y = self.y - cam_y
+        
+        colour = libtcod.Color(self.colour.r,self.colour.g,self.colour.b)
+        libtcod.color_scale_HSV(colour, 0.7, 0.7) #hopefully 80% saturation.
+        libtcod.console_set_default_foreground(R.con_char, colour)
+        libtcod.console_put_char(R.con_char, pos_x, pos_y, self.char, libtcod.BKGND_NONE)#ADDALPHA(0.0))
+#             
     def draw(self, cam_x, cam_y): 
         
         if self.x >= cam_x and self.x < cam_x + R.MAP_VIEW_WIDTH and self.y >= cam_y and self.y < cam_y + R.MAP_VIEW_HEIGHT:

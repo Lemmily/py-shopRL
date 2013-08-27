@@ -173,10 +173,10 @@ def play_game():
         else:
             render_local()
             
-            for object_ in R.locale_obj:
-                object_.clear(cam_x,cam_y)
-            
-            player.clear(cam_x, cam_y)
+#            for object_ in R.locale_obj:
+#                object_.clear(cam_x,cam_y)
+#            
+#            player.clear(cam_x, cam_y)
             
             #handles the keys and exit if needed.
             player_action = handle_keys()
@@ -185,6 +185,9 @@ def play_game():
                 break         
             
             handle_mouse()
+            
+        if R.msg_redraw == True:
+            update_msg_bar()
         #update_info_bar()
         
         #erase all objectsat their old locations, before they move
@@ -235,16 +238,7 @@ def advance_time():
                 city.productionRound_temp()
                 
     if date[0] == 24:#// increase the day.
-        ##
-        ###//do day stuff before changing date.m
-        ##
-#        names = 6
-#        for n in range(names):
-#            num = libtcod.random_get_int(0, 0, 5)
-#            test_msgs.append([libtcod.namegen_generate("city"), colour])
-            #print "blip"
-              
-        #libtcod.namegen_parse('data/names.txt')
+        
         for city in cities:
             city.productionRound_temp()
             for resource in R.resource_list:
@@ -399,15 +393,15 @@ def render_all():
                 objects.draw(cam_x,cam_y)        
     player.draw(cam_x, cam_y)
     
-    libtcod.console_clear(message_bar)
-    libtcod.console_set_default_foreground(message_bar, libtcod.white)
-    libtcod.console_print_ex(message_bar, 0, 0, libtcod.BKGND_NONE, libtcod.LEFT, str(date[0]) + " " + str(date[1][2]) + " " + str(date[1][0]) + " " + str(date[2][0]))
-    # print the messages, one line at a time.
-    y = 2
-    for (line, colour) in R.game_msgs:
-        libtcod.console_set_default_foreground(message_bar, colour)
-        libtcod.console_print_ex(message_bar, R.MSG_X, R.MSG_HEIGHT - y, libtcod.BKGND_NONE, libtcod.LEFT, line)
-        y += 1
+#    libtcod.console_clear(message_bar)
+#    libtcod.console_set_default_foreground(message_bar, libtcod.white)
+#    libtcod.console_print_ex(message_bar, 0, 0, libtcod.BKGND_NONE, libtcod.LEFT, str(date[0]) + " " + str(date[1][2]) + " " + str(date[1][0]) + " " + str(date[2][0]))
+#    # print the messages, one line at a time.
+#    y = 2
+#    for (line, colour) in R.game_msgs:
+#        libtcod.console_set_default_foreground(message_bar, colour)
+#        libtcod.console_print_ex(message_bar, R.MSG_X, R.MSG_HEIGHT - y, libtcod.BKGND_NONE, libtcod.LEFT, line)
+#        y += 1
     
 #    y = 0
 #    for y in range(R.MAP_HEIGHT):
@@ -422,7 +416,7 @@ def render_all():
     libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
     libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0,R.MAP_VIEW_WIDTH,0)
     libtcod.console_blit(minmap, 0, 0, R.INFO_BAR_WIDTH, R.PANEL_HEIGHT, 0,R.MAP_VIEW_WIDTH,R.PANEL_Y)
-    libtcod.console_blit(message_bar, 0, 0, R.PANEL_WIDTH, R.PANEL_HEIGHT, 0 , 0, R.PANEL_Y)
+    #libtcod.console_blit(message_bar, 0, 0, R.PANEL_WIDTH, R.PANEL_HEIGHT, 0 , 0, R.PANEL_Y)
     libtcod.console_flush()
 
 
@@ -435,7 +429,7 @@ def render_local():
     
     if fov_recompute:
         fov_recompute = False
-        libtcod.map_compute_fov(R.locale.fov_map, player.x, player.y, 10, True, 0)
+        libtcod.map_compute_fov(R.locale.floors[player.depth].fov_map, player.x, player.y, 10, True, 0)
         
         for sc_y in range(R.MAP_VIEW_HEIGHT): #this refers to the SCREEN position. NOT map.
             for sc_x in range(R.MAP_VIEW_WIDTH):
@@ -443,31 +437,39 @@ def render_local():
                 y = sc_y + cam_y
                 
                 if sc_x < len(R.map) and sc_y < len(R.map[0]):  #if it's within the bounds of the map.
-                    tile = R.locale.tiles[x][y]
-                    visible = libtcod.map_is_in_fov(R.locale.fov_map, x, y)
+                    tile = R.locale.floors[player.depth].tiles[x][y]
+                    visible = libtcod.map_is_in_fov(R.locale.floors[player.depth].fov_map, x, y)
                     if not visible:
                         if tile.explored:
                             libtcod.console_put_char_ex(con, x, y, tile.char, libtcod.dark_green, libtcod.dark_gray)
                         else:
                             libtcod.console_put_char_ex(con, x, y, " ", libtcod.black, libtcod.black)
+                        libtcod.console_set_char(con_char, x, y, " ")
                         
                     else:
                         libtcod.console_put_char_ex(con, x, y, tile.char, libtcod.green, libtcod.light_grey)
+                        libtcod.console_set_char(con_char, x, y, " ")
                         tile.explored = True
+                else:
+                    libtcod.console_put_char_ex(con, x, y, " ", libtcod.black, libtcod.black)
+                    
                         
-                        
-    for objects in R.locale_obj:
-        objects.clear(cam_x,cam_y)   
-        objects.draw(cam_x,cam_y)   
-              
-    player.clear(cam_x, cam_y)      
-    player.draw(cam_x, cam_y)
-    
+        for objects in R.locale_obj:
+            #if the tile is explored, then draw the object.
+            if libtcod.map_is_in_fov(R.locale.floors[player.depth].fov_map, objects.x, objects.y):
+                #objects.clear(cam_x,cam_y)   
+                objects.draw(cam_x,cam_y)   
+                
+            elif R.locale.floors[player.depth].tiles[objects.x][objects.y].explored == True:
+                #objects.clear(cam_x,cam_y)   
+                objects.draw_faded(cam_x,cam_y)   
+            
+                  
+        #player.clear(cam_x, cam_y)      
+        player.draw(cam_x, cam_y)
+        
     libtcod.console_blit(con, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0)
     libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
-    libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0,R.MAP_VIEW_WIDTH,0)
-    libtcod.console_blit(minmap, 0, 0, R.INFO_BAR_WIDTH, R.PANEL_HEIGHT, 0,R.MAP_VIEW_WIDTH,R.PANEL_Y)
-    libtcod.console_blit(message_bar, 0, 0, R.PANEL_WIDTH, R.PANEL_HEIGHT, 0 , 0, R.PANEL_Y)
     libtcod.console_flush()  
     
 
@@ -483,7 +485,28 @@ def is_wall(x, y, map = None):
             return False
     else:
         return False
-     
+    
+def clear_consoles():
+    for x in range(R.MAP_VIEW_WIDTH): #this refers to the MAP SCREEN position.
+        for y in range(R.MAP_VIEW_HEIGHT):
+            libtcod.console_set_char(con, x, y, " ")
+            libtcod.console_set_char(con_char, x, y, " ")
+            
+def update_msg_bar():
+    
+    libtcod.console_clear(message_bar)
+    libtcod.console_set_default_foreground(message_bar, libtcod.white)
+    libtcod.console_print_ex(message_bar, 0, 0, libtcod.BKGND_NONE, libtcod.LEFT, str(date[0]) + " " + str(date[1][2]) + " " + str(date[1][0]) + " " + str(date[2][0]))
+    # print the messages, one line at a time.
+    y = 2
+    for (line, colour) in R.game_msgs:
+        libtcod.console_set_default_foreground(message_bar, colour)
+        libtcod.console_print_ex(message_bar, R.MSG_X, y, libtcod.BKGND_NONE, libtcod.LEFT, line)
+        y += 1          
+    libtcod.console_blit(message_bar, 0, 0, R.PANEL_WIDTH, R.PANEL_HEIGHT, 0 , 0, R.PANEL_Y)
+    libtcod.console_flush()  
+    R.msg_redraw = False
+        
 def update_info_bar():
     
     #TODO: seperate the UI updating into THIS function. the rest of the game updates in the render_all.
@@ -611,7 +634,7 @@ def player_move_or_attack(dx, dy):
 
 
 def handle_keys():
-    global keys, player_turn, pause, game_speed, traffic, temperature, local
+    global keys, player_turn, pause, game_speed, traffic, temperature, local, fov_recompute
 
     #key = libtcod.console_check_for_keypress()  #real-time
     #key = libtcod.console_wait_for_keypress(True)  #turn-based
@@ -708,30 +731,68 @@ def handle_keys():
                 elif traffic is True:
                     traffic = False
                     
-            if key_char == "l":
-                #temp debug to visit local locations.
+                   
+            if key_char == "<":
+                """Go up"""
                 if local == True:
-                    local = False
-                    player.x = R.player_pos[0]
-                    player.y = R.player_pos[1]
+                    
+                    if player.x == R.locale.floors[player.depth].up[0] and player.y == R.locale.floors[player.depth].up[1]:
+                        if player.depth == 0:
+                            local = False
+                            player.x = R.player_pos[0]
+                            player.y = R.player_pos[1]
+                            clear_consoles()
+                        else:
+                            player.depth -= 1
+                            player.x = R.locale.floors[player.depth].down[0]
+                            player.y = R.locale.floors[player.depth].down[1]
+                            
+                            R.map = R.locale.floors[player.depth].map
+                            R.locale_obj = R.locale.floors[player.depth].objects
+                            fov_recompute = True
+#                            clear_consoles()
+#                            render_local()
+                else:
+                    R.ui.message("You jumped, That didn't really achieve much...", colour = libtcod.white)
+                        
+            if key_char == ">":
+                """Go Down"""
+                if local == True:
+                    
+                    if player.x == R.locale.floors[player.depth].down[0] and player.y == R.locale.floors[player.depth].down[1]:
+                        if player.depth < len(R.locale.floors)-1:
+                            player.depth += 1
+                            player.x = R.locale.floors[player.depth].up[0]
+                            player.y = R.locale.floors[player.depth].up[1]
+                            
+                            R.map = R.locale.floors[player.depth].map
+                            R.locale_obj = R.locale.floors[player.depth].objects
+                            
+                            fov_recompute = True
+#                            clear_consoles()
+#                            render_local()
+                            
+                        else:
+                            R.ui.message("You can't go down anymore!", colour = libtcod.white)
+                    
                 else:
                     ## check to see if the player is stood on a visitable local POI. Atm, just dungeons.
                     on_dun = False
                     for dungeon in R.world.dungeons:
                         if dungeon.x == player.x and dungeon.y == player.y:
                             R.map = dungeon.floors[0].map
-                            R.locale = dungeon.floors[0]
+                            R.locale = dungeon
                             R.locale_obj = dungeon.floors[0].objects
                             R.player_pos = (player.x, player.y)
                             player.x = dungeon.floors[0].up[0]
                             player.y = dungeon.floors[0].up[1]
-                            
+                            player.depth = 0
                             on_dun = True
+                            local = True
                             break
                             
                     if not on_dun or (R.map == None or len(R.map) <= 0):
-                        R.map = R.world.dungeons[0].floors[0].map
-                    local = True
+                        R.ui.message("There's nothing here!", colour = libtcod.white)
         
         
 def city_production_menu():

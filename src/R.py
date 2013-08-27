@@ -46,8 +46,10 @@ turns = 0
 pause = False
 
 ui = None
-
+msg_redraw = False
 game_msgs = []
+
+
 cities = []
 pois = []
 

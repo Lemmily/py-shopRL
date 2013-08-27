@@ -115,6 +115,7 @@ class Floor:
         
         self.construct_floor()
         self.objects = []
+        self.entities = []
         self.construct_objects()
         
         self.fov_map = libtcod.map_new(self.w, self.h)
@@ -134,19 +135,22 @@ class Floor:
         
         self.rects = []
         self.rects.append(self.make_room(2, 2, 5, 5))
+        self.up = (self.rects[0].x + 1, self.rects[0].y + 1)
         self.rects.append(self.make_room_random())
         self.rects.append(self.make_room_random())
         self.rects.append(self.make_room_random())
         self.rects.append(self.make_room_random())
+        self.down = (self.rects[len(self.rects) -1].x + 1, self.rects[len(self.rects)-1].y + 1)
         
         self.place_rooms()
 
     
     def construct_objects(self):
-        door = entities.Object(self.up[0], self.up[1], char="D", name="door", colour=libtcod.purple, blocks=True, always_visible=False)
-        self.objects.append(door)
-        door = entities.Object(self.down[0], self.down[1], char="D", name="door", colour=libtcod.red, blocks=True, always_visible=False)
-        self.objects.append(door)
+        stair = entities.Object(self.up[0], self.up[1], char="<", name="stair", colour=libtcod.purple, blocks=False, always_visible=False)
+        self.objects.append(stair)
+        stair = entities.Object(self.down[0], self.down[1], char=">", name="stair", colour=libtcod.red, blocks=False, always_visible=False)
+        self.objects.append(stair)
+        
         
         
     def make_room(self,x,y,w,h):
@@ -176,7 +180,7 @@ class Floor:
                         if rect.intersect_other(other):
                             continue
                         else: 
-                            unplaced = False
+                            return rect
                     count += 1
         else:
             w = libtcod.random_get_int(0, 4, 9)
@@ -186,7 +190,7 @@ class Floor:
             
             rect = Rect(w,h,x,y)
                 
-        return rect
+        return
     
     def place_rooms(self):
         

@@ -72,9 +72,9 @@ class UI:
     
         for line in new_msg_lines:
             #if the buffer is full, then remove some messages to make room for more.
-            if len(game_msgs) == R.MSG_HEIGHT:
+            if len(game_msgs) == R.MSG_HEIGHT - 2:
                 del game_msgs[0]
     
                 #add the new line as a tuple, with text and the colour.
             R.game_msgs.append( (line, colour) )
-        
+        R.msg_redraw = True
