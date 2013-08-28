@@ -49,6 +49,7 @@ ui = None
 msg_redraw = False
 game_msgs = []
 
+you = None #the player
 
 cities = []
 pois = []

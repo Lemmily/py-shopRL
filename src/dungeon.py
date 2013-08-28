@@ -151,7 +151,12 @@ class Floor:
         stair = entities.Object(self.down[0], self.down[1], char=">", name="stair", colour=libtcod.red, blocks=False, always_visible=False)
         self.objects.append(stair)
         
+        room = self.rects[libtcod.random_get_int(0, 0, len(self.rects)-1)]
+        item = entities.Item()
+        potion = entities.Object(libtcod.random_get_int(0,room.x,room.x + room.w),libtcod.random_get_int(0,room.y,room.y + room.w),
+                                        char="!", name="potion", colour=libtcod.orange,blocks = False, always_visible=False, item=item)
         
+        self.objects.append(potion)
         
     def make_room(self,x,y,w,h):
         

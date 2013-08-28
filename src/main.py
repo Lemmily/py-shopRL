@@ -68,7 +68,7 @@ master_resource_list = [    "wool", "cloth", "clothes",
 
 def new_game():
     global game_msgs, test_msgs,  ui, game_state
-    global world, world_obj, cities, pois, player, selected
+    global world, world_obj, cities, pois, you, selected
     global tiles, cam_x,cam_y
     global key, mouse
     global map, local, fov_recompute
@@ -98,8 +98,8 @@ def new_game():
 #    for city in cities:
 #        city.createBaseRelationships(cities)
     selected = []
-    player = R.player = entities.Mover(name = "player", player = entities.Player())
-    world_obj.append(player)
+    you = R.you = entities.Mover(name = "player", you = entities.Player())
+    world_obj.append(you)
     for a in range(5):
         x, y = worldMap.place_on_land()
         hero = R.hero = entities.Mover(x=x,y=y,name = "hero " + str(a), pather = entities.Pather(), ai= entities.AI_Hero())
@@ -176,7 +176,7 @@ def play_game():
 #            for object_ in R.locale_obj:
 #                object_.clear(cam_x,cam_y)
 #            
-#            player.clear(cam_x, cam_y)
+#            you.clear(cam_x, cam_y)
             
             #handles the keys and exit if needed.
             player_action = handle_keys()
@@ -313,8 +313,8 @@ def render_all():
         libtcod.console_set_char_background(con, cam_x+city.x, cam_y+city.y, colour, libtcod.BKGND_SET )
         libtcod.console_set_char(con, cam_x+city.x, cam_y+city.y, ord(' '))
         
-    cam_x = scrolling_map(player.x, R.MAP_VIEW_WIDTH/2, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
-    cam_y = scrolling_map(player.y, R.MAP_VIEW_HEIGHT/2, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
+    cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH/2, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
+    cam_y = scrolling_map(you.y, R.MAP_VIEW_HEIGHT/2, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
     #now draw the map!
     for y in range(min(R.MAP_VIEW_HEIGHT, len(R.world.tiles[0]))): #this refers to the SCREEN position. NOT map.
         for x in range(min(R.MAP_VIEW_WIDTH, len(R.world.tiles))):
@@ -380,7 +380,7 @@ def render_all():
                             
             
 #    for char in R.world_obj:
-#        if char != player:
+#        if char != you:
 #            char.draw(cam_x, cam_y)
 
     #now draw all the merchants
@@ -391,7 +391,7 @@ def render_all():
             if objects.ai:
                 objects.clear(cam_x,cam_y)   
                 objects.draw(cam_x,cam_y)        
-    player.draw(cam_x, cam_y)
+    you.draw(cam_x, cam_y)
     
 #    libtcod.console_clear(message_bar)
 #    libtcod.console_set_default_foreground(message_bar, libtcod.white)
@@ -424,12 +424,12 @@ def render_local():
     global map, fov_recompute
     
       
-    cam_x = scrolling_map(player.x, R.MAP_VIEW_WIDTH/2, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
-    cam_y = scrolling_map(player.y, R.MAP_VIEW_HEIGHT/2, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
+    cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH/2, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
+    cam_y = scrolling_map(you.y, R.MAP_VIEW_HEIGHT/2, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
     
     if fov_recompute:
         fov_recompute = False
-        libtcod.map_compute_fov(R.locale.floors[player.depth].fov_map, player.x, player.y, 10, True, 0)
+        libtcod.map_compute_fov(R.locale.floors[you.depth].fov_map, you.x, you.y, 10, True, 0)
         
         for sc_y in range(R.MAP_VIEW_HEIGHT): #this refers to the SCREEN position. NOT map.
             for sc_x in range(R.MAP_VIEW_WIDTH):
@@ -437,8 +437,8 @@ def render_local():
                 y = sc_y + cam_y
                 
                 if sc_x < len(R.map) and sc_y < len(R.map[0]):  #if it's within the bounds of the map.
-                    tile = R.locale.floors[player.depth].tiles[x][y]
-                    visible = libtcod.map_is_in_fov(R.locale.floors[player.depth].fov_map, x, y)
+                    tile = R.locale.floors[you.depth].tiles[x][y]
+                    visible = libtcod.map_is_in_fov(R.locale.floors[you.depth].fov_map, x, y)
                     if not visible:
                         if tile.explored:
                             libtcod.console_put_char_ex(con, x, y, tile.char, libtcod.dark_green, libtcod.dark_gray)
@@ -456,17 +456,12 @@ def render_local():
                         
         for objects in R.locale_obj:
             #if the tile is explored, then draw the object.
-            if libtcod.map_is_in_fov(R.locale.floors[player.depth].fov_map, objects.x, objects.y):
-                #objects.clear(cam_x,cam_y)   
+            if libtcod.map_is_in_fov(R.locale.floors[you.depth].fov_map, objects.x, objects.y):
                 objects.draw(cam_x,cam_y)   
                 
-            elif R.locale.floors[player.depth].tiles[objects.x][objects.y].explored == True:
-                #objects.clear(cam_x,cam_y)   
-                objects.draw_faded(cam_x,cam_y)   
-            
-                  
-        #player.clear(cam_x, cam_y)      
-        player.draw(cam_x, cam_y)
+            elif R.locale.floors[you.depth].tiles[objects.x][objects.y].explored == True:
+                objects.draw_faded(cam_x,cam_y)
+        you.draw(cam_x, cam_y)
         
     libtcod.console_blit(con, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0)
     libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
@@ -613,23 +608,23 @@ def player_move_or_attack(dx, dy):
     global fov_recompute
 
     #the coordinates the player is moving to/attacking
-    x = player.x + dx
-    y = player.y + dy
+    x = you.x + dx
+    y = you.y + dy
 
-    player.move_p(dx, dy)
+    you.move_p(dx, dy)
     fov_recompute = True
     
-    if player.x > R.MAP_WIDTH - 1:
-        player.x = R.MAP_WIDTH - 1
-    if player.y > R.MAP_HEIGHT -  1:
-        player.y = R.MAP_HEIGHT - 1
+    if you.x > R.MAP_WIDTH - 1:
+        you.x = R.MAP_WIDTH - 1
+    if you.y > R.MAP_HEIGHT -  1:
+        you.y = R.MAP_HEIGHT - 1
         
     if not local:    
-        R.world.add_foot_traffic(player.x,player.y)
+        R.world.add_foot_traffic(you.x,you.y)
     #if R.world.tiles[x][y].blocked == False:
-        #player.move(dx, dy)
+        #you.move(dx, dy)
         #fov_recompute = True 
-    #if player_turn:
+    #if player:
     #    advance_time()
 
 
@@ -677,28 +672,28 @@ def handle_keys():
         #movement keys
  
         if key.vk == libtcod.KEY_UP or key.vk == libtcod.KEY_KP8:
-            player.direction = "N"
+            you.direction = "N"
             player_move_or_attack(0, -1)
         elif key.vk == libtcod.KEY_DOWN or key.vk == libtcod.KEY_KP2:
-            player.direction = "S"
+            you.direction = "S"
             player_move_or_attack(0, 1)
         elif key.vk == libtcod.KEY_LEFT or key.vk == libtcod.KEY_KP4:
-            player.direction = "E"
+            you.direction = "E"
             player_move_or_attack(-1, 0)
         elif key.vk == libtcod.KEY_RIGHT or key.vk == libtcod.KEY_KP6:
-            player.direction = "W"
+            you.direction = "W"
             player_move_or_attack(1, 0)
         elif key.vk == libtcod.KEY_HOME or key.vk == libtcod.KEY_KP7:
-            player.direction = "NW"
+            you.direction = "NW"
             player_move_or_attack(-1, -1)
         elif key.vk == libtcod.KEY_PAGEUP or key.vk == libtcod.KEY_KP9:
-            player.direction = "NE"
+            you.direction = "NE"
             player_move_or_attack(1, -1)
         elif key.vk == libtcod.KEY_END or key.vk == libtcod.KEY_KP1:
-            player.direction = "SW"
+            you.direction = "SW"
             player_move_or_attack(-1, 1)
         elif key.vk == libtcod.KEY_PAGEDOWN or key.vk == libtcod.KEY_KP3:
-            player.direction = "SE"
+            you.direction = "SE"
             player_move_or_attack(1, 1)
             
         elif key.vk == libtcod.KEY_KP5:
@@ -736,19 +731,19 @@ def handle_keys():
                 """Go up"""
                 if local == True:
                     
-                    if player.x == R.locale.floors[player.depth].up[0] and player.y == R.locale.floors[player.depth].up[1]:
-                        if player.depth == 0:
+                    if you.x == R.locale.floors[you.depth].up[0] and you.y == R.locale.floors[you.depth].up[1]:
+                        if you.depth == 0:
                             local = False
-                            player.x = R.player_pos[0]
-                            player.y = R.player_pos[1]
+                            you.x = R.player_pos[0]
+                            you.y = R.player_pos[1]
                             clear_consoles()
                         else:
-                            player.depth -= 1
-                            player.x = R.locale.floors[player.depth].down[0]
-                            player.y = R.locale.floors[player.depth].down[1]
+                            you.depth -= 1
+                            you.x = R.locale.floors[you.depth].down[0]
+                            you.y = R.locale.floors[you.depth].down[1]
                             
-                            R.map = R.locale.floors[player.depth].map
-                            R.locale_obj = R.locale.floors[player.depth].objects
+                            R.map = R.locale.floors[you.depth].map
+                            R.locale_obj = R.locale.floors[you.depth].objects
                             fov_recompute = True
 #                            clear_consoles()
 #                            render_local()
@@ -759,14 +754,14 @@ def handle_keys():
                 """Go Down"""
                 if local == True:
                     
-                    if player.x == R.locale.floors[player.depth].down[0] and player.y == R.locale.floors[player.depth].down[1]:
-                        if player.depth < len(R.locale.floors)-1:
-                            player.depth += 1
-                            player.x = R.locale.floors[player.depth].up[0]
-                            player.y = R.locale.floors[player.depth].up[1]
+                    if you.x == R.locale.floors[you.depth].down[0] and you.y == R.locale.floors[you.depth].down[1]:
+                        if you.depth < len(R.locale.floors)-1:
+                            you.depth += 1
+                            you.x = R.locale.floors[you.depth].up[0]
+                            you.y = R.locale.floors[you.depth].up[1]
                             
-                            R.map = R.locale.floors[player.depth].map
-                            R.locale_obj = R.locale.floors[player.depth].objects
+                            R.map = R.locale.floors[you.depth].map
+                            R.locale_obj = R.locale.floors[you.depth].objects
                             
                             fov_recompute = True
 #                            clear_consoles()
@@ -779,21 +774,24 @@ def handle_keys():
                     ## check to see if the player is stood on a visitable local POI. Atm, just dungeons.
                     on_dun = False
                     for dungeon in R.world.dungeons:
-                        if dungeon.x == player.x and dungeon.y == player.y:
+                        if dungeon.x == you.x and dungeon.y == you.y:
                             R.map = dungeon.floors[0].map
                             R.locale = dungeon
                             R.locale_obj = dungeon.floors[0].objects
-                            R.player_pos = (player.x, player.y)
-                            player.x = dungeon.floors[0].up[0]
-                            player.y = dungeon.floors[0].up[1]
-                            player.depth = 0
+                            R.player_pos = (you.x, you.y)
+                            you.x = dungeon.floors[0].up[0]
+                            you.y = dungeon.floors[0].up[1]
+                            you.depth = 0
                             on_dun = True
                             local = True
                             break
                             
                     if not on_dun or (R.map == None or len(R.map) <= 0):
                         R.ui.message("There's nothing here!", colour = libtcod.white)
-        
+def pick_up():
+    
+    if len(R.locale_obj[you.x][you.y]) != 0:
+        pass
         
 def city_production_menu():
     

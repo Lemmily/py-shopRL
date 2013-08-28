@@ -119,7 +119,7 @@ class Object:
 
 class Mover(Object):
     def __init__(self, x=0, y=0, char="@", name="blob", colour=libtcod.white, blocks=False, always_visible=False,
-                        fighter=None, player=None, pather=None, ai=None):
+                        fighter=None, you=None, pather=None, ai=None):
         Object.__init__(self, x, y, char, name, colour, blocks, always_visible)
         self.direction = "S"
         
@@ -130,9 +130,9 @@ class Mover(Object):
             self.fighter.parent = self
 
         
-        self.player = player
-        if player:
-            self.player.parent = self
+        self.you = you
+        if you:
+            self.you.parent = self
             
         #THIS HAS BEEN MOVED INTO AI. AS thIS IS WHERE IT WILL BE USED.
         self.pather = pather
@@ -201,6 +201,10 @@ def is_blocked(x, y):
  
     return False
 
+class Item():
+    def __init__(self, use_function = None):
+        self.use_function = use_function
+        self.parent = None
 
 class Hero():
     def __init__(self):
