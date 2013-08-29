@@ -286,7 +286,9 @@ def advance_time():
         ### Do anything that needs to be the start of the year here. AND use the new year
         ## 
 
-
+    update_msg_bar()
+    
+    
 def scrolling_map(p, hs, s, m):
     """
     Get the position of the camera in a scrolling map:
@@ -703,8 +705,8 @@ def handle_keys():
             #test for other keys
             key_char = chr(key.c)
             
-            if key_char == "p":
-                pass
+            if key_char == "i":
+                inventory_menu()
             
             if key_char == "c":
                 city_menu()
@@ -726,73 +728,89 @@ def handle_keys():
                 elif traffic is True:
                     traffic = False
                     
-                   
+            if key_char == ",":
+                pick_up()
+                  
             if key_char == "<":
-                """Go up"""
-                if local == True:
-                    
-                    if you.x == R.locale.floors[you.depth].up[0] and you.y == R.locale.floors[you.depth].up[1]:
-                        if you.depth == 0:
-                            local = False
-                            you.x = R.player_pos[0]
-                            you.y = R.player_pos[1]
-                            clear_consoles()
-                        else:
-                            you.depth -= 1
-                            you.x = R.locale.floors[you.depth].down[0]
-                            you.y = R.locale.floors[you.depth].down[1]
-                            
-                            R.map = R.locale.floors[you.depth].map
-                            R.locale_obj = R.locale.floors[you.depth].objects
-                            fov_recompute = True
-#                            clear_consoles()
-#                            render_local()
-                else:
-                    R.ui.message("You jumped, That didn't really achieve much...", colour = libtcod.white)
-                        
+                go_up()
             if key_char == ">":
                 """Go Down"""
-                if local == True:
-                    
-                    if you.x == R.locale.floors[you.depth].down[0] and you.y == R.locale.floors[you.depth].down[1]:
-                        if you.depth < len(R.locale.floors)-1:
-                            you.depth += 1
-                            you.x = R.locale.floors[you.depth].up[0]
-                            you.y = R.locale.floors[you.depth].up[1]
-                            
-                            R.map = R.locale.floors[you.depth].map
-                            R.locale_obj = R.locale.floors[you.depth].objects
-                            
-                            fov_recompute = True
-#                            clear_consoles()
-#                            render_local()
-                            
-                        else:
-                            R.ui.message("You can't go down anymore!", colour = libtcod.white)
-                    
-                else:
-                    ## check to see if the player is stood on a visitable local POI. Atm, just dungeons.
-                    on_dun = False
-                    for dungeon in R.world.dungeons:
-                        if dungeon.x == you.x and dungeon.y == you.y:
-                            R.map = dungeon.floors[0].map
-                            R.locale = dungeon
-                            R.locale_obj = dungeon.floors[0].objects
-                            R.player_pos = (you.x, you.y)
-                            you.x = dungeon.floors[0].up[0]
-                            you.y = dungeon.floors[0].up[1]
-                            you.depth = 0
-                            on_dun = True
-                            local = True
-                            break
-                            
-                    if not on_dun or (R.map == None or len(R.map) <= 0):
-                        R.ui.message("There's nothing here!", colour = libtcod.white)
+                go_down()
+
+def go_up():
+    """Go up"""
+    global local, fov_recompute
+    if local == True:
+        if you.x == R.locale.floors[you.depth].up[0] and you.y == R.locale.floors[you.depth].up[1]:
+            if you.depth == 0:
+                you.x = R.player_pos[0]
+                you.y = R.player_pos[1]
+                clear_consoles()
+                local = False
+            else:
+                you.depth -= 1
+                you.x = R.locale.floors[you.depth].down[0]
+                you.y = R.locale.floors[you.depth].down[1]
+                
+                R.map = R.locale.floors[you.depth].map
+                R.locale_obj = R.locale.floors[you.depth].objects
+                fov_recompute = True
+    else:
+        R.ui.message("You jumped, That didn't really achieve much...", colour = libtcod.white)
+
+
+
+def go_down():
+    global local, you, fov_recompute
+    if local == True:
+        if you.x == R.locale.floors[you.depth].down[0] and you.y == R.locale.floors[you.depth].down[1]:
+            if you.depth < len(R.locale.floors)-1:
+                you.depth += 1
+                you.x = R.locale.floors[you.depth].up[0]
+                you.y = R.locale.floors[you.depth].up[1]
+                
+                R.map = R.locale.floors[you.depth].map
+                R.locale_obj = R.locale.floors[you.depth].objects
+                
+                fov_recompute = True
+                
+            else:
+                R.ui.message("You can't go down anymore!", colour = libtcod.white)
+            
+    else:
+        ## check to see if the player is stood on a visitable local POI. Atm, just dungeons.
+        on_dun = False
+        for dungeon in R.world.dungeons:
+            if dungeon.x == you.x and dungeon.y == you.y:
+                R.map = dungeon.floors[0].map
+                R.locale = dungeon
+                R.locale_obj = dungeon.floors[0].objects
+                R.player_pos = (you.x, you.y)
+                you.x = dungeon.floors[0].up[0]
+                you.y = dungeon.floors[0].up[1]
+                you.depth = 0
+                on_dun = True
+                local = True
+                
+        if not on_dun or (R.map == None or len(R.map) <= 0):
+            R.ui.message("There's nothing here!", colour = libtcod.white)
+                     
+
 def pick_up():
+    for item in R.locale_obj:
+        if item.item != None:
+            R.locale_obj.remove(item)
+            R.inventory.append(item)
+            R.ui.message("You just picked up " + item.name, libtcod.amber)
+
+
+def inventory_menu():
+    items = []
+    for item in R.inventory:
+        items.append(item.name) 
+    print R.ui.menu("inventory contents", items, 15)
     
-    if len(R.locale_obj[you.x][you.y]) != 0:
-        pass
-        
+      
 def city_production_menu():
     
     width,height = R.MAP_VIEW_WIDTH - 4, R.MAP_VIEW_HEIGHT - 4
@@ -843,7 +861,6 @@ def city_menu():
     limit = len(cities) -1
     
     
-       
     pos_x = R.MAP_VIEW_WIDTH/2 - width/2
     pos_y = R.MAP_VIEW_HEIGHT/2 - height/2
     for a in range(R.MAP_VIEW_WIDTH - 4): #clear screen, colour dark grey, every cycle
@@ -923,8 +940,6 @@ def city_menu():
         libtcod.console_blit(city_select_pop, 0, 0, width, height, 0, pos_x, pos_y, 1.0, 0.9)
         libtcod.console_flush()
         
-    
-    
     
     
     for a in range(R.MAP_WIDTH - 4): #clear screen, colour dark grey, every cycle

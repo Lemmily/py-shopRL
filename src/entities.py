@@ -83,40 +83,6 @@ class Object:
 #                libtcod.console_set_default_background(R.con_char, libtcod.white)
 #                libtcod.console_put_char(R.con_char, pos_x, pos_y, self.char, libtcod.BKGND_NONE)#ADDALPHA(0.0))
 
-
-#    def move(self, dx, dy):
-#        #move by the given quantity, if the destination is not blocked
-#        if not is_blocked(self.x + dx, self.y + dy):
-#            self.x += dx
-#            self.y += dy
-#            return True
-#        return False
-#     
-#    def move_p(self, dx, dy):
-#        #move by the given quantity
-#        self.x += dx
-#        self.y += dy
-#       
-#    def move_towards(self, target_x, target_y):
-#        #vector from this object to the other and the distance
-#        dx = target_x - self.x
-#        dy = target_y - self.y
-#        distance = math.sqrt(dx ** 2 + dy ** 2)
-#
-#        dx = int(round(dx / distance))
-#        dy = int(round(dy / distance))
-#        self.move(dx, dy)
-#
-#    def distance(self, x, y):
-#        #return the distance to some coordinates
-#        return math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
-#
-#    def distance_to(self, other):
-#        dx = other.x - self.x
-#        dy = other.y - self.y
-#        return math.sqrt(dx ** 2 + dy ** 2)
-
-
 class Mover(Object):
     def __init__(self, x=0, y=0, char="@", name="blob", colour=libtcod.white, blocks=False, always_visible=False,
                         fighter=None, you=None, pather=None, ai=None):
@@ -182,8 +148,11 @@ class Mover(Object):
 class Player:
     
     def __init__(self, d_l = 0):
-        self.dungeon_level = d_l
+        self.dungeon_level = d_l #what is this? depth?
+        R.inventory = self.inventory = [] #= {"armour":[], "melee":[], "potions":[],"scrolls":[]}
         
+    def get_item(self, object):
+        self.inventory.append(object)
 
 def is_blocked(x, y):
     #first test the map tile
@@ -206,6 +175,14 @@ class Item():
         self.use_function = use_function
         self.parent = None
 
+    def use(self):
+        if self.use_function is None:
+            R.ui.message(self.parent.name + " cannot be used!")
+        else:
+            if self.use_function() == "used":
+                R.inventory.remove(self.parent)
+                
+                
 class Hero():
     def __init__(self):
         self.dungeon_level = 0

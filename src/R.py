@@ -50,6 +50,7 @@ msg_redraw = False
 game_msgs = []
 
 you = None #the player
+inventory = []
 
 cities = []
 pois = []

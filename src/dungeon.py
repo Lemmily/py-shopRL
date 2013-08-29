@@ -153,7 +153,7 @@ class Floor:
         
         room = self.rects[libtcod.random_get_int(0, 0, len(self.rects)-1)]
         item = entities.Item()
-        potion = entities.Object(libtcod.random_get_int(0,room.x,room.x + room.w),libtcod.random_get_int(0,room.y,room.y + room.w),
+        potion = entities.Object(libtcod.random_get_int(0,room.x,room.x + room.w-2),libtcod.random_get_int(0,room.y,room.y + room.h-2),
                                         char="!", name="potion", colour=libtcod.orange,blocks = False, always_visible=False, item=item)
         
         self.objects.append(potion)
@@ -237,6 +237,10 @@ class Floor:
                                 tile = 194
                             elif self.is_wall(x+1, y+1) and self.is_wall(x-1, y+1): #top left and right empty.T shaped
                                 tile = 193
+                            elif self.is_wall(x-1, y-1) and self.is_wall(x-1, y+1): #top right and bottom right empty.T shaped
+                                tile = 195
+                            elif self.is_wall(x+1, y-1) and self.is_wall(x+1, y+1): #top right and bottom right empty.T shaped
+                                tile = 180
                             else:
                                 tile = 197
                         elif self.is_wall(x+1, y): # right
