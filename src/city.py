@@ -53,15 +53,12 @@ class City:
         self.trader.believed_prices["produce"] = [50.0,30.0]
             
         self.producing = {} # these will be stored as ["resource_name", quantity generated per hour.0]
-        
         self.define_generation_goods()
         #self.pickGeneratedResources(resource_list) #TODO: re-initialise this. 
         self.findDesiredResources()
         self.relationships = {} #name of city, or city object.
         
         self.in_city = []
-         
-        
         
         #self.productionRound()
         
@@ -71,7 +68,6 @@ class City:
             
         self.activity_log = {"produced":[], "traded":[]}
         self.actions_queue = []
-        
 
     def checkForResources(self, key, needed, bonus = False):
         check = False
@@ -84,16 +80,13 @@ class City:
                         return False
                 else:
                     return True
-            
         else:
             for resource in needed[key][1]:
                 if resource.type != "none" and self.trader.resources[resource.type][1] >= resource.quantity:
                     check = True
                 else:
                     return False
-                
         return check
-    
     
     def produce(self, key, needed):
         
@@ -115,9 +108,6 @@ class City:
             self.trader.resources[key][1] += 1
             self.activity_log["produced"].append([self.name + " produced " + key, libtcod.amber])
             
-            
-    
-    
     def consume(self):
         #consumption_rate = 0.0
         CR = float(self.population) / 10.0
@@ -127,7 +117,6 @@ class City:
                 self.resources[commodity][1] -= consumption_rate
             else:
                 self.trade_house.trades["desires"][commodity].append([commodity, consumption_rate*5])
-    
 
     def sell_spare(self):
         CR = float(self.population)/10.0
@@ -140,10 +129,8 @@ class City:
                 leftover = self.trader.resources[commodity][1] - needed
                 price = self.trader.get_price(commodity, self.trade_house)
                 self.trader.place_ask(self.trade_house, commodity, leftover, price)
-            
-        
-    
-    
+
+
     def productionRound_temp(self):
 
         for key in self.producing:
@@ -154,7 +141,6 @@ class City:
                         self.produce(key, master_raw_materials)
                 if Utils.roll_100() > 75:
                     self.produce("trade", master_raw_materials)
-                        
         self.consume()
         self.settle_desires()
         self.sell_spare()
@@ -230,8 +216,7 @@ class City:
                 if resource.type != "none":
                     new_resource = Resource(type = resource.type, quantity = self.producing[key][1]*resource.quantity)
                     temp.append(new_resource) 
-        
-        
+                    
         for name in master_commodity_list:
             resource = Resource(name, 0)
             for test_for in temp:
@@ -244,7 +229,7 @@ class City:
 #        for resource in self.desired: 
 #            print resource.type + str(resource.quantity)
 #        print "-----------------"                      
-        
+
     def settle_desires(self):
         trades = self.trade_house.trades
         for key in trades["desires"]:
@@ -268,30 +253,23 @@ class City:
                 else:
                     pass
             
-        
 class Action:
     def __init__(self, turns):
         self.turns = turns 
         #possible way of managing how the city does things.
-
-
 
 def chance_roll(chance = 50):
     if chance <= 0:
         return False
     elif chance >= 100: 
         return True
-    
     else: 
         if random.random() * 100 >= chance: 
             return False
-        
         else: 
             return True
 
-        
-        
-
+    
 master_raw_materials = {    "wool":[[Resource("none", 0)],[Resource("tools", 1)]], 
                             "cloth":[[Resource("wool", 4)],[Resource("none", 0)]], 
                             "clothes":[[Resource("cloth", 2), Resource("wool", 1)],[Resource("none", 0)]],
@@ -306,16 +284,3 @@ master_raw_materials = {    "wool":[[Resource("none", 0)],[Resource("tools", 1)]
                             "trade":[[Resource("produce", 1)],[Resource("none", 0)]]
                             
                             }           
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-    

@@ -10,6 +10,7 @@ import city
 import economy
 from R import cities
 from random import choice
+from skills import Skills
 
 STRAIGHT = 5
 DIAG = math.sqrt(2*STRAIGHT)*STRAIGHT
@@ -25,17 +26,16 @@ MOTIVATIONS = ["none", "health", "wealth", "buy", "sell", "adventure", "comfort"
 class Object:
     
     def __init__(self, x=0, y=0, char="@", name="blob", colour=libtcod.white, blocks=False, always_visible=False,
-                    item=None):
+                    item=None, type = "object"):
         
         self.x = x
         self.y = y
         self.name = name
         self.char = char
-        self.type = "object"
+        self.type = type
         self.colour = colour
         self.blocks = blocks
         self.always_visible = always_visible
-        
         
         self.item = item
         if item:
@@ -74,14 +74,7 @@ class Object:
             pos_y = self.y - cam_y
             
             libtcod.console_set_default_foreground(R.con_char, self.colour)
-            #libtcod.console_set_default_background(R.con_char, libtcod.white)
-            libtcod.console_put_char(R.con_char, pos_x, pos_y, self.char, libtcod.BKGND_NONE)#ADDALPHA(0.0))
-#            if (libtcod.map_is_in_fov(R.fov_map, self.x, self.y) or
-#                (self.always_visible and R.world.tiles[self.x][self.y].explored)):
-#                #set the color and then draw the character that represents this object at its position
-#                libtcod.console_set_default_foreground(R.con_char, self.colour)
-#                libtcod.console_set_default_background(R.con_char, libtcod.white)
-#                libtcod.console_put_char(R.con_char, pos_x, pos_y, self.char, libtcod.BKGND_NONE)#ADDALPHA(0.0))
+            libtcod.console_put_char(R.con_char, pos_x, pos_y, self.char, libtcod.BKGND_NONE)
 
 class Mover(Object):
     def __init__(self, x=0, y=0, char="@", name="blob", colour=libtcod.white, blocks=False, always_visible=False,
@@ -145,11 +138,15 @@ class Mover(Object):
     
 
 
-class Player:
+class Player(Mover):
     
     def __init__(self, d_l = 0):
+        Mover.__init__(self)
+        
         self.dungeon_level = d_l #what is this? depth?
         R.inventory = self.inventory = [] #= {"armour":[], "melee":[], "potions":[],"scrolls":[]}
+        self.skills = Skills()
+        
         
     def get_item(self, object):
         self.inventory.append(object)
@@ -162,12 +159,10 @@ def is_blocked(x, y):
         return True
     if R.world.tiles[x][y].blocked:
         return True
- 
     #now check for any blocking objects
     for object_ in R.world_obj:
         if object_.blocks and object_.x == x and object_.y == y:
             return True
- 
     return False
 
 class Item():
@@ -182,13 +177,11 @@ class Item():
             if self.use_function() == "used":
                 R.inventory.remove(self.parent)
                 
-                
 class Hero():
     def __init__(self):
         self.dungeon_level = 0
         self.inventory = [] #stuff being carried
         self.equipment = [] #attempts to have one armour one weapon one clothing. (to start with)
-    
     #unsure as to what needs to go here.
         
 class Trader:
@@ -257,7 +250,7 @@ class Trader:
         self.trades["buys"][commodity].append(offer)
         trade_house.trades["buys"][commodity].append(offer)
         
-
+    
     def place_ask(self,trade_house,commodity,quantity,price,time=5):
         
         if price < 0:
@@ -284,7 +277,6 @@ class Trader:
                 #put a bid for a normal quantity.
         if modifier != 0.0:
             quantity = quantity * modifier
-        
         return quantity
     
     def get_price(self, commodity, trade_house):
@@ -301,7 +293,6 @@ class Trader:
             price = believed # for now.
             #TODO: temporary until I can work out a better way to get a price.
         return price
-
     
     def check_for_offer(self, bid, commodity, limit, actual, quantity, price):
         '''

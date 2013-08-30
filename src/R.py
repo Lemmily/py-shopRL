@@ -66,3 +66,10 @@ player_pos = (0,0)
 resource_list = [   "raw",
                     "produce",
                     "trade"]
+
+skill_list = [ #// 0_name:string, 1_attribute, 2_needTraining:Boolean, 3_desc:String,[4_dependsOn],[5_dependants]
+                ["Appraise", "int", False, "Used to analyse an item for monetary value, and contributing factors",["none"],["none"]],
+                ["Armour", "str", False, "How well you can wear armour. Negates some of the penalties of heavier armour",["none"],["none"]],
+                ["Dodge", "dex", False, "Improves your chance of dodging attacks and traps",["none"],["none"]],
+                ["Fighting", "dex", False, "Improves your chance of hitting and your damage in melee",["none"],["none"]],
+                ]
