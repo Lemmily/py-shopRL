@@ -10,6 +10,10 @@ import json
 import json_map
 
 import entities
+import Utils
+
+MIN_BSP_SIZE = 5
+MIN_ROOM_SIZE = 2
 
 MONSTERS = json.loads(json_map.monsters)
 ITEMS = ["sword","potion","shield","armour","leggings","scroll","wand","book","food"]
@@ -30,7 +34,12 @@ class Tile():
         
         
 class Rect:
-    def __init__(self,w,h,x,y):  
+    def __init__(self,w,h,x,y):
+        """ @param w: width of rectangle
+            @param h: height of rect
+            @param x: x-position of rect
+            @param y: y-position of rect
+        """ 
         self.w = w
         self.h = h
         self.x = x
@@ -43,7 +52,13 @@ class Rect:
             return True
         
         else:
-            return False   
+            return False
+        
+    def bsp(self,parent=None):   
+        self.babies = []
+        self.parent = parent
+        self.end = False
+        
 
 
 class Dungeon():
@@ -56,7 +71,7 @@ class Dungeon():
         self.floors = []
         
         
-        self.generate_floors(1, 3)
+        self.generate_floors(1, 1)
         
     def turmoil(self):
         """This function will help to randomise the monsters inside. Once the dungeon hits some critical point.
@@ -100,7 +115,7 @@ class Floor:
         self.ID = ID
         self.num_monster = monst 
         self.num_items = items
-        self.w = 20
+        self.w = 30
         self.h = 20
         self.map = [[1
                      for y in range(self.h)]
@@ -134,14 +149,19 @@ class Floor:
         self.map[libtcod.random_get_int(0, 2, len(self.map)-3)][libtcod.random_get_int(0, 2, len(self.map[0])-3)] = 0
         
         self.rects = []
-        self.rects.append(self.make_room(2, 2, 5, 5))
-        self.up = (self.rects[0].x + 1, self.rects[0].y + 1)
-        self.rects.append(self.make_room_random())
-        self.rects.append(self.make_room_random())
-        self.rects.append(self.make_room_random())
-        self.rects.append(self.make_room_random())
-        self.down = (self.rects[len(self.rects) -1].x + 1, self.rects[len(self.rects)-1].y + 1)
+#        self.rects.append(self.make_room(2, 2, 5, 5))
+#        self.rects.append(self.make_room_random())
+#        self.rects.append(self.make_room_random())
+#        self.rects.append(self.make_room_random())
+#        self.rects.append(self.make_room_random())
         
+        self.bsp_gen()
+        if len(self.rects) > 0:
+            self.up = (self.rects[0].x, self.rects[0].y)
+            self.down = (self.rects[len(self.rects) -1].x + 1, self.rects[len(self.rects)-1].y + 1)
+        else:
+            self.up = (0, 0)
+            self.down = (10,10)
         self.place_rooms()
 
     
@@ -151,12 +171,12 @@ class Floor:
         stair = entities.Object(self.down[0], self.down[1], char=">", name="stair", colour=libtcod.red, blocks=False, always_visible=False)
         self.objects.append(stair)
         
-        room = self.rects[libtcod.random_get_int(0, 0, len(self.rects)-1)]
-        item = entities.Item()
-        potion = entities.Object(libtcod.random_get_int(0,room.x,room.x + room.w-2),libtcod.random_get_int(0,room.y,room.y + room.h-2),
+        if len(self.rects) > 0:
+            room = self.rects[libtcod.random_get_int(0, 0, len(self.rects)-1)]
+            item = entities.Item()
+            potion = entities.Object(libtcod.random_get_int(0,room.x,room.x + room.w-2),libtcod.random_get_int(0,room.y,room.y + room.h-2),
                                         char="!", name="potion", colour=libtcod.orange,blocks = False, always_visible=False, item=item)
-        
-        self.objects.append(potion)
+            self.objects.append(potion)
         
     def make_room(self,x,y,w,h):
         
@@ -194,15 +214,19 @@ class Floor:
             y = libtcod.random_get_int(0, 1, len(self.map) - h - 2)
             
             rect = Rect(w,h,x,y)
-                
         return
     
     def place_rooms(self):
         
         for room in self.rects:
-            for x in range(room.x, room.x + room.w -1):
-                for y in range(room.y, room.y + room.h -1):
-                    self.map[x][y] = 0
+            for x in range(0,room.w):
+                for y in range(0, room.h):
+                    _x = room.x + x
+                    _y = room.y + y
+                    if 0 >_x >= len(self.map) or 0 > _y >= len(self.map[x]):
+                        print _x,_y, "out of bounds"
+                    else:
+                        self.map[_x][_y] = 0
                     
     
     def make_fov_map(self):
@@ -303,6 +327,191 @@ class Floor:
             else:
                 return False
         else:
-            return False        
+            return False
+              
+    def bsp_gen(self):
+        
+        
+        w = self.w - 2
+        h = self.h - 2
+        
+        whole_map = Rect(w,h,1,1)
+        whole_map.bsp()
+        
+        self.new_split(whole_map)
+        self.convert_to_rects(whole_map)
+                    
+    def split(self, rect):
+        if rect.w - 1 >= MIN_BSP_SIZE*1.5 or rect.h - 1 >= MIN_BSP_SIZE*1.5:
+            if flip() and rect.w >= MIN_BSP_SIZE:
+                x = libtcod.random_get_int(0,rect.x + MIN_BSP_SIZE, rect.x + rect.w - MIN_BSP_SIZE)
+                w = (rect.x + rect.w) - x 
+                
+                tries = 0
+                while x + w >= len(self.map) or tries <= 3:
+                    print x,w, " horz out of bounds"
+                    x = rect.x + 1
+                    w = rect.w / 2 - 1
+                    
+                baby = Rect(rect.w - w, rect.h, rect.x, rect.y)
+                baby.bsp(rect)
+                baby_2 = Rect(w, rect.h, x, rect.y)
+                baby_2.bsp(rect)
+                
+                rect.babies.append(baby)
+                rect.babies.append(baby_2)
+            else:
+                if rect.w < MIN_BSP_SIZE:
+                    y = libtcod.random_get_int(0,rect.y + MIN_BSP_SIZE, rect.y + rect.h - MIN_BSP_SIZE)
+                    h = (rect.y + rect.h) - y
+                    
+                    tries = 0
+                    while y + h> len(self.map[0]) or tries <= 3:
+                        print y,h, "vert out of bounds"
+                        y = rect.y + 1
+                        h = rect.h / 2
+                            
+                    baby = Rect(rect.w, rect.h - h, rect.x, rect.y)
+                    baby.bsp(rect)
+                    rect.babies.append(baby)
+                    
+                else:
+                    y = libtcod.random_get_int(0,rect.y + MIN_BSP_SIZE, rect.y + rect.h - MIN_BSP_SIZE)
+                    
+                    h = (rect.y + rect.h) - y
+                    
+                    tries = 0
+                    while y + h> len(self.map[0]) or tries <= 3:
+                        print y,h, "vert out of bounds"
+                        y = rect.y + 1
+                        h = rect.h / 2
+                            
+                    baby = Rect(rect.w, rect.h - h, rect.x, rect.y)
+                    baby.bsp(rect)
+                    baby_2 = Rect(rect.w, h, rect.x, y)
+                    baby_2.bsp(rect)
+                    
+                    rect.babies.append(baby)
+                    rect.babies.append(baby_2)
+                    
+        else:
+            rect.end = True      
+              
+        for baby in rect.babies:
+            if baby.end != True:
+                self.split(baby)
+    
+    
+    
+    def new_split(self, rect):
+        if rect.w > MIN_BSP_SIZE*2 and rect.h > MIN_BSP_SIZE*2:
+            if flip() and rect.x + rect.w/2 + MIN_BSP_SIZE < len(self.map) and rect.y + rect.h/2 + MIN_BSP_SIZE < len(self.map[0]):
+                
+                x = libtcod.random_get_int(0,rect.x + MIN_BSP_SIZE, rect.x + rect.w - MIN_BSP_SIZE)
+                w = (rect.x + rect.w) - x 
+                    
+                baby = Rect(rect.w - w, rect.h, rect.x, rect.y)
+                baby.bsp(rect)
+                baby_2 = Rect(w-1, rect.h, x, rect.y)
+                baby_2.bsp(rect)
+                
+                rect.babies.append(baby)
+                rect.babies.append(baby_2)
+            else:
+                y = libtcod.random_get_int(0,rect.y + MIN_BSP_SIZE, rect.y + rect.h - MIN_BSP_SIZE)
+                
+                h = (rect.y + rect.h) - y
+                
+                        
+                baby = Rect(rect.w, rect.h - h, rect.x, rect.y)
+                baby.bsp(rect)
+                baby_2 = Rect(rect.w, h-1, rect.x, y)
+                baby_2.bsp(rect)
+                
+                rect.babies.append(baby)
+                rect.babies.append(baby_2)   
+        else:
+            rect.end = True      
+              
+        for baby in rect.babies:
+            if baby.end != True:
+                self.new_split(baby)
+        
+        
+    def convert_to_rects(self,rect):
+        pool = []
+        orig_rect = rect
+        while len(orig_rect.babies) > 0:
+            if len(rect.babies) == 0 and rect.parent != None:
+                for baby in rect.parent.babies:
+                    if baby.end == True:
+                        pool.append(baby)
+                    rect.parent.babies.remove(baby)
+                rect = rect.parent
+            if len(rect.babies) > 0:
+                rect = rect.babies[0]
+            elif rect.parent != None:
+                rect = rect.parent
+            else:
+                break
+                
+        while len(pool) > 0:
+            bounds = pool.pop()
+            placed = False
+            while not placed:
+                
+                max_w = bounds.w
+                max_h = bounds.h
+                if max_w <= MIN_ROOM_SIZE:
+                    w = max_w
+                else:
+                    w = libtcod.random_get_int(0,MIN_ROOM_SIZE,max_w)
+                    
+                if max_h <= MIN_ROOM_SIZE:
+                    h = max_h
+                else:
+                    h = libtcod.random_get_int(0,MIN_ROOM_SIZE,max_h)
+                
+                x = libtcod.random_get_int(0,bounds.x,bounds.x + bounds.w - w)
+                y = libtcod.random_get_int(0,bounds.y,bounds.y + bounds.h - h)
+                
+                if x + w >= len(self.map):
+                    x = bounds.x 
+                if y + h >= len(self.map[0]):
+                    y = bounds.y
+                    
+                if x + w >= len(self.map) or y + h >= len(self.map[0]):
+                    print x,",",y,"   ", w, h, "out of bounds"
+                    placed = True #get rid.
+                    
+                else:  
+                    new = Rect(w,h,x,y)
+                    if len(self.rects) > 0:
+                        found = False
+                        for other in self.rects:
+                            if new.intersect_other(other) == True: 
+                                found = False
+                                break
+                        if not found:
+                            self.rects.append(new)
+                    else:
+                        self.rects.append(new)
+                    placed = True            
+    
+def flip():
+    if Utils.chance_roll(50):
+        return True
+    else:
+        return False
+    
+    
+    
+    
+    
+    
+    
+    
+    
+          
         
         

@@ -33,6 +33,8 @@ temperature = False
 
 local = False
 
+debug_mode = False
+
 libtcod.namegen_parse('data/names.txt')
          
 DAYS =  [
@@ -72,6 +74,10 @@ def new_game():
     global tiles, cam_x,cam_y
     global key, mouse
     global map, local, fov_recompute
+    global debug_mode
+    
+     
+    debug_mode = False
     mouse = libtcod.Mouse()
     key = libtcod.Key()
     
@@ -429,7 +435,7 @@ def render_local():
                     tile = R.locale.floors[you.depth].tiles[x][y]
                     visible = libtcod.map_is_in_fov(R.locale.floors[you.depth].fov_map, x, y)
                     if not visible:
-                        if tile.explored:
+                        if tile.explored or debug_mode:
                             libtcod.console_put_char_ex(con, x, y, tile.char, libtcod.dark_green, libtcod.dark_gray)
                         else:
                             libtcod.console_put_char_ex(con, x, y, " ", libtcod.black, libtcod.black)
@@ -588,7 +594,6 @@ def handle_mouse():
     
               
 def player_move_or_attack(dx, dy):
-    
     global fov_recompute
 
     #the coordinates the player is moving to/attacking
@@ -614,6 +619,7 @@ def player_move_or_attack(dx, dy):
 
 def handle_keys():
     global keys, player_turn, pause, game_speed, traffic, temperature, local, fov_recompute
+    global debug_mode
 
     #key = libtcod.console_check_for_keypress()  #real-time
     #key = libtcod.console_wait_for_keypress(True)  #turn-based
@@ -687,38 +693,44 @@ def handle_keys():
             #test for other keys
             key_char = chr(key.c)
             
-            if key_char == "i":
+            if key_char == "d":
+                if debug_mode:
+                    debug_mode = False
+                else:
+                    debug_mode = True
+            
+            elif key_char == "i":
                 inventory_menu()
             
-            if key_char == "p":
+            elif key_char == "p":
                 player_menu()
             
-            if key_char == "c":
+            elif key_char == "c":
                 city_menu()
             
-            if key_char == "v":
+            elif key_char == "v":
                 city_production_menu()
             
-            if key_char == "t":
+            elif key_char == "t":
                 #debug mode to look at temperature
                 if temperature is False:
                     temperature = True
                 elif temperature is True:
                     temperature = False
                     
-            if key_char == "f":
+            elif key_char == "f":
                 #debug key to look at traffic maps.
                 if traffic is False:
                     traffic = True
                 elif traffic is True:
                     traffic = False
                     
-            if key_char == ",":
+            elif key_char == ",":
                 pick_up()
                   
-            if key_char == "<":
+            elif key_char == "<":
                 go_up()
-            if key_char == ">":
+            elif key_char == ">":
                 """Go Down"""
                 go_down()
 
@@ -978,7 +990,9 @@ def city_menu():
     libtcod.console_flush()
         
 def main_menu():
+    
     main_init()
+    
     while not libtcod.console_is_window_closed():    
         #now show the imageAt twice the size.
 
