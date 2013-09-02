@@ -71,7 +71,7 @@ class Dungeon():
         self.floors = []
         
         
-        self.generate_floors(1, 1)
+        self.generate_floors(1, 3)
         
     def turmoil(self):
         """This function will help to randomise the monsters inside. Once the dungeon hits some critical point.
@@ -107,10 +107,6 @@ class Dungeon():
             self.floors.append(floor)
             
 class Floor:
-
-    
-    
-    
     def __init__(self, ID, monst, items):
         self.ID = ID
         self.num_monster = monst 
@@ -149,11 +145,6 @@ class Floor:
         self.map[libtcod.random_get_int(0, 2, len(self.map)-3)][libtcod.random_get_int(0, 2, len(self.map[0])-3)] = 0
         
         self.rects = []
-#        self.rects.append(self.make_room(2, 2, 5, 5))
-#        self.rects.append(self.make_room_random())
-#        self.rects.append(self.make_room_random())
-#        self.rects.append(self.make_room_random())
-#        self.rects.append(self.make_room_random())
         
         self.bsp_gen()
         if len(self.rects) > 0:
@@ -227,7 +218,9 @@ class Floor:
                         print _x,_y, "out of bounds"
                     else:
                         self.map[_x][_y] = 0
-                    
+                        
+    def make_corridors(self):
+        pass
     
     def make_fov_map(self):
         
