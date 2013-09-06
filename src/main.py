@@ -733,6 +733,13 @@ def handle_keys():
             elif key_char == ">":
                 """Go Down"""
                 go_down()
+                
+                
+            if debug_mode:
+                if key_char == "<":
+                    you.depth = 0
+                    go_up()
+                    R.ui.message("DEBUG: jumped to surface", colour = libtcod.light_flame)
 
 def go_up():
     """Go up"""

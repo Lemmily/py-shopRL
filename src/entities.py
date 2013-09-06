@@ -10,7 +10,7 @@ import city
 import economy
 from R import cities
 from random import choice
-from skills import Skills
+from sentient import Skills
 
 STRAIGHT = 5
 DIAG = math.sqrt(2*STRAIGHT)*STRAIGHT
