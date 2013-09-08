@@ -11,11 +11,11 @@ import R
 import UI
 import worldMap
 import entities
-from R import con_char, world, inf, cities, map
+from R import con_char, inf, map
 
 import cProfile
 import pstats
-from worldMap import POI
+import sentient
 
 #import numpy as np
 #import numpy
@@ -30,6 +30,8 @@ turns = 0
 pause = False
 traffic = False
 temperature = False
+continent = False
+
 
 local = False
 
@@ -73,7 +75,7 @@ def new_game():
     global world, world_obj, cities, pois, you, selected
     global tiles, cam_x,cam_y
     global key, mouse
-    global map, local, fov_recompute
+    global map_, local, fov_recompute
     global debug_mode
     
      
@@ -108,7 +110,7 @@ def new_game():
     world_obj.append(you)
     for a in range(5):
         x, y = worldMap.place_on_land()
-        hero = R.hero = entities.Mover(x=x,y=y,name = "hero " + str(a), pather = entities.Pather(), ai= entities.AI_Hero())
+        hero = R.hero = entities.Mover(x=x,y=y,name = "hero " + str(a), pather = sentient.Pather(), ai= sentient.AI_Hero())
         world_obj.append(hero)
     render_all()
     
@@ -359,7 +361,17 @@ def render_all():
                         colour = libtcod.Color(v,v,v)
                         libtcod.console_set_char_background(con, x, y, colour, libtcod.BKGND_SET )
                         libtcod.console_set_char(con, x, y, " ")
-                        
+                    
+                    elif continent:
+                        m = 255 / len(R.world.continents)
+                        if tile.type != "water":
+                            v = tile.continent * m 
+                            colour = libtcod.Color(v,v,v)
+                        else:
+                            colour = tile.bg
+                        libtcod.console_set_char_background(con, x, y, colour, libtcod.BKGND_SET )
+                        libtcod.console_set_char(con, x, y, " ")
+                    
                     else:
                         colour = tile.bg
                         libtcod.console_set_char(con, x, y, " ")
@@ -417,7 +429,7 @@ def render_all():
 
 
 def render_local():
-    global map, fov_recompute
+    global map_, fov_recompute
     
     cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH/2, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
     cam_y = scrolling_map(you.y, R.MAP_VIEW_HEIGHT/2, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
@@ -431,7 +443,7 @@ def render_local():
                 x = sc_x + cam_x
                 y = sc_y + cam_y
                 
-                if sc_x < len(R.map) and sc_y < len(R.map[0]):  #if it's within the bounds of the map.
+                if sc_x < len(R.map_) and sc_y < len(R.map_[0]):  #if it's within the bounds of the map.
                     tile = R.locale.floors[you.depth].tiles[x][y]
                     visible = libtcod.map_is_in_fov(R.locale.floors[you.depth].fov_map, x, y)
                     if not visible:
@@ -462,10 +474,10 @@ def render_local():
     libtcod.console_flush()  
     
 
-def is_wall(x, y, map = None):
+def is_wall(x, y, map_= None):
     
-    if map == None:
-        map = R.map
+    if map_== None:
+        map_= R.map_
         
     if 0 <= x < len(map) and 0 <= y < len(map[x]):
         if map[x][y] != 0:
@@ -618,7 +630,7 @@ def player_move_or_attack(dx, dy):
 
 
 def handle_keys():
-    global keys, player_turn, pause, game_speed, traffic, temperature, local, fov_recompute
+    global keys, player_turn, pause, game_speed, traffic, temperature, continent, local, fov_recompute
     global debug_mode
 
     #key = libtcod.console_check_for_keypress()  #real-time
@@ -725,6 +737,12 @@ def handle_keys():
                 elif traffic is True:
                     traffic = False
                     
+            elif key_char == "k":
+                if continent is False:
+                    continent = True
+                elif continent is True:
+                    continent = False
+                    
             elif key_char == ",":
                 pick_up()
                   
@@ -756,7 +774,7 @@ def go_up():
                 you.x = R.locale.floors[you.depth].down[0]
                 you.y = R.locale.floors[you.depth].down[1]
                 
-                R.map = R.locale.floors[you.depth].map
+                R.map_= R.locale.floors[you.depth].map
                 R.locale_obj = R.locale.floors[you.depth].objects
                 fov_recompute = True
     else:
@@ -771,7 +789,7 @@ def go_down():
                 you.x = R.locale.floors[you.depth].up[0]
                 you.y = R.locale.floors[you.depth].up[1]
                 
-                R.map = R.locale.floors[you.depth].map
+                R.map_= R.locale.floors[you.depth].map
                 R.locale_obj = R.locale.floors[you.depth].objects
                 fov_recompute = True
                 
@@ -783,7 +801,7 @@ def go_down():
         on_dun = False
         for dungeon in R.world.dungeons:
             if dungeon.x == you.x and dungeon.y == you.y:
-                R.map = dungeon.floors[0].map
+                R.map_= dungeon.floors[0].map
                 R.locale = dungeon
                 R.locale_obj = dungeon.floors[0].objects
                 R.player_pos = (you.x, you.y)
@@ -793,7 +811,7 @@ def go_down():
                 on_dun = True
                 local = True
                 
-        if not on_dun or (R.map == None or len(R.map) <= 0):
+        if not on_dun or (R.map_== None or len(R.map_) <= 0):
             R.ui.message("There's nothing here!", colour = libtcod.white)
 
 def pick_up():

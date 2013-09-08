@@ -31,6 +31,7 @@ class Tile():
         self.blocks = blocks
         self.blocks_sight = blocks_sight
         self.explored = False
+        self.continent = -1 #this is here so the pathfinding can check it.
         
         
 class Rect:
@@ -219,8 +220,11 @@ class Floor:
                     else:
                         self.map[_x][_y] = 0
                         
-    def make_corridors(self):
-        pass
+    def make_corridors(self,st_x,st_y,en_x, en_y):
+        bx = 0
+        by = 0
+        for x in range(st_x,st_y):
+            pass
     
     def make_fov_map(self):
         

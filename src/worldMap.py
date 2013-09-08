@@ -13,6 +13,7 @@ import city
 import math
 import Utils
 import cProfile
+import sentient
 
 
 WATER_THRESHOLD = 100
@@ -35,7 +36,7 @@ ITEMS = ["sword","potion","shield","armour","leggings","scroll","wand","book","f
 #print MONSTERS["1"]
 
 class Tile:
-    # a map tile and its properties.
+# a map tile and its properties.
     def __init__(self, x, y, blocked, block_sight = False, char = " ", cost = 10, bg = [60,100,80], fg= [255,255,255], map_tile = False):
         
         self.x = x
@@ -64,6 +65,7 @@ class Tile:
         
     def mapTile(self):
         self.POI = None
+        self.continent = -1 # used for pathfining. if on the same "continent", can reach.
         
         self.elevation = 0 #: max 255
         self.temperature = 0 #: max 255
@@ -476,19 +478,19 @@ class Particle_Map:
         else:
             mod_tot = (height + temp + other) / 3.0
         
-        
+         
         if previous.height_in_metres < tile.height_in_metres:
             humid = tile.humidity_per + mod_tot
             humid_part = particle.value + (particle.value * mod_tot)
-            
+             
         elif previous.height_in_metres > tile.height_in_metres:
             humid = tile.humidity_per + mod_tot
             humid_part = particle.value + mod_tot
-            
+             
         else:
             humid = tile.humidity_per + mod_tot
             humid_part = particle.value + mod_tot
-            
+             
         
         
         value = 0
@@ -558,6 +560,7 @@ class Map:
         
         self.add_noise()
         self.turn_to_tiles()
+        self.seperate_continents()
         self.determine_temperatures()
         self.normalise_temperatures()
         self.wind_gen = Particle_Map(self,1500)
@@ -603,10 +606,81 @@ class Map:
                     print "Dungeon succeeded", x, y, temp.name
                 else:
                     print "failed", x, y
-           
+                    
+                    
+    def seperate_continents(self):
+        self.continents = [None]
+        for x in range(len(self.tiles)-1):
+            for y in range(len(self.tiles[0])-1):
+                tile = self.tiles[x][y]
+                if tile.type != "water" and tile.continent == -1:
+                    self.flood_fill(tile)
+        
+        for x in range(len(self.tiles)-1):
+            for y in range(len(self.tiles[0])-1):
+                tile = self.tiles[x][y]
+                if tile.continent != -1:
+                    continent = self.continents[tile.continent]
+                    continent.tiles[tile.x][tile.y] = tile
+                    if tile.POI is not None:
+                        self.continents[tile.continent].add_POI(tile.POI)
+                
+    def flood_fill_recur(self,tile, ID = -1):
+        ## Recursion error. Max recurion depth exceeded.
+        if tile.type == "water":
+            print "huh, found water", tile.x, tile.y
+            return
+        if ID == -1:
+            ID = len(self.continents)
+            continent = Continent(ID)
+            self.continents.append(continent)
+        
+        tile.continent = ID
+        self.tiles[tile.x][tile.y] = tile #don't think i need to do this.
+        if tile.x + 1 < len(self.tiles): #the right
+            self.flood_fill(self.tiles[tile.x + 1][tile.y], ID)
+        if tile.x - 1 > 0: # the left
+            self.flood_fill(self.tiles[tile.x - 1][tile.y], ID)
+        if tile.y + 1 < len(self.tiles[0]): #below
+            self.flood_fill(self.tiles[tile.x][tile.y + 1], ID)
+        if tile.y - 1 > 0: #above
+            self.flood_fill(self.tiles[tile.x][tile.y - 1], ID)
+            
+        return
+                
+    def flood_fill(self, tile, ID = -1):
+        ## Recursion error. Max recurion depth exceeded.
+        if tile.type == "water":
+            print "huh, found water", tile.x, tile.y
+            return
+        
+        if ID == -1:
+            ID = len(self.continents)
+            continent = Continent(ID,self.w,self.h)
+            self.continents.append(continent)
+        toFill = set()
+        toFill.add(tile)
+        
+        while len(toFill) > 0:
+            tile = toFill.pop()
+            if tile.type == "water" or tile.continent == ID:
+                print "huh, found water or already done", tile.x, tile.y
+                continue
+            else:
+                tile.continent = ID
+                if tile.x + 1 < len(self.tiles): #the right
+                    toFill.add(self.tiles[tile.x + 1][tile.y])
+                if tile.x - 1 > 0: # the left
+                    toFill.add(self.tiles[tile.x - 1][tile.y])
+                if tile.y + 1 < len(self.tiles[0]): #below
+                    toFill.add(self.tiles[tile.x][tile.y + 1])
+                if tile.y - 1 > 0: #above
+                    toFill.add(self.tiles[tile.x][tile.y - 1])
+            
+        return                       
     def connect_cities(self):
         
-        pather = entities.Pather()
+        pather = sentient.Pather()
         city_one = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
         city_two = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
         
@@ -948,9 +1022,35 @@ class Map:
                 self.tiles[x][y].humidity_per = math.ceil(self.tiles[x][y].humidity_per)
 
 
-   
-                
-                        
+class Continent:
+    def __init__(self, ID,w,h):
+        self.poi_ls = []
+        self.ID = ID
+        self.tiles = [[[] 
+                     for y in range(h)]
+                            for x in range(w)]
+        
+    def add_POI(self,POI):
+        if POI not in self.poi_ls:
+            self.poi_ls.append(POI)
+        else:
+            print "POI already in list."
+        
+    def remove_POI(self,POI):
+        if POI in self.poi_ls:
+            self.poi_ls.remove(POI)
+        else:
+            print "POI not in list."
+        
+def within_bounds(x,y, map_ = None):
+    if map_ == None:
+        map_ = R.world
+    if x >= 0 and x < len(map_) and y >= 0 and y < len(map_[0]):
+        return True
+    else:
+        return False
+    
+    
 class POI:             
     def __init__(self,x,y, colour = None, char="X", type="none"):
         self.x = x

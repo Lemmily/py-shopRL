@@ -56,7 +56,7 @@ cities = []
 pois = []
 
 world = None
-map = []
+map_ = []
 tiles = []
 world_obj = []
 locale = None
