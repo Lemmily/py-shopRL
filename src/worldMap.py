@@ -1075,17 +1075,19 @@ class Dungeon(POI):
         print "dungeon!"
 
 
-
-
-
 class City(POI):
-    def __init__(self,x,y, level=1):
+    def __init__(self,x,y, population = -1):
         POI.__init__(self,x,y,libtcod.Color(libtcod.random_get_int(0,50,255),libtcod.random_get_int(0,0,255),libtcod.random_get_int(0,100,255)), "C")
         self.component = city.City(x, y, self)
         self.name = self.component.name
         self.type = "city"
         
 
+
+class Resource(POI):
+    def __init__(self,x ,y ):
+        POI.__init__(self,x,y,libtcod.Color(libtcod.random_get_int(0,50,255),libtcod.random_get_int(0,0,255),libtcod.random_get_int(0,100,255)), "C")
+    
 
    
 

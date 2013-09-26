@@ -11,7 +11,7 @@ import R
 import UI
 import worldMap
 import entities
-from R import con_char, inf, map
+from R import con_char, inf#, #map_
 
 import cProfile
 import pstats
@@ -161,6 +161,8 @@ def play_game():
         if not local:
             render_all()
             
+            
+            ##Clear the characters from screen.
             for object_ in R.world_obj:
                 object_.clear(cam_x,cam_y)
                 
@@ -754,10 +756,15 @@ def handle_keys():
                 
                 
             if debug_mode:
-                if key_char == "<":
+                if key_char == "#":
                     you.depth = 0
+                    you.x = R.player_pos[0]
+                    you.y = R.player_pos[1]
                     go_up()
+                    clear_consoles()
+                    local = False
                     R.ui.message("DEBUG: jumped to surface", colour = libtcod.light_flame)
+                    render_all()
 
 def go_up():
     """Go up"""
@@ -818,14 +825,14 @@ def pick_up():
     for item in R.locale_obj:
         if item.item != None:
             R.locale_obj.remove(item)
-            R.inventory.append(item)
+            R.inventory.store_item(item)
             R.ui.message("You just picked up " + item.name, libtcod.amber)
 
 def inventory_menu():
     items = []
-    for item in R.inventory:
+    for item in R.inventory.contents:
         items.append(item.name) 
-    print R.inventory[R.ui.menu("inventory contents:", items, 15)].name 
+    #print R.inventory.contents[R.ui.menu("inventory contents:", items, 15)].name 
     
 def player_menu():
     options = []
@@ -901,7 +908,7 @@ def city_menu():
         #city_length = len(cities)
         for lines in range(min(len(cities),10)): # picks the smaller of the two.
             libtcod.console_print_ex(city_select_pop, 2, 3 + lines, libtcod.BKGND_NONE, libtcod.LEFT, chr(48 + lines) + ": " + cities[lines + offset].name)
-#        
+        
         libtcod.console_blit(city_select_pop, 0, 0, width, height, 0, pos_x, pos_y, 1.0, 0.9)
         libtcod.console_flush()
         

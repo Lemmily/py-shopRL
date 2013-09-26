@@ -19,7 +19,8 @@ master_commodity_list = [   "raw",
                             "produce",
                             "trade"]
 class Settlement:
-    def __init__(self, name):
+    def __init__(self,x,y,POI, name):
+        self.POI = POI #Contains the map object.
         self.name = name    
         self.population = 0
         self.colour = libtcod.Color(20,20,20)

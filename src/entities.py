@@ -7,14 +7,13 @@ import libtcodpy as libtcod
 import R
 import math
 import economy
-from sentient import Skills
+import sentient
 
 
 class Object:
     
     def __init__(self, x=0, y=0, char="@", name="blob", colour=libtcod.white, blocks=False, always_visible=False,
                     item=None, type = "object"):
-        
         self.x = x
         self.y = y
         self.name = name
@@ -27,7 +26,6 @@ class Object:
         self.item = item
         if item:
             self.item.parent = self
-
     
     def _set_x(self,x):
         self.x = x
@@ -41,8 +39,6 @@ class Object:
     def clear(self, cam_x = 0, cam_y =0): 
         #erase the character that represents this object
         libtcod.console_put_char(R.con_char, self.x -cam_x, self.y- cam_y, " ", libtcod.BKGND_NONE)
-        #libtcod.console_set_default_foreground(con, color_light_ground)
-        #libtcod.console_put_char(con, x, y, libtcod.CHAR_BLOCK2, libtcod.black)
         
     def draw_faded(self, cam_x, cam_y): 
         pos_x = self.x - cam_x
@@ -74,7 +70,8 @@ class Mover(Object):
         self.fighter = fighter
         if fighter:
             self.fighter.parent = self
-
+        
+        self.inventory = sentient.Inventory() #not entirely sure where htis needs to go.
         
         self.you = you
         if you:
@@ -123,13 +120,12 @@ class Mover(Object):
         return math.sqrt(dx ** 2 + dy ** 2)
 
 class Player(Mover):
-    
     def __init__(self, d_l = 0):
         Mover.__init__(self)
         
         self.dungeon_level = d_l #what is this? depth?
-        R.inventory = self.inventory = [] #= {"armour":[], "melee":[], "potions":[],"scrolls":[]}
-        self.skills = Skills()
+        R.inventory = self.inventory = sentient.Inventory() #= {"armour":[], "melee":[], "potions":[],"scrolls":[]}
+        self.skills = sentient.Skills()
         
         
     def get_item(self, object):

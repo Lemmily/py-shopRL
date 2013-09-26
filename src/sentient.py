@@ -76,8 +76,54 @@ class Basic_AI:
 #             if check is False:
 #                 self.path = []
             
+class Inventory:
+    def __init__(self):
+        self.contents = [] #might make this a dict. then pre sorted into categories.
+        self.equipment = {"head":None,"torso":None,"legs":None,"hands":None,"right":None,"left":None, 
+                          "ring left":None, "ring right":None, "amulet":None, "neck":None}
+        
+    def store_item(self,item):
+        self.contents.append(item)
+        
+    def retrieve_item(self,item):
+        if self.check_for_item(item):
+            self.contents.remove(item)
+            
+    def check_for_item(self,item):
+        if item in self.contents:
+            return True
+        else:
+            return False
+        
+    def check_for_type(self,type):
+        for item in self.contents:
+            if item.type == type:
+                return True
+        return False
+    
+    def retrieve_all_type(self, type):
+        all_items_type = []
+        
+        for item in self.contents:
+            if item.type == type:
+                all_items_type.append(item)
+                
+        return all_items_type
 
-
+    def get_disfigured(self,wounds):
+        for wound in wounds:
+            self.equipment.pop(wound,None)
+            
+            
+class Hero(Basic_AI):
+    def __init__(self):
+        self.path = []
+        self.personality = pick_personality()
+        
+        
+    def take_turn(self):
+        pass
+    
 class AI_CityTrader(Basic_AI):
     def __init__(self, trade_house):
         self.trader = entities.Trader()
@@ -276,6 +322,11 @@ class Motive(object):
         self.other = other
         self.importance = imp #higher the value the more weight of importance.
         self.other_imp = float(imp)/2 #value for the secondary motive. Halved that of the first.
+        self.timer = 24 #hours the motive hangs around. ?
+        
+    def tick(self):
+        self.timer -= 1
+        
         
 class Pather:
     OPEN = 0
@@ -636,6 +687,9 @@ class PathNode:
         
         return False
 
+
+def pick_personality():
+    pass
 
 
 #hero_man = Object(x=0, y=0, char="@", name="blob", colour=libtcod.white, blocks=False, always_visible=False,

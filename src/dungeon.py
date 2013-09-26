@@ -95,8 +95,8 @@ class Dungeon():
                 key = random.choice(MONSTERS[str(self.level)].keys())
                 mons = MONSTERS[str(self.level)][key]
                 #not finsiehd yet.
-                colour = libtcod.Color(mons["colour"][0],mons["colour"][1],mons["colour"][2])
-                temp = entities.Object(0,0, char=mons["char"], name=mons["name"], colour=colour, blocks=False, always_visible=False)
+                colour = libtcod.Color(mons[2][0],mons[2][1],mons[2][2])
+                temp = entities.Object(0,0, char=[1], name=mons[0], colour=colour, blocks=False, always_visible=False)
                 
                 a_monst.append(mons)
             for n in range(item_num):
