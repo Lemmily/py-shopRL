@@ -20,16 +20,12 @@ WATER_THRESHOLD = 100
 MOUNTAIN_THRESHOLD = 200
 COASTLINE_THRESHOLD = 15
 
-# WATER_THRESHOLD = 100
-# MOUNTAIN_THRESHOLD = 200
-# COASTLINE_THRESHOLD = 15
-
 TROPICS_THRESHOLD = 0 #15% #needs to be defined when the size of the map is.
 TEMPERATE_THRESHOLD = 0 #upto 50%
 EVAP_THRESHOLD = 20 #after 20C evaporation occurs!
 
 HUMIDITY_MAX = 255
-TEMP_MAX = 255  # FOR THE MAP. not celsius.
+TEMP_MAX = 255  # FOR THE MAP. not celsius. in colour hex.
 MONSTERS = json.loads(json_map.monsters)
 ITEMS = ["sword","potion","shield","armour","leggings","scroll","wand","book","food"] #TODO: This stuff should be handled elsewhere. I want this file to handle world creation ONLY.
 
@@ -146,10 +142,7 @@ class Particle:
             return False
     
     
-class Particle_Map:
-
-    
-    
+class Particle_Map:    
     def __init__(self,parent,num):
         self.parent = parent
         self.particles = []
@@ -185,10 +178,7 @@ class Particle_Map:
                 
     def run_simulation(self, rounds):
         
-        #put first "line" of wind in.
-#         for x in reversed(range(self.parent.w)):
-#             #for y in range(self.parent.h):
-#                 self.add_particles(x, 0)
+        #put first "line" of wind particles in.
         self.add_particles(0, 0)
         render()      
         for n in range(rounds):
@@ -706,11 +696,9 @@ class Map:
         print "........................connected ", city_one.name, " and ", city_two.name
     
     def add_foot_traffic(self,x,y):
-        
         self.traffic[x][y] += 1
         
     def get_foot_traffic(self,x,y):
-        
         return self.traffic[x][y]
         
     def sort_for_highest_traffic(self, highest = True):
@@ -1003,8 +991,8 @@ class Map:
                 percent = (self.tiles[x][y].temperature - smallest) / (largest - smallest)
                 self.temperature_map[x][y] = math.ceil(percent * TEMP_MAX)
                 self.tiles[x][y].temperature = self.temperature_map[x][y]
+                
     def normalise_humidity(self):
-        
         largest = 0
         smallest = 999999 
         #find the high and low temps.
@@ -1199,7 +1187,7 @@ def handle_keys():
 #         print "multiply"
 #         #map_.multiply_noise()
 
-
+####FOR TESTING~~~~~
 def main():
     global key, mouse, map_, con
     

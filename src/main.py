@@ -107,6 +107,7 @@ def new_game():
 #        city.createBaseRelationships(cities)
     selected = []
     you = R.you = entities.Player()#name = "player") #you = entities.Player())
+    R.inventory = you.inventory
     world_obj.append(you)
     for a in range(5):
         x, y = worldMap.place_on_land()
@@ -126,7 +127,7 @@ def new_game():
     local = False
     fov_recompute = False
     #path = hero.pather.find_path((10,10),(0,0))
-    R.ui.message("welcome and prepare your mind.", libtcod.blue)
+    R.ui.message("Finished init", libtcod.blue)
     
 def load_game():
     global date, cities, test_msgs, game_msgs
@@ -445,7 +446,7 @@ def render_local():
                 x = sc_x + cam_x
                 y = sc_y + cam_y
                 
-                if sc_x < len(R.map_) and sc_y < len(R.map_[0]):  #if it's within the bounds of the map.
+                if sc_x < len(R.map_) and sc_y < len(R.map_[0]): # and x < len(R.map_) and y < len(R.map_[0]):  #if it's within the bounds of the map.
                     tile = R.locale.floors[you.depth].tiles[x][y]
                     visible = libtcod.map_is_in_fov(R.locale.floors[you.depth].fov_map, x, y)
                     if not visible:
@@ -613,22 +614,31 @@ def player_move_or_attack(dx, dy):
     #the coordinates the player is moving to/attacking
     x = you.x + dx
     y = you.y + dy
-
-    you.move_p(dx, dy)
-    fov_recompute = True
     
-    if you.x > R.MAP_WIDTH - 1:
-        you.x = R.MAP_WIDTH - 1
-    if you.y > R.MAP_HEIGHT -  1:
-        you.y = R.MAP_HEIGHT - 1
+    if not local:
+        you.move_p(dx, dy)
+        fov_recompute = True
         
-    if not local:    
+        if you.x > R.MAP_WIDTH - 1:
+            you.x = R.MAP_WIDTH - 1
+        if you.y > R.MAP_HEIGHT -  1:
+            you.y = R.MAP_HEIGHT - 1
+            
         R.world.add_foot_traffic(you.x,you.y)
-    #if R.world.tiles[x][y].blocked == False:
-        #you.move(dx, dy)
-        #fov_recompute = True 
-    #if player:
-    #    advance_time()
+        #if R.world.tiles[x][y].blocked == False:
+            #you.move(dx, dy)
+            #fov_recompute = True 
+        #if player:
+        #    advance_time()
+    else:
+        you.move_p(dx, dy)
+        fov_recompute = True
+        
+        if you.x > len(R.map_) - 1:
+            you.x = len(R.map_) - 1
+        if you.y > len(R.map_[0]) -  1:
+            you.y = len(R.map_[0]) - 1
+        
 
 
 def handle_keys():
@@ -763,7 +773,7 @@ def handle_keys():
                     go_up()
                     clear_consoles()
                     local = False
-                    R.ui.message("DEBUG: jumped to surface", colour = libtcod.light_flame)
+                    R.ui.message("TESTING MODE: jumped to surface", colour = libtcod.light_flame)
                     render_all()
 
 def go_up():
@@ -825,14 +835,14 @@ def pick_up():
     for item in R.locale_obj:
         if item.item != None:
             R.locale_obj.remove(item)
-            R.inventory.store_item(item)
+            R.you.inventory.store_item(item)
             R.ui.message("You just picked up " + item.name, libtcod.amber)
 
 def inventory_menu():
     items = []
-    for item in R.inventory.contents:
+    for item in R.you.inventory.contents:
         items.append(item.name) 
-    #print R.inventory.contents[R.ui.menu("inventory contents:", items, 15)].name 
+    print R.inventory.contents[R.ui.menu("inventory contents:", items, 15)].name 
     
 def player_menu():
     options = []
