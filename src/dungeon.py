@@ -47,6 +47,9 @@ class Rect:
         self.y = y
         
     def intersect_other(self, other):
+        """
+        Can be used in a loop, to compare against all other in a list.
+        """
         if other.x > self.x and other.x < self.x + self.w:
             return True
         elif other.y > self.y and other.y < self.y + self.h:
