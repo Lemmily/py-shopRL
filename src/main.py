@@ -764,7 +764,6 @@ def handle_keys():
                 """Go Down"""
                 go_down()
                 
-                
             if debug_mode:
                 if key_char == "#":
                     you.depth = 0

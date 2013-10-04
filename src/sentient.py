@@ -15,9 +15,7 @@ GRASS = 15
 MOUNTAIN = 40
 PATH = 5
 
-
 MOTIVATIONS = ["none", "health", "wealth", "buy", "sell", "adventure", "comfort"] 
-
 
 skill_list_1 = [ #// 0_name:string, 1_attribute, 2_needTraining:Boolean, 3_desc:String,[4_dependsOn],[5_dependants]
                  ["Appraise", "int", False, "Used to analyse an item for monetary value, and contributing factors",["none"],["none"]],
@@ -62,7 +60,6 @@ class Basic_AI:
 #             if pathy_path is not None:
 #                 self.path = list(pathy_path)
 #                 print self.parent.name + "'s path is " + str(len(self.path)) + " long!"
-#             
 #         else:
 #             grid = self.path[0]
 #             dx = grid[0] - pawn.x
@@ -285,12 +282,9 @@ class AI_Hero(Basic_AI):
                 
     
     def take_turn(self):
-        
 #        if self.next_action == None: 
 #            self.assess_self()
 #            self.assess_motives()
-            
-
         if len(self.path) == 0:
             goal = choice(R.cities)
             while goal == self.goal:
@@ -525,8 +519,6 @@ class Pather:
                     else:
                         #print "didn't find in open list"
                         return -1
-                        
-
         return index       
         
     def add_to_open_list_(self, cost, node, high=-1, low=0):
