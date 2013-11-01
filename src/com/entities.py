@@ -128,8 +128,8 @@ class Player(Mover):
         self.skills = sentient.Skills()
         
         
-    def get_item(self, object):
-        self.inventory.append(object)
+    def grab_item(self, object_):
+        self.inventory.append(object_)
 
 def is_blocked(x, y):
     #first test the map tile

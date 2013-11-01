@@ -1218,7 +1218,7 @@ def main():
         
         
 #cProfile.run('main()')  
-main()     
+#main()     
         
         
 #buh = Dungeon(0,0,1)       
