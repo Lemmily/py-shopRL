@@ -446,7 +446,7 @@ def render_local():
                 x = sc_x + cam_x
                 y = sc_y + cam_y
                 
-                if sc_x < len(R.map_) and sc_y < len(R.map_[0]): # and x < len(R.map_) and y < len(R.map_[0]):  #if it's within the bounds of the map.
+                if x < len(R.map_) and y < len(R.map_[0]): # and x < len(R.map_) and y < len(R.map_[0]):  #if it's within the bounds of the map.
                     tile = R.locale.floors[you.depth].tiles[x][y]
                     visible = libtcod.map_is_in_fov(R.locale.floors[you.depth].fov_map, x, y)
                     if not visible:
@@ -462,6 +462,7 @@ def render_local():
                         tile.explored = True
                 else:
                     libtcod.console_put_char_ex(con, x, y, " ", libtcod.black, libtcod.black)
+                    libtcod.console_set_char(con_char, x, y, " ")
                     
         for objects in R.locale_obj:
             #if the tile is explored, then draw the object.
@@ -631,13 +632,16 @@ def player_move_or_attack(dx, dy):
         #if player:
         #    advance_time()
     else:
-        you.move_p(dx, dy)
-        fov_recompute = True
-        
-        if you.x > len(R.map_) - 1:
-            you.x = len(R.map_) - 1
-        if you.y > len(R.map_[0]) -  1:
-            you.y = len(R.map_[0]) - 1
+        if you.x + dx > 0 and you.y + dy > 0 and you.x + dx < len(R.map_) and you.y + dy < len(R.map_[0]):
+            you.move_p(dx, dy)
+            fov_recompute = True
+            
+            if you.x > len(R.map_) - 1:
+                you.x = len(R.map_) - 1
+            if you.y > len(R.map_[0]) -  1:
+                you.y = len(R.map_[0]) - 1
+        else:
+            R.ui.message("oops hit the edge", libtcod.light_grey)
         
 
 

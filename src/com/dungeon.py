@@ -209,11 +209,12 @@ class Floor:
             y = libtcod.random_get_int(0, 1, len(self.map) - h - 2)
             
             rect = Rect(w,h,x,y)
-        return
+        return rect
     
     def place_rooms(self):
         
         for room in self.rects:
+            #if room.
             for x in range(0,room.w):
                 for y in range(0, room.h):
                     _x = room.x + x
@@ -224,10 +225,14 @@ class Floor:
                         self.map[_x][_y] = 0
                         
     def make_corridors(self,st_x,st_y,en_x, en_y):
+        pass
+        #for rect in self.rects
+    
+    def place_corridors(self,st_x,st_y,en_x, en_y):
         bx = 0
         by = 0
-        for x in range(st_x,st_y):
-            pass
+        for x in range(st_x,en_x):
+            print x
     
     def make_fov_map(self):
         
@@ -330,7 +335,6 @@ class Floor:
             return False
               
     def bsp_gen(self):
-        
         
         w = self.w - 2
         h = self.h - 2
@@ -441,6 +445,7 @@ class Floor:
     def convert_to_rects(self,rect):
         pool = []
         orig_rect = rect
+        #go up and down the bsp tree and fethc only the "end" pieces to store in pool.
         while len(orig_rect.babies) > 0:
             if len(rect.babies) == 0 and rect.parent != None:
                 for baby in rect.parent.babies:
@@ -457,11 +462,13 @@ class Floor:
                 
         while len(pool) > 0:
             bounds = pool.pop()
-            placed = False
-            while not placed:
+            overtried = False
+            
+            max_w = bounds.w
+            max_h = bounds.h
+            tries = 0
+            while max_w >= MIN_ROOM_SIZE and max_h >= MIN_ROOM_SIZE and not overtried:
                 
-                max_w = bounds.w
-                max_h = bounds.h
                 if max_w <= MIN_ROOM_SIZE:
                     w = max_w
                 else:
@@ -471,32 +478,41 @@ class Floor:
                     h = max_h
                 else:
                     h = libtcod.random_get_int(0,MIN_ROOM_SIZE,max_h)
-                
-                x = libtcod.random_get_int(0,bounds.x,bounds.x + bounds.w - w)
-                y = libtcod.random_get_int(0,bounds.y,bounds.y + bounds.h - h)
-                
-                if x + w >= len(self.map):
-                    x = bounds.x 
-                if y + h >= len(self.map[0]):
-                    y = bounds.y
                     
-                if x + w >= len(self.map) or y + h >= len(self.map[0]):
-                    print x,",",y,"   ", w, h, "out of bounds"
-                    placed = True #get rid.
+                placed = False
+                while not placed:
+                    if tries > 5:
+                        overtried = True
+                    x = libtcod.random_get_int(0,bounds.x,bounds.x + bounds.w - w)
+                    y = libtcod.random_get_int(0,bounds.y,bounds.y + bounds.h - h)
                     
-                else:  
-                    new = Rect(w,h,x,y)
-                    if len(self.rects) > 0:
-                        found = False
-                        for other in self.rects:
-                            if new.intersect_other(other) == True: 
-                                found = False
-                                break
-                        if not found:
+                    if x + w >= len(self.map):
+                        x = bounds.x 
+                    if y + h >= len(self.map[0]):
+                        y = bounds.y
+                        
+                    if x + w >= len(self.map) or y + h >= len(self.map[0]):
+                        print x,",",y,"   ", w, h, "out of bounds"
+                        placed = True #get rid.
+                        
+                    else:  
+                        new = Rect(w,h,x,y)
+                        if len(self.rects) > 0:
+                            found = False
+                            for other in self.rects:
+                                if new.intersect_other(other) == True: 
+                                    found = False
+                                    tries += 1
+                                    break
+                            if not found:
+                                self.rects.append(new)
+                        else:
                             self.rects.append(new)
-                    else:
-                        self.rects.append(new)
-                    placed = True            
+                            
+                        max_w = max_w - w - 1
+                        max_h = max_h - h - 1
+                        
+                        placed = True            
     
 def flip():
     if Utils.chance_roll(50):
@@ -505,7 +521,8 @@ def flip():
         return False
     
     
-    
+
+
     
     
     

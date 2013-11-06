@@ -152,7 +152,7 @@ class Particle_Map:
         
         #generate particle pool
         self.particles = [Particle(0,0,100) for n in range(num)]
-        
+                
     def add_particles(self,x,y,column=True):   
         #TODO: add in row . 
         for iy in range(len(self.map[x])):
