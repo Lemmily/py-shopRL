@@ -304,7 +304,7 @@ def scrolling_map(p, hs, s, m):
      - s is the full screen size.
      - m is the size of the map.
     """
-    if p < hs:
+    if p < hs or m < s:
         return 0
     elif p > m - hs:
         return m - s
@@ -321,17 +321,17 @@ def render_all():
         libtcod.console_set_char_background(con, cam_x+city.x, cam_y+city.y, colour, libtcod.BKGND_SET )
         libtcod.console_set_char(con, cam_x+city.x, cam_y+city.y, ord(' '))
         
-    cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH/2, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
+    cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH/2 +1, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
     cam_y = scrolling_map(you.y, R.MAP_VIEW_HEIGHT/2, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
     #now draw the map!
     for y in range(min(R.MAP_VIEW_HEIGHT, len(R.world.tiles[0]))): #this refers to the SCREEN position. NOT map.
         for x in range(min(R.MAP_VIEW_WIDTH, len(R.world.tiles))):
             map_pos_x = x + cam_x
             map_pos_y = y + cam_y
-            if map_pos_x >= R.MAP_WIDTH:
-                map_pos_x = R.MAP_WIDTH -1
-            if map_pos_y >= R.MAP_HEIGHT:
-                map_pos_y = R.MAP_HEIGHT - 1
+            while map_pos_x >= R.MAP_WIDTH:
+                map_pos_x -=  1
+            while map_pos_y >= R.MAP_HEIGHT:
+                map_pos_y -= 1
             
             tile = R.world.tiles[map_pos_x][map_pos_y]
              
@@ -403,9 +403,9 @@ def render_all():
         for merchant in city.trade_house.caravans_out:
             merchant.draw(cam_x,cam_y)
     for objects in R.world_obj:
-            if objects.ai:
-                objects.clear(cam_x,cam_y)   
-                objects.draw(cam_x,cam_y)        
+        if objects.ai:
+            objects.clear(cam_x,cam_y)   
+            objects.draw(cam_x,cam_y)        
     you.draw(cam_x, cam_y)
     
 #    libtcod.console_clear(message_bar)
@@ -449,6 +449,7 @@ def render_local():
                 if x < len(R.map_) and y < len(R.map_[0]): # and x < len(R.map_) and y < len(R.map_[0]):  #if it's within the bounds of the map.
                     tile = R.locale.floors[you.depth].tiles[x][y]
                     visible = libtcod.map_is_in_fov(R.locale.floors[you.depth].fov_map, x, y)
+                    
                     if not visible:
                         if tile.explored or debug_mode:
                             libtcod.console_put_char_ex(con, x, y, tile.char, libtcod.dark_green, libtcod.dark_gray)
@@ -501,7 +502,7 @@ def update_msg_bar():
     
     libtcod.console_clear(message_bar)
     libtcod.console_set_default_foreground(message_bar, libtcod.white)
-    libtcod.console_print_ex(message_bar, 0, 0, libtcod.BKGND_NONE, libtcod.LEFT, str(date[0]) + " " + str(date[1][2]) + " " + str(date[1][0]) + " " + str(date[2][0]))
+    libtcod.console_print_ex(message_bar, 0, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_date())
     # print the messages, one line at a time.
     y = 2
     for (line, colour) in R.game_msgs:
@@ -512,6 +513,10 @@ def update_msg_bar():
     libtcod.console_flush()  
     R.msg_redraw = False
         
+        
+def get_date():
+    return str(date[0]) + " " + str(date[1][0]) + " " + str(date[1][2]) + " " + str(date[2][0])
+
 def update_info_bar():
     
     #TODO: seperate the UI updating into THIS function. the rest of the game updates in the render_all.
@@ -570,43 +575,57 @@ def update_info_bar():
 #    
  
 def handle_mouse():
-    global selected
+    global selected, cam_x, cam_y
     mouse = libtcod.mouse_get_status()
     
     (x, y) = (mouse.cx, mouse.cy)
 
-    if x > R.MAP_WIDTH - 1:
-        x = R.MAP_WIDTH - 1
-    if y > R.MAP_HEIGHT -  1:
-        y = R.MAP_HEIGHT - 1
-    if x < 0:
-        x = 0
-    if y < 0:
-        y = 0
-
     if mouse.lbutton_pressed:
-        selected = []
-        print "boop"
-        found = False
-        for poi in R.pois:
-            if poi.x == x +cam_x and poi.y == y + cam_y:
-                selected.append(poi)
-                update_info_bar()
-                found = True
-#                
-#        for city in R.cities:
-#            if city.x == x + cam_x and city.y == y + cam_y:
-#                selected = city
-#                update_info_bar()
-#                found = True
+        if not local:
+            if x > R.MAP_WIDTH - 1:
+                x = R.MAP_WIDTH - 1
+            if y > R.MAP_HEIGHT -  1:
+                y = R.MAP_HEIGHT - 1
+            if x < 0:
+                x = 0
+            if y < 0:
+                y = 0
                 
-        for obj in R.world_obj:
-            if obj.x == x and obj.y == y:
-                selected.append(obj)
-                update_info_bar()
-                found = True
-        if found == False and R.world.w >= (x + cam_x) and R.world.h >= (y + cam_y):
-            print str(R.world.tiles[x + cam_x][y + cam_y].temperature) + "/" + str(R.world.tiles[x + cam_x][y + cam_y].elevation)
+            selected = []
+            print "boop"
+            found = False
+            for poi in R.pois:
+                if poi.x == x +cam_x and poi.y == y + cam_y:
+                    selected.append(poi)
+                    update_info_bar()
+                    found = True
+    #                
+    #        for city in R.cities:
+    #            if city.x == x + cam_x and city.y == y + cam_y:
+    #                selected = city
+    #                update_info_bar()
+    #                found = True
+                    
+            for obj in R.world_obj:
+                if obj.x == x and obj.y == y:
+                    selected.append(obj)
+                    update_info_bar()
+                    found = True
+            if found == False and R.world.w >= (x + cam_x) and R.world.h >= (y + cam_y):
+                print str(R.world.tiles[x + cam_x][y + cam_y].temperature) + "/" + str(R.world.tiles[x + cam_x][y + cam_y].elevation)
+                
+        else:
+            if x > len(R.map_) - 1:
+                x =len(R.map_)- 1
+            if y > len(R.map_[0]) -  1:
+                y = len(R.map_[0]) - 1
+            if x < 0:
+                x = 0
+            if y < 0:
+                y = 0
+                
+            print cam_x, cam_y, " player: ", you.x, you.y
+                
     
               
 def player_move_or_attack(dx, dy):

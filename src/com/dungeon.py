@@ -115,8 +115,9 @@ class Floor:
         self.ID = ID
         self.num_monster = monst 
         self.num_items = items
-        self.w = 30
-        self.h = 20
+        self.w = libtcod.random_get_int(0,30,50)
+        self.h = libtcod.random_get_int(0,20,40)
+        
         self.map = [[1
                      for y in range(self.h)]
                         for x in range(self.w)]
@@ -459,7 +460,8 @@ class Floor:
                 rect = rect.parent
             else:
                 break
-                
+        
+        #then go through the pool and put rooms inside them
         while len(pool) > 0:
             bounds = pool.pop()
             overtried = False
