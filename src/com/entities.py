@@ -40,9 +40,10 @@ class Object:
         #erase the character that represents this object
         libtcod.console_put_char(R.con_char, self.x -cam_x, self.y- cam_y, " ", libtcod.BKGND_NONE)
         
-    def draw_faded(self, cam_x, cam_y): 
+    def draw_faded(self, cam_x=0, cam_y=0): 
         
-        if self.x >= cam_x and self.x < cam_x + R.MAP_VIEW_WIDTH and self.y >= cam_y and self.y < cam_y + R.MAP_VIEW_HEIGHT:
+        if (self.x >= cam_x and self.x < cam_x + R.MAP_VIEW_WIDTH and 
+                self.y >= cam_y and self.y < cam_y + R.MAP_VIEW_HEIGHT):
             pos_x = self.x - cam_x
             pos_y = self.y - cam_y
             
@@ -51,15 +52,16 @@ class Object:
             libtcod.console_set_default_foreground(R.con_char, colour)
             libtcod.console_put_char(R.con_char, pos_x, pos_y, self.char, libtcod.BKGND_NONE)#ADDALPHA(0.0))
 
-    def draw(self, cam_x, cam_y): 
+    def draw(self, cam_x=0, cam_y=0): 
         
-        if self.x >= cam_x and self.x < cam_x + R.MAP_VIEW_WIDTH and self.y >= cam_y and self.y < cam_y + R.MAP_VIEW_HEIGHT:
+        if (self.x >= cam_x and self.x < cam_x + R.MAP_VIEW_WIDTH and
+                self.y >= cam_y and self.y < cam_y + R.MAP_VIEW_HEIGHT):
             
-            pos_x = self.x - cam_x
-            pos_y = self.y - cam_y
-            
-            libtcod.console_set_default_foreground(R.con_char, self.colour)
-            libtcod.console_put_char(R.con_char, pos_x, pos_y, self.char, libtcod.BKGND_NONE)
+                pos_x = self.x - cam_x
+                pos_y = self.y - cam_y
+                
+                libtcod.console_set_default_foreground(R.con_char, self.colour)
+                libtcod.console_put_char(R.con_char, pos_x, pos_y, self.char, libtcod.BKGND_NONE)
 
 class Mover(Object):
     def __init__(self, x=0, y=0, char="@", name="blob", colour=libtcod.white, blocks=False, always_visible=False,

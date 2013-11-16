@@ -309,7 +309,8 @@ def scrolling_map(p, hs, s, m):
     elif p > m - hs:
         return m - s
     else:
-        return p - hs                   
+        return p - hs     
+                  
     
 def render_all():
     global cam_x, cam_y
@@ -433,22 +434,21 @@ def render_all():
 
 def render_local():
     global map_, fov_recompute
-    
-    cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH/2, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
-    cam_y = scrolling_map(you.y, R.MAP_VIEW_HEIGHT/2, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
+    cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH_HALF + 1, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
+    cam_y = scrolling_map(you.y, R.MAP_VIEW_HEIGHT_HALF, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
     
     if fov_recompute:
         fov_recompute = False
         libtcod.map_compute_fov(R.locale.floors[you.depth].fov_map, you.x, you.y, 10, True, 0)
         
-        for sc_y in range(R.MAP_VIEW_HEIGHT): #this refers to the SCREEN position. NOT map.
-            for sc_x in range(R.MAP_VIEW_WIDTH):
-                x = sc_x + cam_x
-                y = sc_y + cam_y
+        for y in range(R.MAP_VIEW_HEIGHT): #this refers to the SCREEN position. NOT map.
+            for x in range(R.MAP_VIEW_WIDTH):
+                map_x = x + cam_x
+                map_y = y + cam_y
                 
-                if x < len(R.map_) and y < len(R.map_[0]): # and x < len(R.map_) and y < len(R.map_[0]):  #if it's within the bounds of the map.
-                    tile = R.locale.floors[you.depth].tiles[x][y]
-                    visible = libtcod.map_is_in_fov(R.locale.floors[you.depth].fov_map, x, y)
+                if map_x < len(R.map_) and map_y < len(R.map_[0]): # and x < len(R.map_) and y < len(R.map_[0]):  #if it's within the bounds of the map.
+                    tile = R.locale.floors[you.depth].tiles[map_x][map_y]
+                    visible = libtcod.map_is_in_fov(R.locale.floors[you.depth].fov_map, map_x, map_y)
                     
                     if not visible:
                         if tile.explored or debug_mode:
