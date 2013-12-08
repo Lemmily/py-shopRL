@@ -219,7 +219,7 @@ class AI_Hero(Basic_AI):
             
             and then acted upon in TODO: action function
         '''
-        cur_health = self.parent.fighter.health
+        cur_health = self.parent.fighter.hp
         max_health = self.parent.fighter.max_hp
         if cur_health <= max_health:
             if cur_health >= max_health * 0.8:

@@ -63,6 +63,15 @@ class Rect:
         self.parent = parent
         self.end = False
         
+    def get_x(self):
+        return self.x
+    def get_y(self):
+        return self.y
+    def get_w(self):
+        return self.w
+    def get_h(self):
+        return self.h
+        
 
 
 class Dungeon():
@@ -137,7 +146,10 @@ class Floor:
         self.fov_map = libtcod.map_new(self.w, self.h)
         self.make_fov_map()
         self.assign_tiles()
-        
+       
+       
+    def get_floor_tile(self, x, y):
+        return self.tiles[x][y] 
         
     def construct_floor(self):
         for x in range(len(self.map)):
@@ -348,7 +360,7 @@ class Floor:
                     
     def split(self, rect):
         if rect.w - 1 >= MIN_BSP_SIZE*1.5 or rect.h - 1 >= MIN_BSP_SIZE*1.5:
-            if flip() and rect.w >= MIN_BSP_SIZE:
+            if flip_coin() and rect.w >= MIN_BSP_SIZE:
                 x = libtcod.random_get_int(0,rect.x + MIN_BSP_SIZE, rect.x + rect.w - MIN_BSP_SIZE)
                 w = (rect.x + rect.w) - x 
                 
@@ -410,7 +422,7 @@ class Floor:
     
     def new_split(self, rect):
         if rect.w > MIN_BSP_SIZE*2 and rect.h > MIN_BSP_SIZE*2:
-            if flip() and rect.x + rect.w/2 + MIN_BSP_SIZE < len(self.map) and rect.y + rect.h/2 + MIN_BSP_SIZE < len(self.map[0]):
+            if flip_coin() and rect.x + rect.w/2 + MIN_BSP_SIZE < len(self.map) and rect.y + rect.h/2 + MIN_BSP_SIZE < len(self.map[0]):
                 
                 x = libtcod.random_get_int(0,rect.x + MIN_BSP_SIZE, rect.x + rect.w - MIN_BSP_SIZE)
                 w = (rect.x + rect.w) - x 
@@ -516,7 +528,7 @@ class Floor:
                         
                         placed = True            
     
-def flip():
+def flip_coin():
     if Utils.chance_roll(50):
         return True
     else:
