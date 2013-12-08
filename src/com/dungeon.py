@@ -124,8 +124,8 @@ class Floor:
         self.ID = ID
         self.num_monster = monst 
         self.num_items = items
-        self.w = libtcod.random_get_int(0,30,50)
-        self.h = libtcod.random_get_int(0,20,40)
+        self.w = libtcod.random_get_int(0,30,80)
+        self.h = libtcod.random_get_int(0,20,60)
         
         self.map = [[1
                      for y in range(self.h)]
