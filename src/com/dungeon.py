@@ -18,6 +18,12 @@ MIN_ROOM_SIZE = 2
 MONSTERS = json.loads(json_map.monsters)
 ITEMS = ["sword","potion","shield","armour","leggings","scroll","wand","book","food"]
 #TODO: This stuff should be handled elsewhere.
+
+lastx,lasty = 0,0
+num_rooms = 0
+
+rects = []
+
 class Tile():
     
     def __init__(self,x,y, blocks, blocks_sight=True, char = " "):
@@ -73,7 +79,6 @@ class Rect:
         return self.h
         
 
-
 class Dungeon():
     def __init__(self, x,y, POI):
         self.x = x
@@ -119,13 +124,23 @@ class Dungeon():
             floor = Floor(ID, a_monst, a_items)
             self.floors.append(floor)
             
+
+
+
+        
+    
+    
+
+
 class Floor:
     def __init__(self, ID, monst, items):
         self.ID = ID
         self.num_monster = monst 
         self.num_items = items
+        self.num_rooms = 0
         self.w = libtcod.random_get_int(0,30,80)
         self.h = libtcod.random_get_int(0,20,60)
+        self.lastx, self.lasty = 0,0
         
         self.map = [[1
                      for y in range(self.h)]
@@ -170,7 +185,14 @@ class Floor:
         else:
             self.up = (0, 0)
             self.down = (10,10)
-        self.place_rooms()
+#         if len(rects) > 0:
+#             self.up = (rects[0].x, rects[0].y)
+#             self.down = (rects[len(rects) -1].x + 1, rects[len(rects)-1].y + 1)
+#         else:
+#             print "No rects :("
+#             self.up = (0, 0)
+#             self.down = (10,10)
+        self.place_rooms()#_global()
 
     
     def construct_objects(self):
@@ -185,9 +207,29 @@ class Floor:
             potion = entities.Object(libtcod.random_get_int(0,room.x,room.x + room.w-2),libtcod.random_get_int(0,room.y,room.y + room.h-2),
                                         char="!", name="potion", colour=libtcod.orange,blocks = False, always_visible=False, item=item)
             self.objects.append(potion)
+    
+    def dig(self, x1,y1,x2,y2):
+        if x2 < x1:
+            tmp = x2
+            x2 = x1
+            x1 = tmp
+        if y2 < y1:
+            tmp = y2
+            y2 = y1
+            y1 = tmp
+            
+        for tilex in range(x1,x2):
+            for tiley in range(y1,y2):
+                self.map[tilex][tiley] = 0
+    
+    def create_room(self,x,y,x2,y2, first = False):
+        if first:
+            self.up =  ((x+x2)/2, (y+y2)/2)
         
-    def make_room(self,x,y,w,h):
-        
+        self.dig(x,y,x2,y2)
+            
+    
+    def make_room(self,w,h,x,y):
         rect = Rect(w,h,x,y)
         for other in self.rects:
             if rect.intersect_other(other):
@@ -225,7 +267,6 @@ class Floor:
         return rect
     
     def place_rooms(self):
-        
         for room in self.rects:
             #if room.
             for x in range(0,room.w):
@@ -237,6 +278,18 @@ class Floor:
                     else:
                         self.map[_x][_y] = 0
                         
+    def place_rooms_global(self):
+        for room in rects:
+            #if room.
+            for x in range(0,room.w):
+                for y in range(0, room.h):
+                    _x = room.x + x
+                    _y = room.y + y
+                    if 0 >_x >= len(self.map) or 0 > _y >= len(self.map[x]):
+                        print _x,_y, "out of bounds"
+                    else:
+                        self.map[_x][_y] = 0
+        
     def make_corridors(self,st_x,st_y,en_x, en_y):
         pass
         #for rect in self.rects
@@ -346,15 +399,25 @@ class Floor:
                 return False
         else:
             return False
-              
+            
     def bsp_gen(self):
-        
+#         global num_rooms, lastx, lasty, rects
+#         #clear any remaining data from a previous dungeon/floor creation.
+#         num_rooms = 0
+#         lastx,lasty = 0,0
+#         rects = []
+#          
+#         my_bsp=libtcod.bsp_new_with_size(0,0,self.w,self.h)
+#         libtcod.bsp_split_recursive(my_bsp,0,6,5,5,1.5,1.5)
+#          
+#         libtcod.bsp_traverse_inverted_level_order(my_bsp,bsp_callback)
+#         
         w = self.w - 2
         h = self.h - 2
-        
+          
         whole_map = Rect(w,h,1,1)
         whole_map.bsp()
-        
+          
         self.new_split(whole_map)
         self.convert_to_rects(whole_map)
                     
@@ -417,8 +480,6 @@ class Floor:
         for baby in rect.babies:
             if baby.end != True:
                 self.split(baby)
-    
-    
     
     def new_split(self, rect):
         if rect.w > MIN_BSP_SIZE*2 and rect.h > MIN_BSP_SIZE*2:
@@ -537,12 +598,26 @@ def flip_coin():
     
 
 
+
+def bsp_callback(node, userData):
+    global num_rooms, lastx, lasty, rects
+    
+    print "Huaaaaa"
+    if libtcod.bsp_is_leaf(node):
+        print "found a leafy"
+        w = node.w - 2
+        h = node.h - 2
+        x = libtcod.random_get_int(0, node.x, node.x+node.w - w - 1)
+        y = libtcod.random_get_int(0, node.y, node.y+node.h - h - 1)
+        rects.append(Rect(w,h,x,y))
+#         if self.num_rooms != 0:
+#             self.dig(self.lastx,self.lasty,x+w/2,self.lasty)
+#             self.dig(x+w/2,self.lasty,x+w/2,y+h/2)
+            
+        lastx = x+w/2
+        lasty = y+h/2
+        num_rooms += 1    
     
     
     
-    
-    
-    
-          
-        
         

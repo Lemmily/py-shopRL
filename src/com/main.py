@@ -179,6 +179,8 @@ def play_game():
                 advance_time(); 
             
             handle_mouse()
+            libtcod.console_clear(R.con);
+            libtcod.console_clear(R.con_char);
                 
         else:
             render_local()
@@ -198,6 +200,9 @@ def play_game():
             
         if R.msg_redraw == True:
             update_msg_bar()
+        
+        
+        
         #update_info_bar()
         
         #erase all objectsat their old locations, before they move

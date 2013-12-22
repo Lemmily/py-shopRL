@@ -423,7 +423,7 @@ class Pather:
 #                     print "NODE WAS NOT IN NODE_COSTS"
 #                     continue
                 
-                for neighbour in self.find_adjacent_nodes_2(current_node, end_node):
+                for neighbour in self.find_adjacent_nodes_3(current_node, end_node):
                     if self.node_status.has_key(neighbour.grid):
                         if self.node_status[neighbour.grid] == self.CLOSED:
                             continue
@@ -614,10 +614,58 @@ class Pather:
         
         
         return nodes
-
-    def get_cost(self, point):
+    
+    def find_adjacent_nodes_3(self,current,end):
+        nodes = []
+        X = current.grid[0]
+        Y = current.grid[1]
+        distance = current.diag_heuristic(current.grid,end.grid)
+        distance *= (1.0 + 1/1000)# agh 
+        #distance = distance + (distance * 0.1) #current distance + 10% so that it excludes directly away from the target.
+        length_x = len(self.tiles) - 1
+        length_y = len(self.tiles[0]) - 1
+        
+        #Orthogonal directions
+        point = (X-1, Y)#left
+        new_distance = current.diag_heuristic(point,end.grid)
+        if X > 0 and not self.check_blocked(point) and new_distance < distance: 
+            nodes.append(PathNode(point, self.get_cost(point, new_distance-distance) + current.cost + self.STRAIGHT, current, end))
+        point = (X+1, Y)#right
+        new_distance = current.diag_heuristic(point,end.grid)
+        if X < length_x and  not self.check_blocked(point) and new_distance < distance:
+            nodes.append(PathNode(point, self.get_cost(point, new_distance-distance) + current.cost + self.STRAIGHT, current, end))
+        point = (X, Y-1)#Up 
+        new_distance = current.diag_heuristic(point,end.grid)
+        if Y > 0 and not self.check_blocked(point) and new_distance < distance: 
+            nodes.append(PathNode(point, self.get_cost(point, new_distance-distance) + current.cost + self.STRAIGHT, current, end))
+        point = (X, Y+1)#Down
+        new_distance = current.diag_heuristic(point,end.grid)
+        if Y < length_y and not self.check_blocked(point) and new_distance < distance: 
+            nodes.append(PathNode(point, self.get_cost(point, new_distance-distance) + current.cost + self.STRAIGHT, current, end)) 
+        
+        #Diagonal directions.
+        point = (X-1, Y-1)  #upleft
+        new_distance = current.diag_heuristic(point,end.grid)
+        if X > 0 and Y > 0 and not self.check_blocked(point) and new_distance < distance: 
+            nodes.append(PathNode(point, self.get_cost(point, new_distance-distance) + current.cost + self.DIAG, current, end))
+        point = (X-1, Y+1)#down left
+        new_distance = current.diag_heuristic(point,end.grid)
+        if X > 0 and Y < length_y and not self.check_blocked(point) and new_distance < distance: 
+            nodes.append(PathNode(point, self.get_cost(point, new_distance-distance) + current.cost + self.DIAG, current, end))
+        point = (X+1, Y-1)#up-right
+        new_distance = current.diag_heuristic(point,end.grid)
+        if X < length_x and Y > 0 and not self.check_blocked(point) and new_distance < distance: 
+            nodes.append(PathNode(point, self.get_cost(point, new_distance-distance) + current.cost + self.DIAG, current, end))
+        point = (X+1, Y+1)#down-right
+        new_distance = current.diag_heuristic(point,end.grid)
+        if X < length_x and Y < length_y and not self.check_blocked(point) and new_distance < distance: 
+            nodes.append(PathNode(point, self.get_cost(point, new_distance-distance) + current.cost + self.DIAG, current, end))
+        
+        
+        return nodes
+    def get_cost(self, point, dist_changed):
         #gets the cost of tile-movement.
-        cost = self.tiles[point[0]][point[1]].cost
+        cost = self.tiles[point[0]][point[1]].cost * dist_changed
         return cost 
 
 class PathNode:
