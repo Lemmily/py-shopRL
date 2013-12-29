@@ -4,13 +4,14 @@ Created on 21 Aug 2013
 @author: Emily
 '''
 
-import libtcodpy as libtcod
-import random
+import Utils
+import entities
 import json
 import json_map
+import libtcodpy as libtcod
+import random
+import R
 
-import entities
-import Utils
 
 MIN_BSP_SIZE = 5
 MIN_ROOM_SIZE = 2
@@ -115,8 +116,11 @@ class Floor:
         self.ID = ID
         self.num_monster = monst 
         self.num_items = items
-        self.w = libtcod.random_get_int(0,30,80)
-        self.h = libtcod.random_get_int(0,20,60)
+        
+        #max is the map view width/height for dungeons so no scrolling.
+        #scrolling looked really weird in the dungeon as it is.
+        self.w = libtcod.random_get_int(0,30,R.MAP_VIEW_WIDTH) 
+        self.h = libtcod.random_get_int(0,20,R.MAP_VIEW_HEIGHT)
         
         self.map = [[1
                      for y in range(self.h)]

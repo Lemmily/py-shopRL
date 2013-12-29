@@ -15,7 +15,7 @@ GRASS = 15
 MOUNTAIN = 40
 PATH = 5
 
-MOTIVATIONS = ["none", "health", "wealth", "buy", "sell", "adventure", "comfort"] 
+MOTIVATIONS = ["none", "health", "wealth", "buy", "sell", "adventure", "comfort"] ##what other motives?
 
 skill_list_1 = [ #// 0_name:string, 1_attribute, 2_needTraining:Boolean, 3_desc:String,[4_dependsOn],[5_dependants]
                  ["Appraise", "int", False, "Used to analyse an item for monetary value, and contributing factors",["none"],["none"]],
@@ -107,9 +107,10 @@ class Inventory:
                 
         return all_items_type
 
-    def get_disfigured(self,wounds):
+    def make_disfigured(self,wounds):
         for wound in wounds:
             self.equipment.pop(wound,None)
+            #TODO: #do the items equipped now go into the contents?
             
             
 class Hero(Basic_AI):
@@ -315,13 +316,18 @@ class Motive(object):
         self.main = main
         self.other = other
         self.importance = imp #higher the value the more weight of importance.
-        self.other_imp = float(imp)/2 #value for the secondary motive. Halved that of the first.
+        #self.other_imp = float(imp)/2 #value for the secondary motive. Halved that of the first.
         self.timer = 24 #hours the motive hangs around. ?
         
     def tick(self):
         self.timer -= 1
         
+    def increase_importance(self, amount):
+        self.importance += amount
         
+    def decrease_importance(self, amount):
+        self.importance -= amount
+    
 class Pather:
     OPEN = 0
     CLOSED = 1
@@ -678,10 +684,6 @@ class PathNode:
             return True
         
         return False
-
-
-def pick_personality():
-    pass
 
 
 #hero_man = Object(x=0, y=0, char="@", name="blob", colour=libtcod.white, blocks=False, always_visible=False,

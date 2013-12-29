@@ -342,10 +342,10 @@ def render_all():
                 
             if not visible:
                 pass #TODO: re-do the visible/ not visible code.
-                #if it"s not visible right now, the player can only see it if it"s explored
+                #if it"s not visible right the player can only see it if it"s explored
                 #if tile.explored:
                     #if wall:
-                    #    libtcod.console_set_char_background(con, x, y, color_dark_wall, libtcod.BKGND_SET)
+                    #    libtcod.console_set_char_backgrnow, ound(con, x, y, color_dark_wall, libtcod.BKGND_SET)
                     #    libtcod.console_set_char(con, x, y, " ")
                     #else:
                     #    libtcod.console_set_char_background(con, x, y, color_dark_ground, libtcod.BKGND_SET)
@@ -434,8 +434,15 @@ def render_all():
 
 def render_local():
     global map_, fov_recompute
-    cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH_HALF + 1, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
-    cam_y = scrolling_map(you.y, R.MAP_VIEW_HEIGHT_HALF, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
+    
+    if len(R.map_) > R.MAP_VIEW_WIDTH:
+        cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH_HALF + 1, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
+    else:
+        cam_x = 0
+    if len(R.map_[0]) > R.MAP_VIEW_HEIGHT:
+        cam_y = scrolling_map(you.y, R.MAP_VIEW_HEIGHT_HALF, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
+    else:
+        cam_y = 0
     
     if fov_recompute:
         fov_recompute = False
