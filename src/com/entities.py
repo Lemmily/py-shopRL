@@ -135,19 +135,6 @@ class Player(Mover):
     def grab_item(self, object_):
         self.inventory.append(object_)
 
-def is_blocked(x, y):
-    #first test the map tile
-    if x > len(R.tiles) - 1 or x < 0:
-        return True
-    if y > len(R.tiles[x]) - 1 or y < 0:
-        return True
-    if R.world.tiles[x][y].blocked:
-        return True
-    #now check for any blocking objects
-    for object_ in R.world_obj:
-        if object_.blocks and object_.x == x and object_.y == y:
-            return True
-    return False
 
 class Item:
     def __init__(self, use_function = None):
@@ -327,3 +314,17 @@ class Trader:
 #                if total < limit:
 #                    #PLACE MORE asks.
                 return total# - limit
+
+def is_blocked(x, y):
+    #first test the map tile
+    if x > len(R.tiles) - 1 or x < 0:
+        return True
+    if y > len(R.tiles[x]) - 1 or y < 0:
+        return True
+    if R.world.tiles[x][y].blocked:
+        return True
+    #now check for any blocking objects
+    for object_ in R.world_obj:
+        if object_.blocks and object_.x == x and object_.y == y:
+            return True
+    return False
