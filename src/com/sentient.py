@@ -74,10 +74,14 @@ class Basic_AI:
 #                 self.path = []
             
 class Inventory:
-    def __init__(self):
+    def __init__(self, creature = False):
         self.contents = [] #might make this a dict. then pre sorted into categories.
-        self.equipment = {"head":None,"torso":None,"legs":None,"hands":None,"right":None,"left":None, 
+        if not creature:
+            self.equipment = {"head":None,"torso":None,"legs":None,"hands":None,"right":None,"left":None, 
                           "ring left":None, "ring right":None, "amulet":None, "neck":None}
+        else:
+            self.equipment = {}
+        self.cash = 0
         
     def store_item(self,item):
         self.contents.append(item)

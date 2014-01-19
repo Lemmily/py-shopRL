@@ -15,8 +15,10 @@ import R
 
 MIN_BSP_SIZE = 5
 MIN_ROOM_SIZE = 2
+f =  open('monster_list.json')
+MONSTERS = json.loads(f.read())
 
-MONSTERS = json.loads(json_map.monsters)
+#MONSTERS = json.loads(json_map.monsters)
 ITEMS = ["sword","potion","shield","armour","leggings","scroll","wand","book","food"]
 #TODO: This stuff should be handled elsewhere.
 class Tile():
@@ -109,6 +111,7 @@ class Dungeon():
                 #temp = entities.Object(0,0, char=item["char"], name=item["name"], colour=colour, blocks=False, always_visible=False)
                 a_items.append(item)
             floor = Floor(ID, a_monst, a_items)
+            floor.parent = self
             self.floors.append(floor)
             
 class Floor:
@@ -141,7 +144,20 @@ class Floor:
         self.fov_map = libtcod.map_new(self.w, self.h)
         self.make_fov_map()
         self.assign_tiles()
+        self.populate_monsters()
+    
+    def populate_monsters(self, num=5):
+        if self.rects > 0:
+            room = self.rects[libtcod.random_get_int(0,0,len(self.rects) - 1)]
+        x = libtcod.random_get_int(0,1,room.w-1)
+        y = libtcod.random_get_int(0,1,room.h-1)
         
+        pick = MONSTERS["1"][random.choice(MONSTERS["1"].keys())]
+        monster = Mover(x,y,pick["1"])
+        if len(pick[3]) == 0:
+            monster.inventory = sentient.Inventory(creature = True)
+            
+        monster.stats = entities.Stats()
         
     def construct_floor(self):
         for x in range(len(self.map)):
