@@ -167,7 +167,14 @@ class Hero:
         self.inventory = [] #stuff being carried
         self.equipment = [] #attempts to have one armour one weapon one clothing. (to start with)
     #unsure as to what needs to go here.
-        
+    
+class Fighter:
+    def __init__(self, max_hp=100, max_mp=0):
+        self.max_hp = max_hp
+        self.hp = max_hp
+        self.max_mp = max_mp
+        self.mp = max_mp   
+    
 class Trader:
     def __init__(self, wealth = 1000):
         self.wealth = wealth

@@ -162,7 +162,6 @@ def play_game():
         if not local:
             render_all()
             
-            
             ##Clear the characters from screen.
             for object_ in R.world_obj:
                 object_.clear(cam_x,cam_y)
