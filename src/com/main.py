@@ -917,7 +917,7 @@ def city_production_menu():
         
         key = libtcod.console_wait_for_keypress(True)
         if key.vk == libtcod.KEY_ENTER or key.vk == libtcod.KEY_BACKSPACE or key.vk == libtcod.KEY_ESCAPE:
-            break
+            return
         
 def city_menu():
     

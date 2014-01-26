@@ -111,6 +111,16 @@ class Inventory:
         for wound in wounds:
             self.equipment.pop(wound,None)
             
+    def get_AC(self):
+        
+        total_ac = 0
+        
+        for key in self.equipment:
+            for item in self.equipment[key]:
+                total_ac += item.ac
+        
+        return total_ac
+            
             
 class Hero(Basic_AI):
     def __init__(self):

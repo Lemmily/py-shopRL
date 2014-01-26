@@ -5,7 +5,8 @@ Created on 16 Mar 2013
 '''
 import libtcodpy as libtcod
 import R
-import entities, dungeon
+import entities 
+import dungeon
 import json
 import json_map
 import random

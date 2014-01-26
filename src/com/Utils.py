@@ -43,6 +43,7 @@ def chance_roll(chance = 50):
         
         else: 
             return True
+        
                         
 def roll_100():
     return int(random.random() * 100)

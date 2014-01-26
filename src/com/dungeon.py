@@ -88,6 +88,7 @@ class Dungeon():
         self.level = 1
         self.floors = []
         
+        self.monsters = []
         
         self.generate_floors(1, 3)
         
@@ -96,8 +97,6 @@ class Dungeon():
         This will be called and the numbers of monsters inside will shift and change, depending on different thibgs"""
         pass
     
-    def addMonster(self, type = ""):
-        pass
     
     def addFloor(self, level = -1):
         pass
@@ -162,7 +161,15 @@ class Floor:
         self.make_fov_map()
         self.assign_tiles()
        
-       
+     
+    def addMonster(self, type = ""):
+        if type == "":
+            keys =[]
+            for key in MONSTERS[self.level]:
+                keys.append(key) 
+            type = libtcod.random_get_int(0, 0, len(keys)-1)
+        self.monsters.append(create_monster(type))
+          
     def get_floor_tile(self, x, y):
         return self.tiles[x][y] 
         
@@ -619,5 +626,8 @@ def bsp_callback(node, userData):
         num_rooms += 1    
     
     
+def create_monster(type):
+    monster = entities.Mover();
     
+    return monster
         
