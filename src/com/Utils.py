@@ -46,3 +46,35 @@ def chance_roll(chance = 50):
                         
 def roll_100():
     return int(random.random() * 100)
+
+class Pair:
+    def __init__(self,value, object):
+        self.value = value 
+        self.object = object
+        
+        
+    def compare_to(self,other):
+        if other.value > value: return 1
+        elif other.value < value: return -1
+        else: return 0
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
