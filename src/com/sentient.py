@@ -709,7 +709,8 @@ class PathNode:
 #         dx = abs(start[0] - end[0])
 #         dy = abs(start[1] - end[1])
 #         return 10 * max(dx, dy)
-    
+        
+        #this needs to be analysed, this heuristic needs to be ADMISSABLE, which means its always over optimistic with path cost! 
         dx = abs(start[0] - end[0])
         dy = abs(start[1] - end[1])
         beep = STRAIGHT * (dx + dy) + (DIAG - 2 * STRAIGHT) * min(dx, dy) #+ (dx + dy)* GRASS 

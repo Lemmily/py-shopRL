@@ -26,14 +26,15 @@ rooms = """{
                 "openness": 50
             },
     }"""
+            ##theStats = [0_STR, 1_DEX, 2_PER, 3_CON, 4_INT, 5_WIS, 6_CHA, 7_LUCK];
 monsters = """{
             "1":{
-                    "goblin":   ["goblin","g",[10,100,10],["head","torso","left","right"]],
-                    "wolf":     ["wolf","w",[50,50,50],[]],
+                    "goblin":   ["goblin","g",[10,100,10],["head","torso","left","right"],[6,6,7,4,8,4,2,7]],
+                    "wolf":     ["wolf","w",[50,50,50],[], [7,9,8,3,9,4,3]],
                     "giant rat":   ["giant rat","r",[80,10,80],[]]
                 },
             "2":{
-                    "orc":      ["orc","o",[70,140,70],["head","torso","legs","left","right"]],
+                    "orc":      ["orc","o",[70,140,70],["head","torso","legs","left","right"], [10,6,7,8,7,6,2,7]],
                     "kobold":   ["kobold","k",[218,160,30],["head","torso","left","right"]]
                 }
             } """ 

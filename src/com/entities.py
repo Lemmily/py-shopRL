@@ -164,6 +164,7 @@ class Fighter:
         self.mp = max_mp   
     
 class Trader:
+    #This is probably more suited in the AI section
     def __init__(self, wealth = 1000):
         self.wealth = wealth
         self.believed_prices = {}
@@ -326,16 +327,23 @@ skill_list_1 = [ #// 0_name:string, 1_attribute, 2_needTraining:Boolean, 3_desc:
                  ]
 # Skill manager
 class Stats:
-    def __init__(self, max_hp = 100, max_mp = 10):
+    def __init__(self, max_hp = 100, max_mp = 10, array = None):
         self.skills = {}
         for line in skill_list_1:
             self.skills[line[0].lower()] = Skill( line[0], line[1])
             
         self.attr = {}
-        for stat in attributes:
-            self.attr[stat] = Attribute(stat, 10)
-            
-        self.max_hp = max_hp
+        if array is None:
+            for stat in attributes:
+                self.attr[stat] = Attribute(stat, 10)
+        else:
+            #theStats = [0_STR, 1_DEX, 2_PER, 3_CON, 4_INT, 5_WIS, 6_CHA, 7_LUCK];
+            i = 0
+            for stat in attributes:
+                self.attr[stat] = Attribute(stat,array[i])
+                i += 1
+                
+        self.max_hp = Utils.roll_D6_times(self.attr["con"]) + (self.attr["con"]);
         self.hp = max_hp
         self.max_mp = max_mp
         self.mp = max_mp   
