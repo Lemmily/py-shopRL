@@ -93,11 +93,26 @@ class Dungeon():
         self.generate_floors(1, 3)
         
     def turmoil(self):
-        """This function will help to randomise the monsters inside. Once the dungeon hits some critical point.
-        This will be called and the numbers of monsters inside will shift and change, depending on different thibgs"""
+        """This function will help to randomise the monsters inside. Once the dungeon hits some critical point(unknown right now).
+        This will be called and the numbers of monsters inside will shift and change, eg chaos/order more/less respectively"""
         pass
     
     
+    def addMonster(self, type = ""):
+        if type == "":
+            keys =[]
+            for key in MONSTERS[self.level]:
+                keys.append(key) 
+            type = libtcod.random_get_int(0, 0, len(keys)-1)
+        tile = None
+        while tile == None:
+            x = libtcod.random_get_int(0, 0, len(self.tiles))
+            y = libtcod.random_get_int(0, 0, len(self.tiles[0]))
+            if self.get_floor_tile(x,y).blocks is not True:
+                tile = self.get_floor_tile(x,y)
+                                       
+        return create_monster(type,tile)
+        
     def addFloor(self, level = -1):
         pass
     
@@ -168,7 +183,14 @@ class Floor:
             for key in MONSTERS[self.level]:
                 keys.append(key) 
             type = libtcod.random_get_int(0, 0, len(keys)-1)
-        self.monsters.append(create_monster(type))
+        tile = None
+        while tile == None:
+            x = libtcod.random_get_int(0, 0, len(self.tiles))
+            y = libtcod.random_get_int(0, 0, len(self.tiles[0]))
+            if self.get_floor_tile(x,y).blocks is not True:
+                tile = self.get_floor_tile(x,y)
+                                       
+        self.monsters.append(create_monster(type,tile))
           
     def get_floor_tile(self, x, y):
         return self.tiles[x][y] 
@@ -626,8 +648,11 @@ def bsp_callback(node, userData):
         num_rooms += 1    
     
     
-def create_monster(type):
-    monster = entities.Mover();
-    
+def create_monster(type,level,tile):
+    BLUEPRINT = MONSTERS[level][type]
+    colour = libtcod.Color(BLUEPRINT[2][0],BLUEPRINT[2][1],BLUEPRINT[2][2])
+    monster = entities.Mover(x=tile.x,y=tile.y, char = BLUEPRINT[1],name=BLUEPRINT[0],colour = colour, always_visible = True);
+    stats = entities.Stats(array=BLUEPRINT[4])
+    monster.stats = stats
     return monster
         

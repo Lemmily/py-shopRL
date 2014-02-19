@@ -47,3 +47,11 @@ def chance_roll(chance = 50):
                         
 def roll_100():
     return int(random.random() * 100)
+
+def roll_D6_times(num):
+    total = 0
+    for i in range(0,num):
+        total += libtcod.random_get_int(0, 1, 6)
+        
+    return total
+    
