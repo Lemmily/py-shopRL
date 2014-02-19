@@ -155,11 +155,7 @@ class Floor:
         self.assign_tiles()
     def get_floor_tile(self, x, y):
         return self.tiles[x][y] 
-     def populate_monsters(self, num=5):
-        if self.rects > 0:
-            room = self.rects[libtcod.random_get_int(0,0,len(self.rects) - 1)]
-        x = libtcod.random_get_int(0,1,room.w-1)
-   
+    
     def populate_monsters(self, num=5):
         if self.rects > 0:
             room = self.rects[libtcod.random_get_int(0,0,len(self.rects) - 1)]
