@@ -5,7 +5,8 @@ Created on 16 Mar 2013
 '''
 import libtcodpy as libtcod
 import R
-import entities, dungeon
+import entities 
+import dungeon
 import json
 import json_map
 import random
@@ -858,7 +859,7 @@ class Map:
                     ran_1 = 255- value+ libtcod.random_get_int(0,-5,5)
                     if ran_1 > 255:
                         ran_1 = 255
-                    self.tiles[cell_x][cell_y] = Tile(cell_x,cell_y, False, map_tile=True, bg=[10,ran_1,10 + libtcod.random_get_int(0,-5,5)], cost = 15)
+                    self.tiles[cell_x][cell_y] = Tile(cell_x,cell_y, False, map_tile=True, bg=[10,ran_1,10 + libtcod.random_get_int(0,-5,5)], cost = 10)
                     self.tiles[cell_x][cell_y].elevation = value
                     self.tiles[cell_x][cell_y].humidity = libtcod.random_get_int(0,10,100)
                     self.tiles[cell_x][cell_y].humidity_per = self.tiles[cell_x][cell_y].humidity/255*100
@@ -866,7 +867,7 @@ class Map:
                 elif value > WATER_THRESHOLD: #coast
                     test = int(math.sqrt(value))
                     #test = test ** 3
-                    self.tiles[cell_x][cell_y] = Tile(cell_x,cell_y, False, map_tile=True, bg=[value+ libtcod.random_get_int(0,-5,5),value-test+ libtcod.random_get_int(0,-5,5),test])
+                    self.tiles[cell_x][cell_y] = Tile(cell_x,cell_y, False, map_tile=True, bg=[value+ libtcod.random_get_int(0,-5,5),value-test+ libtcod.random_get_int(0,-5,5),test], cost = 15)
                     self.tiles[cell_x][cell_y].elevation = value
                     self.tiles[cell_x][cell_y].humidity = 25.5
                     self.tiles[cell_x][cell_y].humidity_per = 10.0

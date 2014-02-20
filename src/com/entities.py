@@ -8,6 +8,7 @@ import R
 import math
 import economy
 import sentient
+import Utils
 
 
 class Object:
@@ -65,15 +66,15 @@ class Object:
 
 class Mover(Object):
     def __init__(self, x=0, y=0, char="@", name="blob", colour=libtcod.white, blocks=False, always_visible=False,
-                        fighter=None, you=None, pather=None, ai=None):
+                        stats=None, you=None, pather=None, ai=None):
         Object.__init__(self, x, y, char, name, colour, blocks, always_visible)
         self.direction = "S"
         
         self.activity_log = {"history": [], "kills": [], "travels": [], "transactions":[]}
         
-        self.fighter = fighter
-        if fighter:
-            self.fighter.parent = self
+        self.stats = stats
+        if stats:
+            self.stats.parent = self
         
         self.inventory = sentient.Inventory() #not entirely sure where htis needs to go.
         
@@ -135,19 +136,6 @@ class Player(Mover):
     def grab_item(self, object_):
         self.inventory.append(object_)
 
-def is_blocked(x, y):
-    #first test the map tile
-    if x > len(R.tiles) - 1 or x < 0:
-        return True
-    if y > len(R.tiles[x]) - 1 or y < 0:
-        return True
-    if R.world.tiles[x][y].blocked:
-        return True
-    #now check for any blocking objects
-    for object_ in R.world_obj:
-        if object_.blocks and object_.x == x and object_.y == y:
-            return True
-    return False
 
 class Item:
     def __init__(self, use_function = None):
@@ -163,7 +151,7 @@ class Item:
                 
 class Hero:
     def __init__(self):
-        self.dungeon_level = 0
+        self.dungeon_level = 0 #floor level currently on.
         self.inventory = [] #stuff being carried
         self.equipment = [] #attempts to have one armour one weapon one clothing. (to start with)
     #unsure as to what needs to go here.
@@ -327,3 +315,126 @@ class Trader:
 #                if total < limit:
 #                    #PLACE MORE asks.
                 return total# - limit
+
+attributes = ["str","con","dex","int","cha","wis", "luc"]
+
+skill_list_1 = [ #// 0_name:string, 1_attribute, 2_needTraining:Boolean, 3_desc:String,[4_dependsOn],[5_dependants]
+                 ["Appraise", "int", False, "Used to analyse an item for monetary value, and contributing factors",["none"],["none"]],
+                 ["Armour", "str", False, "How well you can wear armour. Negates some of the penalties of heavier armour",["none"],["none"]],
+                 ["Dodge", "dex", False, "Improves your chance of dodging attacks and traps",["none"],["none"]],
+                 ["Fighting", "dex", False, "Improves your chance of hitting and your damage in melee",["none"],["none"]],
+                 ]
+# Skill manager
+class Stats:
+    def __init__(self, max_hp = 100, max_mp = 10):
+        self.skills = {}
+        for line in skill_list_1:
+            self.skills[line[0].lower()] = Skill( line[0], line[1])
+            
+        self.attr = {}
+        for stat in attributes:
+            self.attr[stat] = Attribute(stat, 10)
+            
+        self.max_hp = max_hp
+        self.hp = max_hp
+        self.max_mp = max_mp
+        self.mp = max_mp   
+        
+        self.ac = -1 # not calculated yet.
+        
+        
+    def skill_level_check(self,skill):
+        
+        sk_lvl = self.skills[skill].level
+        
+        return sk_lvl #TODO: nake lookup table to look up what level the skill is at. for now just retrun this/
+    
+    def has(self, skill):
+        if self.skills.has_key(skill):
+            return True
+        return False
+    
+    def get_level(self,skill):
+        return self.skills[skill].level
+    
+    def skill_check(self, name):
+        if self.has(name):
+            skill = self.skills[name]
+            return roll_d20() + skill.level + self.attr[skill.group].modifier
+    
+    def gain_exp(self,amount, skill):
+        #TODO: this is temporpary - I want to have exp spread over multiple skills. similar to crawl.
+        self.skills[skill].gain(amount)
+        
+    def update_AC(self):
+        skill = self.skill_level_check("armour")
+        self.ac = self.parent.inventory.get_AC() * (22 + skill)/ 22
+        
+    def get_AC(self):
+        return self.ac
+    
+    def get_GDR(self, damage):
+        #gdr works *only* against melee.
+        #only *guaranteed* an amount of damage reduction equal to 1/2 AC
+        #be sure to make sure AC is up to date when any armour/skill has changed with update_AC()
+        
+        gdr_per = 14 * math.sqrt(self.get_AC() - 2)
+        
+        return min(damage * gdr_per /100, self.ac)
+        
+        
+        
+        
+
+class Skill:
+    def __init__(self,name,group="None"):
+        self.name = name
+        self.group = group
+        self.exp = 0
+        self.level = 1
+        self.aptitude = 1 #speed at which they gain skill levels.... probably somewhere better to hold this.
+       
+    def gain(self,amount):
+        self.exp += amount
+        if self.exp > 100:
+            self.level += 1
+            self.exp -= 100
+            R.ui.message("You have leveled up " + self.name + " to level " + str(self.level))
+        
+class Attribute():
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+        
+    
+    @property
+    def modifier(self):
+        if self.value <= 1: return -5
+        elif self.value < 4: return -4
+        elif self.value < 6: return -3
+        elif self.value < 8: return -2
+        elif self.value < 10: return -1
+        elif self.value < 12: return 0
+        elif self.value < 14: return 1
+        elif self.value < 16: return 2
+        elif self.value < 18: return 3
+        elif self.value <= 20: return 5
+        elif self.value > 20: return 6
+
+
+def is_blocked(x, y):
+    #first test the map tile
+    if x > len(R.tiles) - 1 or x < 0:
+        return True
+    if y > len(R.tiles[x]) - 1 or y < 0:
+        return True
+    if R.world.tiles[x][y].blocked:
+        return True
+    #now check for any blocking objects
+    for object_ in R.world_obj:
+        if object_.blocks and object_.x == x and object_.y == y:
+            return True
+    return False
+    
+def roll_d20():
+    return libtcod.random_get_int(0, 1, 20)

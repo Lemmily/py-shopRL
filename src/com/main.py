@@ -179,6 +179,8 @@ def play_game():
                 advance_time(); 
             
             handle_mouse()
+            libtcod.console_clear(R.con);
+            libtcod.console_clear(R.con_char);
                 
         else:
             render_local()
@@ -198,6 +200,9 @@ def play_game():
             
         if R.msg_redraw == True:
             update_msg_bar()
+        
+        
+        
         #update_info_bar()
         
         #erase all objectsat their old locations, before they move
@@ -423,7 +428,7 @@ def render_all():
 #            libtcod.console_set_char_background(con, x, y, map_[x][y].bg, libtcod.BKGND_SET)
     
     #libtcod.console_print_ex(message_bar, R.SCREEN_WIDTH - R.INFO_BAR_WIDTH, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse())         
-    libtcod.console_set_default_background(con, libtcod.white)
+    
     libtcod.console_blit(con, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0)
     libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
     libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0,R.MAP_VIEW_WIDTH,0)
@@ -461,7 +466,7 @@ def render_local():
                             libtcod.console_put_char_ex(con, x, y, tile.char, libtcod.dark_green, libtcod.dark_gray)
                         else:
                             libtcod.console_put_char_ex(con, x, y, " ", libtcod.black, libtcod.black)
-                        libtcod.console_set_char(con_char, x, y, " ")
+                        libtcod.console_set_char(con_char, x, y, " ") #clear any objects away
                         
                     else:
                         libtcod.console_put_char_ex(con, x, y, tile.char, libtcod.green, libtcod.light_grey)
@@ -470,6 +475,7 @@ def render_local():
                 else:
                     libtcod.console_put_char_ex(con, x, y, " ", libtcod.black, libtcod.black)
                     libtcod.console_set_char(con_char, x, y, " ")
+                    
                     
         for objects in R.locale_obj:
             #if the tile is explored, then draw the object.
@@ -499,7 +505,7 @@ def is_wall(x, y, map_= None):
         return False
     
 def clear_consoles():
-    for x in range(R.MAP_VIEW_WIDTH): #this refers to the MAP SCREEN position.
+    for x in range(R.MAP_VIEW_WIDTH): #this refers to the SCREEN position.
         for y in range(R.MAP_VIEW_HEIGHT):
             libtcod.console_set_char(con, x, y, " ")
             libtcod.console_set_char(con_char, x, y, " ")
@@ -871,6 +877,7 @@ def inventory_menu():
     for item in R.you.inventory.contents:
         items.append(item.name) 
     print R.inventory.contents[R.ui.menu("inventory contents:", items, 15)].name 
+    #TODO: put in a quit clause.
     
 def player_menu():
     options = []
@@ -917,7 +924,7 @@ def city_production_menu():
         
         key = libtcod.console_wait_for_keypress(True)
         if key.vk == libtcod.KEY_ENTER or key.vk == libtcod.KEY_BACKSPACE or key.vk == libtcod.KEY_ESCAPE:
-            break
+            return
         
 def city_menu():
     
@@ -1094,9 +1101,10 @@ def main_menu():
 def main_init():
     global con, con_char, inf,minmap, message_bar, date, ui, game_msgs
     #libtcod.console_set_custom_font("dejavu16x16.png", libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
-    libtcod.console_set_custom_font("data\ont_big.png",libtcod.FONT_LAYOUT_ASCII_INROW)
+    libtcod.console_set_custom_font("data/ont_big.png",libtcod.FONT_LAYOUT_ASCII_INROW)
     libtcod.console_init_root(R.SCREEN_WIDTH, R.SCREEN_HEIGHT, "Trader-RL", False)
     libtcod.sys_set_fps(R.LIMIT_FPS)
+    
     con = R.con = libtcod.console_new(R.MAP_WIDTH, R.MAP_HEIGHT)
     con_char = R.con_char = libtcod.console_new(R.MAP_WIDTH, R.MAP_HEIGHT)
     inf = R.inf = libtcod.console_new(R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT - R.PANEL_HEIGHT)
