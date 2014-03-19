@@ -130,7 +130,7 @@ class Inventory:
 class Hero(Basic_AI):
     def __init__(self):
         self.path = []
-        self.personality = pick_personality()
+        #self.personality = pick_personality()
         
         
     def take_turn(self):

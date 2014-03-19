@@ -137,13 +137,7 @@ class Dungeon():
                 a_items.append(item)
             floor = Floor(ID, a_monst, a_items)
             self.floors.append(floor)
-            
 
-
-
-        
-    
-    
 
 
 class Floor:
