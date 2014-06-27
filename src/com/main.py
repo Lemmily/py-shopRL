@@ -38,35 +38,7 @@ local = False
 debug_mode = False
 
 libtcod.namegen_parse('data/names.txt')
-         
-DAYS =  [
-        ['Monday', 1],
-        ['Tuesday', 2],
-        ['Wednesday', 3],
-        ['Thursday', 4],
-        ['Friday', 5],
-        ['Saturday', 6],
-        ['Sunday', 7]
-        ]
 
-MONTHS = [
-        ['January',1, 31],
-        ['February',2, 28],
-        ['March',3, 31],
-        ['April',4, 30],
-        ['May',5, 31],
-        ['June',6, 30],
-        ['July',7, 31],
-        ['August',8, 31],
-        ['September',9, 30],
-        ['October',10, 31],
-        ['November',11, 30],
-        ['December',12, 31],
-        ]
-
-master_resource_list = [    "wool", "cloth", "clothes", 
-                            "wood", "food", "ore", 
-                            "metal", "tools", "weapons"];
                             
 
 
@@ -270,7 +242,7 @@ def advance_time():
             #does this work weekly?
             newDay = 1;
         date[0] = 0; #//set hours back to 0;
-        date[1][0] = DAYS[newDay - 1][0]; #increade day name
+        date[1][0] = R.DAYS[newDay - 1][0]; #increade day name
         date[1][1] = newDay; #//change day reference value
         date[1][2] += 1; #//increase the date by a day.
         
@@ -283,15 +255,15 @@ def advance_time():
             newMonth = 1;
         
         date[1][2] = 1;
-        date[2][0] = MONTHS[newMonth - 1][0]; #/change month name
-        date[2][1] = MONTHS[newMonth - 1][1]; #//change month date value
-        date[2][2] = MONTHS[newMonth - 1][2]; #//change max days in month.
+        date[2][0] = R.MONTHS[newMonth - 1][0]; #/change month name
+        date[2][1] = R.MONTHS[newMonth - 1][1]; #//change month date value
+        date[2][2] = R.MONTHS[newMonth - 1][2]; #//change max days in month.
     
     if date[2][1] > 12: #//if the month is over 12, increase the year/
                 
-        date[2][0] = MONTHS[0][0]; #//change month name to first month
-        date[2][1] = MONTHS[0][1]; #//change month date value to first month
-        date[2][2] = MONTHS[0][2]; #//change max days in month to first month's
+        date[2][0] = R.MONTHS[0][0]; #//change month name to first month
+        date[2][1] = R.MONTHS[0][1]; #//change month date value to first month
+        date[2][2] = R.MONTHS[0][2]; #//change max days in month to first month's
         date[3] += 1; #//increase year
         
         ##
@@ -1113,7 +1085,8 @@ def main_init():
     
     game_msgs = R.game_msgs = []
     ui = R.ui = UI.UI(con,game_msgs)
-    date = R.date = [0, [DAYS[0][0], 1, 1], [MONTHS[0][0], 1, 31], 1000];
+    date = R.date = [0, [R.DAYS[0][0], 1, 1], [R.MONTHS[0][0], 1, 31], 1000]; #initialising to January
+    
 
 #UNCOMMENT FOR PROFILING.
 #profiler = cProfile.run("main_menu()","profile")

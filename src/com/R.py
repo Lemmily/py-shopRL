@@ -75,3 +75,33 @@ skill_list = [ #// 0_name:string, 1_attribute, 2_needTraining:Boolean, 3_desc:St
                 ["Dodge", "dex", False, "Improves your chance of dodging attacks and traps",["none"],["none"]],
                 ["Fighting", "dex", False, "Improves your chance of hitting and your damage in melee",["none"],["none"]],
                 ]
+
+         
+DAYS =  [
+        ['Monday', 1],
+        ['Tuesday', 2],
+        ['Wednesday', 3],
+        ['Thursday', 4],
+        ['Friday', 5],
+        ['Saturday', 6],
+        ['Sunday', 7]
+        ]
+
+MONTHS = [
+        ['January',1, 31],
+        ['February',2, 28],
+        ['March',3, 31],
+        ['April',4, 30],
+        ['May',5, 31],
+        ['June',6, 30],
+        ['July',7, 31],
+        ['August',8, 31],
+        ['September',9, 30],
+        ['October',10, 31],
+        ['November',11, 30],
+        ['December',12, 31],
+        ]
+
+master_resource_list = [    "wool", "cloth", "clothes", 
+                            "wood", "food", "ore", 
+                            "metal", "tools", "weapons"];

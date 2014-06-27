@@ -259,6 +259,17 @@ class Action:
         self.turns = turns 
         #possible way of managing how the city does things.
 
+
+class Component:
+    def __init__(self, parentSettlement):
+        self.parent = parentSettlement
+        
+        
+class ProductionComponent(Component):
+    """Component for each material produced there? they can be added and removed then."""
+    def __init__(self, parentSettlement):
+        Component.__init__(self, parentSettlement)
+        
 def chance_roll(chance = 50):
     if chance <= 0:
         return False
