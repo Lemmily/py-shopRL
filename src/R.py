@@ -45,6 +45,8 @@ date = []
 turns = 0
 pause = False
 
+DEBUG = True
+
 ui = None
 msg_redraw = False
 game_msgs = []

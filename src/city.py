@@ -7,7 +7,7 @@ import math
 import libtcodpy as libtcod
 import random
 import entities
-import Utils
+import utils
 import R
 
 from economy import *
@@ -140,7 +140,7 @@ class City:
                 for n in range(quantity):
                     if self.checkForResources(key, master_raw_materials):
                         self.produce(key, master_raw_materials)
-                if Utils.roll_100() > 75:
+                if utils.roll_100() > 75:
                     self.produce("trade", master_raw_materials)
         self.consume()
         self.settle_desires()

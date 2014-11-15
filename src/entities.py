@@ -1,8 +1,8 @@
-'''
+"""
 Created on 16 Mar 2013
 
 @author: Emily
-'''
+"""
 import libtcodpy as libtcod
 import R
 import math
@@ -73,7 +73,7 @@ class Mover(Object):
         
         self.inventory = sentient.Inventory() #not entirely sure where htis needs to go.
         
-        self.you = you
+        self.you = you #WHAT
         if you:
             self.you.parent = self
             
@@ -124,8 +124,9 @@ class Player(Mover):
         Mover.__init__(self)
         
         self.dungeon_level = d_l #what is this? depth?
-        R.inventory = self.inventory = sentient.Inventory() #= {"armour":[], "melee":[], "potions":[],"scrolls":[]}
+        self.inventory = R.inventory = sentient.Inventory() #= {"armour":[], "melee":[], "potions":[],"scrolls":[]}
         self.skills = sentient.Skills()
+        self.depth = 0
         
         
     def get_item(self, object):

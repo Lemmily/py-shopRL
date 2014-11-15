@@ -36,7 +36,7 @@ class Skills:
         
         sk_exp = self.dict[skill].exp
         
-        return sk_exp #TODO: nake lookup table to look up what level the skill is at. for now just retrun this/
+        return sk_exp #TODO: make lookup table to look up what level the skill is at. for now just retrun this/
 
 class Skill:
     def __init__(self,name,group="None"):
@@ -298,7 +298,6 @@ class AI_Hero(Basic_AI):
 #        if self.next_action == None: 
 #            self.assess_self()
 #            self.assess_motives()
-            
 
         if len(self.path) == 0:
             goal = choice(R.cities)
@@ -307,7 +306,7 @@ class AI_Hero(Basic_AI):
             self.goal = goal
             new_x = goal.x 
             new_y = goal.y
-            pathy_path = self.pather.find_path((self.parent.x,self.parent.y),(new_x,new_y), R.tiles)
+            pathy_path = self.pather.new_find_path((self.parent.x,self.parent.y),(new_x,new_y), R.tiles)
             if pathy_path is not None:
                 self.path = list(pathy_path)
                 print self.parent.name + "'s path is " + str(len(self.path)) + " long!"
@@ -336,9 +335,6 @@ class Motive(object):
     def tick(self):
         self.timer -= 1
         
-
-
-
 def pick_personality():
     pass
 

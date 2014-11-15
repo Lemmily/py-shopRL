@@ -1,4 +1,4 @@
-                
+{
 "appraise": {
 				"primary": "int",
 				"needs_training": "False",
@@ -26,3 +26,4 @@
 				"description":"Improves your chance of hitting and your damage in melee",
 				"group": "fighting"
 			}
+}

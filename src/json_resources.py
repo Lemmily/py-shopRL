@@ -128,6 +128,14 @@ raw_resources = """{
         "break_chance":1,
         "app_chance":"food"
         },
+    "food": {
+        "name":"food",
+        "category":"food",
+        "resource_class":"strategic",
+        "gather_amount":8,
+        "break_chance":1,
+        "app_chance":"food"
+        },
     "clay": {
         "name":"clay", 
         "category":"clays", 
@@ -219,6 +227,13 @@ finished_resources = """{
         "resource_class":"strategic", 
         "material":"flax", 
         "in_amt":1,
+        "out_amt":1
+        }
+    "luxury food": {
+        "category":"food",
+        "resource_class":"luxury",
+        "material":"food",
+        "in_amt":2,
         "out_amt":1
         }
 

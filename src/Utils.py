@@ -46,3 +46,29 @@ def chance_roll(chance = 50):
                         
 def roll_100():
     return int(random.random() * 100)
+
+
+
+def flip():
+    if chance_roll(50):
+        return True
+    else:
+        return False
+
+
+
+def clamp(value, min_val, max_val):
+    return max(min_val, min(value, max_val))
+
+
+def in_rectangle(ix, iy, w, h):
+    return 0 <= ix < w and 0 <= iy < h
+
+
+def maxi(a, b):
+    if a > b: return a
+    else: return b
+
+def mini(a, b):
+    if a < b: return a
+    else: return b
