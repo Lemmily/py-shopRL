@@ -27,6 +27,8 @@ FASTEST_SPEED = 30
 game_speed = NORM_SPEED
 turns = 0
 pause = False
+
+##Render Modes##
 traffic = False
 temperature = False
 continent = False
@@ -116,6 +118,9 @@ def new_game():
     selected.append(hero)
     render_all()
 
+    world.connect_cities()
+    world.connect_cities()
+    world.connect_cities()
     world.connect_cities()
     world.connect_cities()
     world.connect_cities()
@@ -333,6 +338,8 @@ def render():
         render_all()
 
 
+
+
 def render_wilderness():
     global cam_x, cam_y
     #clear the city locations using OLD cam position.
@@ -383,18 +390,29 @@ def render_all():
         libtcod.console_set_char_background(con, cam_x + city.x, cam_y + city.y, colour, libtcod.BKGND_SET)
         libtcod.console_set_char(con, cam_x + city.x, cam_y + city.y, ord(' '))
 
+    #clear position of old object
+    for objects in R.world_obj:
+        objects.clear(cam_x, cam_y)
+
+    #find the NEW camera position
     cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH / 2, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
     cam_y = scrolling_map(you.y, R.MAP_VIEW_HEIGHT / 2, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
+
+
     #now draw the map!
-    for y in range(min(R.MAP_VIEW_HEIGHT, len(R.world.tiles[0]))):  #this refers to the SCREEN position. NOT map.
+
+    #this x and y refers to the SCREEN position. NOT map.
+    for y in range(min(R.MAP_VIEW_HEIGHT, len(R.world.tiles[0]))):
         for x in range(min(R.MAP_VIEW_WIDTH, len(R.world.tiles))):
+
+            #find out *actual" map-pos
             map_pos_x = x + cam_x
             map_pos_y = y + cam_y
+
+            #skip if out of bounds
             if map_pos_x >= R.MAP_WIDTH:
-                # map_pos_x = R.MAP_WIDTH - 1
                 continue
             if map_pos_y >= R.MAP_HEIGHT:
-                # map_pos_y = R.MAP_HEIGHT - 1
                 continue
 
             tile = R.world.tiles[map_pos_x][map_pos_y]
@@ -440,13 +458,18 @@ def render_all():
                         libtcod.console_set_char(con, x, y, " ")
 
                     elif pathfinding:
-                        if len(selected) > 0 and hasattr(selected[0], "ai") and selected[0].ai is not None and selected[0].ai.pather.end is not None:
-                            loc = str((map_pos_x,map_pos_y))
-                            if selected[0].ai.pather.node_costs.has_key(loc):
-                                v = float(selected[0].ai.pather.node_costs[loc])
+                        char = " "
+                        if len(selected) > 0 and hasattr(selected[0], "ai") and selected[0].ai is not None: # and selected[0].ai.pather.end is not None:
+                            loc = (map_pos_x,map_pos_y)
+                            loc_str = str(loc)
+                            if selected[0].ai.pather.node_costs.has_key(loc_str):
+                                v = float(selected[0].ai.pather.node_costs[loc_str])
                                 v /= selected[0].ai.pather.largest_cost
                                 v = int( v * 255 )
                                 colour = libtcod.Color(v, v, v)
+
+                                if loc in selected[0].ai.path:
+                                    char = "." #path tile
                             else:
                                 if tile.type == "water":
                                     colour = libtcod.Color(0, 10, 100)
@@ -454,12 +477,14 @@ def render_all():
                                     colour = libtcod.Color(0, 100, 10)
                                 elif tile.type == "coast":
                                     colour = libtcod.Color(50, 10, 100)
+                                elif tile.type == "path":
+                                    colour = libtcod.Color(10, 60, 200)
                                 else:
                                     colour = libtcod.Color(100, 10, 0)
                         else:
                             colour = tile.bg
                         libtcod.console_set_char_background(con, x, y, colour, libtcod.BKGND_SET)
-                        libtcod.console_set_char(con, x, y, " ")
+                        libtcod.console_set_char(con, x, y, char)
 
                     else:
                         colour = tile.bg
@@ -474,48 +499,37 @@ def render_all():
                 #since it"s visible, explore it
                 tile.explored = True
 
-    #now draw the mini map
-    for cell_x in range(len(world.mini_map)):
-        for cell_y in range(len(world.mini_map[cell_x])):
-            colour = world.mini_map[cell_x][cell_y].bg
-            libtcod.console_set_char_background(minmap, cell_x, cell_y, colour, libtcod.BKGND_SET)
-            #libtcod.console_set_char_foreground(con, x, y, libtcod.white)
-
-            #    for char in R.world_obj:
-            #        if char != you:
-            #            char.draw(cam_x, cam_y)
     #now draw all the merchants
     for city in cities:
         for merchant in city.trade_house.caravans_out:
             merchant.draw(cam_x, cam_y)
     for objects in R.world_obj:
         if objects.ai:
-            objects.clear(cam_x, cam_y)
+            # objects.clear(cam_x, cam_y)
             objects.draw(cam_x, cam_y)
     you.draw(cam_x, cam_y)
 
-    #    libtcod.console_clear(message_bar)
-    #    libtcod.console_set_default_foreground(message_bar, libtcod.white)
-    #    libtcod.console_print_ex(message_bar, 0, 0, libtcod.BKGND_NONE, libtcod.LEFT, str(date[0]) + " " + str(date[1][2]) + " " + str(date[1][0]) + " " + str(date[2][0]))
-    #    # print the messages, one line at a time.
-    #    y = 2
-    #    for (line, colour) in R.game_msgs:
-    #        libtcod.console_set_default_foreground(message_bar, colour)
-    #        libtcod.console_print_ex(message_bar, R.MSG_X, R.MSG_HEIGHT - y, libtcod.BKGND_NONE, libtcod.LEFT, line)
-    #        y += 1
-    #    y = 0
-    #    for y in range(R.MAP_HEIGHT):
-    #        for x in range(R.MAP_WIDTH):
-    #            libtcod.console_set_char_background(con, x, y, map_[x][y].bg, libtcod.BKGND_SET)
+
 
     #libtcod.console_print_ex(message_bar, R.SCREEN_WIDTH - R.INFO_BAR_WIDTH, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse())         
-    libtcod.console_set_default_background(con, libtcod.white)
+    # libtcod.console_set_default_background(con, libtcod.white)
     libtcod.console_blit(con, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0)
     libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
     libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0, R.MAP_VIEW_WIDTH, 0)
     libtcod.console_blit(minmap, 0, 0, R.INFO_BAR_WIDTH, R.PANEL_HEIGHT, 0, R.MAP_VIEW_WIDTH, R.PANEL_Y)
     libtcod.console_flush()
 
+
+def render_minimap():
+    #draw the mini map
+    for cell_x in range(len(world.mini_map)):
+        for cell_y in range(len(world.mini_map[cell_x])):
+            colour = world.mini_map[cell_x][cell_y].bg
+            libtcod.console_set_char_background(minmap, cell_x, cell_y, colour, libtcod.BKGND_SET)
+
+            #    for char in R.world_obj:
+            #        if char != you:
+            #            char.draw(cam_x, cam_y)
 
 def render_local():
     global map_, fov_recompute
@@ -709,9 +723,9 @@ def handle_mouse():
                 selected.append(obj)
                 update_info_bar()
                 found = True
-        if found == False and R.world.w >= (x + cam_x) and R.world.h >= (y + cam_y):
-            print str(R.world.tiles[x + cam_x][y + cam_y].temperature) + "/" + str(
-                R.world.tiles[x + cam_x][y + cam_y].elevation)
+        # if found == False and R.world.w >= (x + cam_x) and R.world.h >= (y + cam_y):
+        #     print str(R.world.tiles[x + cam_x][y + cam_y].temperature) + "/" + str(
+        #         R.world.tiles[x + cam_x][y + cam_y].elevation)
 
 
 def handle_keys():
@@ -837,6 +851,7 @@ def handle_keys():
 
             elif key_char == "<":
                 go_up()
+
             elif key_char == ">":
                 """Go Down"""
                 go_down()
@@ -846,7 +861,6 @@ def handle_keys():
                     you.depth = 0
                     you.x = R.player_pos[0]
                     you.y = R.player_pos[1]
-                    # <<<<<<< HEAD
                     clear_consoles()
                     local = False
                     R.ui.message("DEBUG: Jumped to surface", colour=libtcod.light_flame)
@@ -980,7 +994,6 @@ def player_menu():
         options.append(line)
 
     R.ui.menu("Skills:", options, 15)
-
 
 def city_production_menu():
     width, height = R.MAP_VIEW_WIDTH - 4, R.MAP_VIEW_HEIGHT - 4

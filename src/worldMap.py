@@ -26,6 +26,13 @@ MOUNTAIN_THRESHOLD = int(255 * rockHeight)
 SNOW_THRESHOLD = int(255 * snowHeight)
 GRASS_THRESHOLD = int(255 * grassHeight)
 
+
+PATH_COST = 1.0
+GRASS_COST = 1.8
+COAST_COST = 2.5
+MOUNTAIN_COST = 3.5
+WATER_COST = 200.0 # potential for shippy ships later?
+
 # WATER_THRESHOLD = 100
 # MOUNTAIN_THRESHOLD = 200
 # COASTLINE_THRESHOLD = 15
@@ -44,7 +51,7 @@ ITEMS = ["sword", "potion", "shield", "armour", "leggings", "scroll", "wand", "b
 
 class Tile:
     # a map tile and its properties.
-    def __init__(self, x, y, blocked, block_sight=False, char=" ", cost=10, bg=[60, 100, 80], fg=[255, 255, 255],
+    def __init__(self, x, y, blocked, block_sight=False, char=" ", cost=5.0, bg=(0, 100, 80), fg=(255, 255, 255),
                  map_tile=False):
 
         self.x = x
@@ -539,10 +546,11 @@ class Map:
                              for x in range(w)]
 
         self.blocked = []
+        self.weights = {}
 
         self.hm = libtcod.heightmap_new(self.w, self.h)
 
-        self.generate(51708288)
+        self.generate()#51708288)
 
         # self.hm2 = libtcod.heightmap_new(self.w, self.h)
         # self.hm3 = libtcod.heightmap_new(self.w, self.h)
@@ -576,27 +584,38 @@ class Map:
         self.cities = []
         self.dungeons = []
         self.pois = []
-        self.generate_city(libtcod.random_get_int(0, 4, 10))
+        # self.world_noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
+        self.generate_city( 4 + abs(libtcod.noise_get(self.map_noise1d,[0.5, 0.9, 1.0])) * 30)
         self.generate_dungeons(10)
 
 
     def generate_city(self, num):
 
-        for n in range(num):
+        for n in range(int(num)):
             placed = False
+            i = 1
             while not placed:
-                x = libtcod.random_get_int(0, 1, self.w - 1)
-                y = libtcod.random_get_int(0, 1, self.h - 1)
-                tile = self.tiles[x][y]
-                if tile.POI is None and tile.blocked is not True:
-                    tempCity = City(x, y)
+
+                xh = self.w/2 - libtcod.noise_get_fbm(self.map_noise2d, [0.0, i/ self.w, 0.5, 0.0], 32.0, libtcod.NOISE_DEFAULT) * (
+                self.w / 2)
+                xh = int(xh)
+
+                yh = self.h/2 - libtcod.noise_get_fbm(self.map_noise2d, [0.0, i / self.h, 0.5, 0.0], 32.0, libtcod.NOISE_DEFAULT) * (
+                self.h / 2)
+                yh = int(yh)
+                # x = libtcod.random_get_int(0, 1, self.w - 1)
+                # y = libtcod.random_get_int(0, 1, self.h - 1)
+                tile = self.tiles[xh][yh]
+                if tile.POI is None and tile.blocked is not True and tile.type != "coast":
+                    tempCity = City(xh, yh)
                     self.cities.append(tempCity.component)
                     self.pois.append(tempCity)
-                    self.tiles[x][y].POI = tempCity
+                    self.tiles[xh][yh].POI = tempCity
                     placed = True
-                    print "City succeeded", x, y, tempCity.name
+                    print "City succeeded", xh, yh, tempCity.name
                 else:
-                    print "failed", x, y
+                    print "failed", xh, yh
+                    i += 1
 
     def generate_dungeons(self, num):
         for n in range(num):
@@ -713,7 +732,8 @@ class Map:
         while len(path) > 0:
             node = path.pop()
             self.tiles[node[0]][node[1]].bg = libtcod.Color(200, 200, 10)
-            self.tiles[node[0]][node[1]].cost = 1
+            self.tiles[node[0]][node[1]].cost = PATH_COST
+            self.tiles[node[0]][node[1]].type = "path"
             # path = path.parent_node
 
         print "........................connected ", city_one.name, " and ", city_two.name
@@ -872,7 +892,7 @@ class Map:
                     if tote < 0:
                         tote = 0
 
-                    self.tiles[cell_x][cell_y] = Tile(cell_x, cell_y, True, map_tile=True, bg=[10, 10, tote], cost=200)
+                    self.tiles[cell_x][cell_y] = Tile(cell_x, cell_y, True, map_tile=True, bg=[10, 10, tote], cost=WATER_COST)
                     self.tiles[cell_x][cell_y].elevation = value
                     self.tiles[cell_x][cell_y].humidity = 255
                     self.tiles[cell_x][cell_y].humidity_per = 100.0
@@ -885,7 +905,8 @@ class Map:
                     self.tiles[cell_x][cell_y] = Tile(cell_x, cell_y, False, map_tile=True,
                                                       bg=[value + libtcod.random_get_int(0, -5, 5),
                                                           value - test + libtcod.random_get_int(0, -5, 5),
-                                                          test], cost=2)
+                                                          test],
+                                                      cost=COAST_COST)
                     self.tiles[cell_x][cell_y].elevation = value
                     self.tiles[cell_x][cell_y].humidity = libtcod.heightmap_get_value(self.precipitation_map, cell_x,
                                                                                       cell_y)
@@ -899,7 +920,8 @@ class Map:
                     self.tiles[cell_x][cell_y] = Tile(cell_x, cell_y, False, map_tile=True,
                                                       bg=[10 + libtcod.random_get_int(0, -5, 5),
                                                           ran_1,
-                                                          10 + libtcod.random_get_int(0, -5, 5)], cost=1)
+                                                          10 + libtcod.random_get_int(0, -5, 5)],
+                                                      cost=GRASS_COST)
                     self.tiles[cell_x][cell_y].elevation = value
                     self.tiles[cell_x][cell_y].humidity = libtcod.heightmap_get_value(self.precipitation_map, cell_x,
                                                                                       cell_y)
@@ -919,14 +941,14 @@ class Map:
                                                       map_tile=True, bg=[tote,
                                                                          tote,
                                                                          tote + libtcod.random_get_int(0, -5, 5)],
-                                                      cost=6)
+                                                      cost=MOUNTAIN_COST)
                     self.tiles[cell_x][cell_y].elevation = value
                     self.tiles[cell_x][cell_y].humidity = libtcod.heightmap_get_value(self.precipitation_map, cell_x,
                                                                                       cell_y)
                     self.tiles[cell_x][cell_y].humidity_per = (self.tiles[cell_x][cell_y].humidity / 255) * 100
                     self.tiles[cell_x][cell_y].type = "mountain"
 
-                    # self.weights[(cell_x,cell_y)] = self.tiles[cell_x][cell_y].cost #add the weight!
+                self.weights[(cell_x,cell_y)] = self.tiles[cell_x][cell_y].cost #add the weight!
         #
         if R.DEBUG:
             t1 = libtcod.sys_elapsed_seconds()
@@ -1122,8 +1144,8 @@ class Map:
         else:
             self.rand = libtcod.random_new_from_seed(seed)
 
-        self.noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
-        self.noise2d = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
+        self.map_noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
+        self.map_noise2d = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
 
         self.hm = libtcod.heightmap_new(self.w, self.h)
         self.hm_wo_erosion = libtcod.heightmap_new(self.w, self.h)
@@ -1136,7 +1158,7 @@ class Map:
         self.add_hills(self.hm, 800, 16.0 * self.w / 200.0, 0.7, 0.3)
 
         # libtcod.heightmap_normalize(self.hm)
-        libtcod.heightmap_add_fbm(self.hm, self.noise2d, 2.20 * self.w / 400.0, 2.20 * self.h / 400.0, 0, 0, 5.0, 1.0,
+        libtcod.heightmap_add_fbm(self.hm, self.map_noise2d, 2.20 * self.w / 400.0, 2.20 * self.h / 400.0, 0, 0, 5.0, 1.0,
                                   2.05)
         # libtcod.heightmap_add_fbm(self.hm, self.noise2d, 1, 1, 0, 0, 10.0, 1, 1)
 
@@ -1156,8 +1178,8 @@ class Map:
             self.rand = libtcod.random_new_from_seed(seed)  #specified seed
 
         print self.rand
-        self.noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
-        self.noise2d = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
+        self.map_noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
+        self.map_noise2d = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
 
         self.hm = libtcod.heightmap_new(self.w, self.h)
         self.hm_wo_erosion = libtcod.heightmap_new(self.w, self.h)
@@ -1231,7 +1253,7 @@ class Map:
         for diry in xrange(-1, 1, 2):
             for x in xrange(self.w):
                 noise_x = [float((x) * 5 / self.w)]
-                water_amount = (1.0 + libtcod.noise_get_fbm(self.noise1d, noise_x, 3.0, libtcod.NOISE_SIMPLEX))
+                water_amount = (1.0 + libtcod.noise_get_fbm(self.map_noise1d, noise_x, 3.0, libtcod.NOISE_SIMPLEX))
                 if diry == -1:
                     starty = self.h - 1
                 else:
@@ -1266,7 +1288,7 @@ class Map:
         for dirx in xrange(-1, 1, 2):
             for y in xrange(self.h):
                 noise_y = [float((y) * 5 / self.h)]
-                water_amount = (1.0 + libtcod.noise_get_fbm(self.noise1d, noise_y, 3.0, libtcod.NOISE_SIMPLEX))
+                water_amount = (1.0 + libtcod.noise_get_fbm(self.map_noise1d, noise_y, 3.0, libtcod.NOISE_SIMPLEX))
                 if dirx == -1:
                     startx = self.w - 1
                 else:
@@ -1305,7 +1327,7 @@ class Map:
             coef = math.sin(2 * math.pi * lat)
             for x in xrange(0, self.w):
                 f = [float(x) / self.w, float(y) / self.h]
-                xcoef = coef + 0.5 * libtcod.noise_get(self.noise2d, f, libtcod.NOISE_SIMPLEX)
+                xcoef = coef + 0.5 * libtcod.noise_get(self.map_noise2d, f, libtcod.NOISE_SIMPLEX)
                 precip = libtcod.heightmap_get_value(self.precipitation_map, x, y)
                 precip += (max_ - max_) * xcoef * 0.1
                 libtcod.heightmap_set_value(self.precipitation_map, x, y, precip)
@@ -1376,7 +1398,7 @@ class Map:
             print "init hills %s" % (t1 - t0)
             t0 = t1
 
-        libtcod.heightmap_add_fbm(self.hm, self.noise2d, 2.20 * self.w / 200.0, 2.20 * self.h / 200.0, 0, 0, 10.0, 1.0,
+        libtcod.heightmap_add_fbm(self.hm, self.map_noise2d, 2.20 * self.w / 200.0, 2.20 * self.h / 200.0, 0, 0, 10.0, 1.0,
                                   2.05)
         # libtcod.heightmap_add_fbm(self.hm, self.noise2d, 0.20 * self.w / 400.0, 2.20 * self.h / 350.0, 100, 5, 10.0, 1.0,
         #                           2.05)
@@ -1426,7 +1448,7 @@ class Map:
             hill_max_r = baseRadius * (1.0 + radius_var)
             # radius = libtcod.random_get_float(0,hill_min_r, hill_max_r)
             # (max - min) + 1) + min;
-            num = libtcod.noise_get(self.noise1d, [baseRadius / (i + 1), i / hill_min_r, hill_max_r]) * baseRadius
+            num = libtcod.noise_get(self.map_noise1d, [baseRadius / (i + 1), i / hill_min_r, hill_max_r]) * baseRadius
             if num == 0: num += 0.1
             radius = (abs(num) - hill_min_r + 1) + hill_max_r
             if radius <= 1.0 or num == 0.0:
@@ -1438,11 +1460,11 @@ class Map:
             xh = self.w / 2
             yh = self.h / 2
             # xh = (libtcod.noise_get_fbm(self.noise2d, [self.w * (i + 1), i / num, self.w], 3.0, libtcod.NOISE_PERLIN) * self.w) + 1
-            xh -= libtcod.noise_get_fbm(self.noise2d, [0.0, i / num, 0.5, 0.0], 32.0, libtcod.NOISE_DEFAULT) * (
+            xh -= libtcod.noise_get_fbm(self.map_noise2d, [0.0, i / num, 0.5, 0.0], 32.0, libtcod.NOISE_DEFAULT) * (
             self.w / 2) + 1
             # yh = (self.h / 2 + libtcod.random_get_int(0, -variance, variance))
             # yh = (libtcod.noise_get_fbm(self.noise2d, [self.h / (i + 1), i * num, self.h], 5.0, libtcod.NOISE_SIMPLEX) * self.h) + 1
-            yh -= libtcod.noise_get_fbm(self.noise2d, [0.0, i / num, 0.5], 32.0, libtcod.NOISE_PERLIN) * (
+            yh -= libtcod.noise_get_fbm(self.map_noise2d, [0.0, i / num, 0.5], 32.0, libtcod.NOISE_PERLIN) * (
             self.h / 2) + 1
             # xh = int(min(max(radius + 1, int(xh)), self.w - 1 - radius))
             # yh = int(min(max(radius + 1, int(yh)), self.h - 1 - radius))
@@ -1464,7 +1486,7 @@ class Map:
                 if 0 < x and x < self.w and 0 < y and y < self.h:
                     hill_min_r = base_radius * (1.0 - radius_var)
                     hill_max_r = base_radius * (1.0 + radius_var)
-                    num = libtcod.noise_get(self.noise1d,
+                    num = libtcod.noise_get(self.map_noise1d,
                                             [base_radius / (x + 1), y / hill_min_r, hill_max_r]) * base_radius
                     if num == 0: num += 0.1
                     radius = (abs(num) - hill_min_r + 1) + hill_max_r
@@ -1476,7 +1498,7 @@ class Map:
                 if 0 < x and x < self.w and 0 < y and y < self.h:
                     hill_min_r = base_radius * (1.0 - radius_var)
                     hill_max_r = base_radius * (1.0 + radius_var)
-                    num = libtcod.noise_get(self.noise1d,
+                    num = libtcod.noise_get(self.map_noise1d,
                                             [hill_min_r / base_radius, hill_max_r / base_radius, x / self.w,
                                              y / self.h]) * base_radius
                     if num == 0: num += 0.1

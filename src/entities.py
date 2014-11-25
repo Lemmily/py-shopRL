@@ -50,9 +50,9 @@ class Object:
         libtcod.console_put_char(R.con_char, pos_x, pos_y, self.char, libtcod.BKGND_NONE)#ADDALPHA(0.0))
 #             
     def draw(self, cam_x, cam_y): 
-        
-        if self.x >= cam_x and self.x < cam_x + R.MAP_VIEW_WIDTH and self.y >= cam_y and self.y < cam_y + R.MAP_VIEW_HEIGHT:
-            
+        #
+        # if self.x >= cam_x and self.x < R.MAP_VIEW_WIDTH and self.y >= cam_y and self.y < R.MAP_VIEW_HEIGHT:
+        #
             pos_x = self.x - cam_x
             pos_y = self.y - cam_y
             

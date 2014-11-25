@@ -6,7 +6,7 @@ import libtcodpy as libtcod
 __author__ = 'Emily'
 
 STRAIGHT = 2
-DIAG = STRAIGHT + STRAIGHT / 2
+DIAG = STRAIGHT + STRAIGHT
 
 GRASS = 15
 MOUNTAIN = 40
@@ -29,12 +29,14 @@ class Pather:
         self.end = None
         self.start = None
         self.largest_cost = 0
+        self.heuristic_cost = 0
+        self.actual_cost = 0
 
     def check_blocked(self, point):
         x = point[0]
         y = point[1]
 
-        if self.tiles[x][y].blocked or  0 > x >= len(self.tiles) or 0 > y >= len(self.tiles):
+        if 0 > x or x >= len(self.tiles) or 0 > y or y >= len(self.tiles[0]) or self.tiles[x][y].blocked:
             return True
 
         return False
@@ -73,11 +75,15 @@ class Pather:
         self.node_costs = {}
         self.node_status = {}
         self.came_from = {}
+        self.largest_cost = 0
 
         self.end = end_node = PathNode(end, 0)
         self.start = start_node = PathNode(start, 0, endNode=end_node)
 
+        self.heuristic_cost = heuristic_straightline(start,end)
+
         self.frontier.put(start_node, 0)
+        self.node_costs[start_node] = 0
 
         while not self.frontier.empty():
             current = self.frontier.get()
@@ -86,13 +92,16 @@ class Pather:
                 t1 = libtcod.sys_elapsed_seconds()
                 path = self.reconstruct_path(self.came_from, start_node, end_node)
                 print "path of length: ", len(path), " succeeded in %s" % (t1 - t0), "explored ", len(self.node_costs.keys())
+
+                print "heuristic_cost:", self.heuristic_cost, " Actual cost:", self.node_costs[end_node]
                 # return current #TODO: reconstruct path.
+                path.reverse()
                 return path
             else:
                 for neighbour in self.find_neighbours(current, end_node):
                     new_cost = neighbour.cost
                     # if self.node_costs.has_key(neighbour):
-                    if neighbour not in self.node_costs or self.node_costs[neighbour] > new_cost:
+                    if new_cost < self.node_costs.get(neighbour, float("inf")):
                         if self.largest_cost < new_cost:
                             self.largest_cost = new_cost
                         self.node_costs[neighbour] = new_cost
@@ -122,15 +131,14 @@ class Pather:
         self.open_list = []
         self.node_costs.clear()
         self.node_status.clear()
+        self.largest_cost = 0
 
-        end_node = PathNode(end, 0)
-        start_node = PathNode(start, 0, endNode=end_node)
+        self.end = end_node = PathNode(end, 0)
+        self.start = start_node = PathNode(start, 0, endNode=end_node)
         # print "weeee let's go."
         self.add_node(start_node)
 
         while len(self.open_list) > 0:
-            if len(self.open_list) >= 400:
-                print "uhoh"
             current_node = self.open_list[len(self.open_list) - 1]  #putting this to 0 is cool.
             #check to see if the end has been reached.
             if current_node.is_equal_to_node(end_node):# and current_node == self.open_list[0]: #why does this need to be 0?
@@ -139,9 +147,11 @@ class Pather:
                     best_path.insert(0, current_node.grid)
                     current_node = current_node.parent_node
                 #return the path of grid points.
-                print "open_list is " + str(len(self.open_list)) + " long"
                 t1 = libtcod.sys_elapsed_seconds()
-                print "path succeeded in %s" % (t1 - t0)
+                print "path of length: ", len(best_path), " succeeded in %s" % (t1 - t0), "explored ", \
+                    len(self.node_costs.keys()), "and open nodes left: " + str(len(self.open_list))
+                # print "open_list is " + str(len(self.open_list)) + " long"
+                # print "path succeeded in %s" % (t1 - t0)
                 t0 = t1
                 return best_path
             else:
@@ -165,7 +175,7 @@ class Pather:
                 #                     print "NODE WAS NOT IN NODE_COSTS"
                 #                     continue
 
-                for neighbour in self.find_adjacent_nodes_2(current_node, end_node):
+                for neighbour in self.find_adjacent_nodes_3(current_node, end_node):
                     if self.node_status.has_key(neighbour.grid):
                         if self.node_status[neighbour.grid] == self.CLOSED:
                             continue
@@ -177,6 +187,8 @@ class Pather:
                                 self.replace_node(neighbour)
                     else:
                         self.add_node(neighbour)
+                        if self.largest_cost < neighbour.cost:
+                            self.largest_cost = neighbour.cost
                 self.node_status[current_node.grid] = self.CLOSED
                 # current_node = None
 
@@ -421,10 +433,19 @@ class Pather:
                     x = current.grid[0] + dirx
                     y = current.grid[1] + diry
                     if not self.check_blocked((x,y)):
-                        neighbours.append(PathNode((x,y),
-                                                   self.get_cost((x,y)) + current.cost, # + self.STRAIGHT,
-                                                    current,
-                                                    end_node))
+                        if dirx == 0 or diry == 0: #orthogonal
+                            neighbours.insert(0, PathNode((x,y),
+                                                        self.get_cost((x,y)) + current.cost, # + self.STRAIGHT,,
+                                                        current,
+                                                        end_node))
+                        else: #diagonal
+                            neighbours.append(PathNode((x,y),
+                                                        self.get_cost((x,y)) + current.cost + 1, # + self.STRAIGHT,,
+                                                        current,
+                                                        end_node))
+
+
+        # if (current.grid[0] + current.grid[1]) % 2 == 0: neighbours.reverse() # aesthetics
         return neighbours
 
     def reconstruct_path(self, came_from, start, goal):
@@ -463,43 +484,9 @@ class PathNode:
         return hash(str(self)) == hash(str(other))
 
     def find_heuristic(self, start, end):
-        return self.manhattan_distance(start, end)
+        return heuristic(start, end)
 
-    def diag_heuristic(self, start, end):
-        # dx = abs(start[0] - end[0])
-        #         dy = abs(start[1] - end[1])
-        #         return 10 * max(dx, dy)
 
-        dx = abs(start[0] - end[0])
-        dy = abs(start[1] - end[1])
-        beep = STRAIGHT * (dx + dy) + (DIAG - 2 * STRAIGHT) * min(dx, dy)  #+ (dx + dy)* GRASS
-        return beep
-
-    def manhattan_distance(self, (x1,y1), (x2, y2)):
-        return abs(x1 - x2) + abs(y1 - y2)
-
-    def heuristic(self, node, end):
-        return math.sqrt((end[0] - node[0]) ** 2 + (end[1] - node[1]) ** 2)
-
-    def linear_cost(self):
-        dx = self.end_node.grid[0] - self.grid[0]
-        dy = self.end_node.grid[1] - self.grid[1]
-
-        dx = abs(dx)
-        dy = abs(dy)
-
-        tempCost = 10 * min(dx, dy) + 10 * (max(dx, dy) - min(dx, dy))
-        return tempCost
-
-    def LinearCost(self, point):
-        dx = point[0] - self.grid[0]
-        dy = point[1] - self.grid[1]
-
-        dx = abs(dx)
-        dy = abs(dy)
-
-        tempCost = 10 * min(dx, dy) + 10 * (max(dx, dy) - min(dx, dy))
-        return tempCost
 
     def is_equal_to_node(self, node):
         if node.grid == self.grid:
@@ -574,7 +561,8 @@ class PathFinder():
     def __init__(self):
         self.frontier = PriorityQueue()
         self.came_from = {}
-        self.cost_so_far = {}
+        self.node_costs = {}
+        self.largest_cost = 0
 
 
     def dijkstra_search(self, graph, start, goal):
@@ -584,9 +572,9 @@ class PathFinder():
         self.frontier.put(start, 0)
 
         self.came_from = {}
-        self.cost_so_far = {}
+        self.node_costs = {}
         self.came_from[start] = None
-        self.cost_so_far[start] = 0
+        self.node_costs[start] = 0
 
         while not self.frontier.empty():
             current = self.frontier.get()
@@ -595,15 +583,31 @@ class PathFinder():
                 break
 
             for next in graph.neighbours(current):
-                new_cost = self.cost_so_far[current] + graph.cost(current, next)
-                if next not in self.cost_so_far or new_cost < self.cost_so_far[next]:
-                    self.cost_so_far[next] = new_cost  #cost
+                new_cost = self.node_costs[current] + graph.cost(current, next)
+                if next not in self.node_costs or new_cost < self.node_costs[next]:
+                    self.node_costs[next] = new_cost  #cost
                     priority = new_cost
                     self.frontier.put(next, priority)
                     self.came_from[next] = current
 
-        return self.came_from, self.cost_so_far
+        return self.came_from, self.node_costs
 
+
+    def find_path(self, world, start, goal):
+
+        if world.tiles[start[0]][start[1]].continent != world.tiles[goal[0]][goal[1]].continent:
+            print "not on same continent"
+            return None
+        t0 = libtcod.sys_elapsed_seconds()
+        graph = SquareGrid(R.MAP_WIDTH, R.MAP_HEIGHT)
+        graph.walls = world.blocked
+        graph.weights = world.weights
+        came_from, costs = self.a_star(graph, start, goal)
+        path = self.reconstruct_path(came_from, start, goal)
+        path.reverse()
+        t1 = libtcod.sys_elapsed_seconds()
+        print "path found in ", (t1-t0)
+        return path
 
     def a_star(self, graph, start, goal):
         #todo: factor in the technology - can the ship travel the distances between nodes?
@@ -612,9 +616,10 @@ class PathFinder():
         self.frontier.put(start, 0)
 
         self.came_from = {}
-        self.cost_so_far = {}
+        self.node_costs = {}
+        self.largest = 0
         self.came_from[start] = None
-        self.cost_so_far[start] = 0
+        self.node_costs[str(start)] = 0
 
         while not self.frontier.empty():
             current = self.frontier.get()
@@ -623,14 +628,16 @@ class PathFinder():
                 break
 
             for next in graph.neighbours(current):
-                new_cost = self.cost_so_far[current] + graph.cost(current, next)  #+ heuristic(goal, next)
-                if next not in self.cost_so_far or new_cost < self.cost_so_far[next]:
-                    self.cost_so_far[next] = new_cost# cost, plus distance to end.
+                new_cost = self.node_costs[str(current)] + graph.cost(current, next)  #+ heuristic(goal, next)
+                if str(next) not in self.node_costs or new_cost < self.node_costs[str(next)]:
+                    self.node_costs[str(next)] = new_cost# cost, plus distance to end.
                     priority = new_cost  + heuristic(goal, next)
                     self.frontier.put(next, priority)
                     self.came_from[next] = current
+                    if new_cost > self.largest_cost:
+                        self.largest_cost = new_cost
 
-        return self.came_from, self.cost_so_far
+        return self.came_from, self.node_costs
 
 
     def reconstruct_path(self, came_from, start, goal):
@@ -670,6 +677,9 @@ class Node():
         return hash(str(self)) == hash(str(other))
 
 
+
+
+
 def heuristic(a, b):
    (x1, y1) = a
    (x2, y2) = b
@@ -678,3 +688,40 @@ def heuristic(a, b):
 
 def heuristic_straightline(node, end):
     return math.sqrt((end[0] - node[0]) ** 2 + (end[1] - node[1]) ** 2)
+
+
+# def diag_heuristic( start, end):
+#     # dx = abs(start[0] - end[0])
+#     #         dy = abs(start[1] - end[1])
+#     #         return 10 * max(dx, dy)
+#
+#     dx = abs(start[0] - end[0])
+#     dy = abs(start[1] - end[1])
+#     beep = STRAIGHT * (dx + dy) + (DIAG - 2 * STRAIGHT) * min(dx, dy)  #+ (dx + dy)* GRASS
+#     return beep
+#
+# def manhattan_distance( (x1,y1), (x2, y2)):
+#     return abs(x1 - x2) + abs(y1 - y2)
+#
+# def heuristic( node, end):
+#     return math.sqrt((end[0] - node[0]) ** 2 + (end[1] - node[1]) ** 2)
+#
+# def linear_cost():
+#     dx = self.end_node.grid[0] - self.grid[0]
+#     dy = self.end_node.grid[1] - self.grid[1]
+#
+#     dx = abs(dx)
+#     dy = abs(dy)
+#
+#     tempCost = 10 * min(dx, dy) + 10 * (max(dx, dy) - min(dx, dy))
+#     return tempCost
+#
+# def LinearCost( point):
+#     dx = point[0] - self.grid[0]
+#     dy = point[1] - self.grid[1]
+#
+#     dx = abs(dx)
+#     dy = abs(dy)
+#
+#     tempCost = 10 * min(dx, dy) + 10 * (max(dx, dy) - min(dx, dy))
+#     return tempCost

@@ -7,7 +7,7 @@ import math
 import R
 import entities
 from random import choice
-from src.pathfinding import Pather
+from src.pathfinding import Pather, PathFinder
 
 
 GRASS = 15
@@ -217,7 +217,8 @@ class AI_Hero(Basic_AI):
         self.dict_motive = {}
         self.goal = None
         self.path = []
-        self.pather = Pather()
+        self.pather2 = Pather()
+        self.pather = PathFinder()
 
         
     def assess_self(self):
@@ -306,7 +307,8 @@ class AI_Hero(Basic_AI):
             self.goal = goal
             new_x = goal.x 
             new_y = goal.y
-            pathy_path = self.pather.new_find_path((self.parent.x,self.parent.y),(new_x,new_y), R.tiles)
+            # pathy_path = self.pather.new_find_path((self.parent.x,self.parent.y),(new_x,new_y), R.tiles)
+            pathy_path = self.pather.find_path(R.world, (self.parent.x,self.parent.y),(new_x,new_y))
             if pathy_path is not None:
                 self.path = list(pathy_path)
                 print self.parent.name + "'s path is " + str(len(self.path)) + " long!"
