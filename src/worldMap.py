@@ -550,7 +550,7 @@ class Map:
 
         self.hm = libtcod.heightmap_new(self.w, self.h)
 
-        self.generate()#51708288)
+        self.generate(51708288)
 
         # self.hm2 = libtcod.heightmap_new(self.w, self.h)
         # self.hm3 = libtcod.heightmap_new(self.w, self.h)
@@ -708,35 +708,62 @@ class Map:
 
     def connect_cities(self):
 
+
         pather = pathfinding.Pather()
-        city_one = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
-        city_two = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
+        for city in self.cities:
+            for other_city in self.cities:
+                if city == other_city:
+                    continue
+                else:
+                    path = pather.new_find_path((city.x, city.y), (other_city.x, other_city.y), self.tiles) or []
+                    while len(path) > 0:
+                        node = path.pop()
+                        self.tiles[node[0]][node[1]].bg = libtcod.Color(200, 200, 10)
+                        self.tiles[node[0]][node[1]].cost = PATH_COST
+                        self.tiles[node[0]][node[1]].type = "path"
+                    print "........................connected ", city.name, " and ", other_city.name
 
-        while city_one == city_two and len(self.cities) > 1:
-            city_two = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
 
-        path = pather.new_find_path((city_one.x, city_one.y), (city_two.x, city_two.y), self.tiles)
 
-        while path == None:
-            path = pather.new_find_path((city_one.x, city_one.y), (city_two.x, city_two.y), self.tiles)
+        # i = 0.1
+        #
+        # fc = libtcod.noise_get_fbm(self.map_noise2d, [0.0, 0.5, i / 2], 32.0, libtcod.NOISE_SIMPLEX) * ( len(self.cities) - 1)
+        # fc = int(abs(fc))
+        #
+        # oc = libtcod.noise_get_fbm(self.map_noise2d, [0.0, 0.5, i * 2], 32.0, libtcod.NOISE_DEFAULT) * ( len(self.cities) - 1)
+        # oc = int(abs(oc))
+        # pather = pathfinding.Pather()
+        # city_one = self.cities[fc]
+        # city_two = self.cities[oc]#libtcod.random_get_int(0, 0, len(self.cities) - 1)]
+        #
+        # while city_one == city_two and len(self.cities) > 1 and city_one:
+        #     fc = 0.0 + libtcod.noise_get(self.map_noise1d, [0.0, 0.5, i * len(self.cities)], libtcod.NOISE_DEFAULT) * ( len(self.cities) - 1)
+        #     fc = int(abs(fc))
+        #     city_two = self.cities[fc]
+        #     i += 0.1
+        #
+        # path = pather.new_find_path((city_one.x, city_one.y), (city_two.x, city_two.y), self.tiles)
+        #
+        # while path == None:
+        #     path = pather.new_find_path((city_one.x, city_one.y), (city_two.x, city_two.y), self.tiles)
+        #
+        #     # if path == None:
+        #     #     city_one = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
+        #     #     city_two = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
+        #     #
+        #     #     while city_one == city_two and len(self.cities) > 1:
+        #     #         city_two = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
+        #
+        # # for node in path:
+        #
+        # while len(path) > 0:
+        #     node = path.pop()
+        #     self.tiles[node[0]][node[1]].bg = libtcod.Color(200, 200, 10)
+        #     self.tiles[node[0]][node[1]].cost = PATH_COST
+        #     self.tiles[node[0]][node[1]].type = "path"
+        #     # path = path.parent_node
 
-            if path == None:
-                city_one = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
-                city_two = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
-
-                while city_one == city_two and len(self.cities) > 1:
-                    city_two = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
-
-        # for node in path:
-
-        while len(path) > 0:
-            node = path.pop()
-            self.tiles[node[0]][node[1]].bg = libtcod.Color(200, 200, 10)
-            self.tiles[node[0]][node[1]].cost = PATH_COST
-            self.tiles[node[0]][node[1]].type = "path"
-            # path = path.parent_node
-
-        print "........................connected ", city_one.name, " and ", city_two.name
+        # print "........................connected ", city_one.name, " and ", city_two.name
 
     def add_foot_traffic(self, x, y):
         self.traffic[x][y] += 1
@@ -1565,6 +1592,10 @@ class Continent:
         else:
             print "POI not in list."
 
+    def on_continent(self, x, y):
+        #todo: make this quick and easy? - maybe dict instead of list.
+
+
 
 def within_bounds(x, y, map_=None):
     if map_ == None:
@@ -1609,6 +1640,7 @@ class City(POI):
         self.component = city.City(x, y, self)
         self.name = self.component.name
         self.type = "city"
+        self.connections = {}
 
 
 class Resource(POI):

@@ -13,6 +13,45 @@ MOUNTAIN = 40
 PATH = 5
 
 
+class PathNode:
+    OPEN = 0
+    CLOSED = 1
+
+    def __init__(self, grid, cost, parentNode=None, endNode=None):
+        self.grid = grid #location
+        self.cost = cost #cost of journey to this node so far.
+        # self.cost = 0 #cost of  and estimate for distance left
+        self.open = self.OPEN
+
+        self.parent_node = parentNode
+        self.end_node = endNode
+
+        # if self.end_node != None:
+        #     self.cost = self.direct_cost + self.find_heuristic(self.grid, self.end_node.grid)
+
+    def __str__(self):
+        return str(self.grid)
+
+    def __hash__(self):
+        # print(hash(str(self)))
+        return hash(str(self))
+
+    def __eq__(self, other):
+        return hash(str(self)) == hash(str(other))
+
+    def find_heuristic(self, start, end):
+        return heuristic(start, end)
+
+    def is_equal_to_node(self, node):
+        if node.grid == self.grid:
+            return True
+
+        if node.grid[0] == self.grid[0] and node.grid[1] == self.grid[1]:
+            return True
+
+        return False
+
+
 class Pather:
     OPEN = 0
     CLOSED = 1
@@ -457,46 +496,6 @@ class Pather:
 
         return path
 
-class PathNode:
-    OPEN = 0
-    CLOSED = 1
-
-    def __init__(self, grid, cost, parentNode=None, endNode=None):
-        self.grid = grid #location
-        self.cost = cost #cost of journey to this node so far.
-        # self.cost = 0 #cost of  and estimate for distance left
-        self.open = self.OPEN
-
-        self.parent_node = parentNode
-        self.end_node = endNode
-
-        # if self.end_node != None:
-        #     self.cost = self.direct_cost + self.find_heuristic(self.grid, self.end_node.grid)
-
-    def __str__(self):
-        return str(self.grid)
-
-    def __hash__(self):
-        # print(hash(str(self)))
-        return hash(str(self))
-
-    def __eq__(self, other):
-        return hash(str(self)) == hash(str(other))
-
-    def find_heuristic(self, start, end):
-        return heuristic(start, end)
-
-
-
-    def is_equal_to_node(self, node):
-        if node.grid == self.grid:
-            return True
-
-        if node.grid[0] == self.grid[0] and node.grid[1] == self.grid[1]:
-            return True
-
-        return False
-
 class Graph:
     def __init__(self):
         self.nodes = {}
@@ -533,14 +532,16 @@ class SquareGrid:
 
     def neighbours(self, id):
       (x, y) = id
-      results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)] #orthogonal only
+      # results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)] #orthogonal only
+      results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1), (x+1, y+1), (x-1, y-1), (x-1, y+1), (x-1, y+1)] #all directions
       if (x + y) % 2 == 0: results.reverse() # aesthetics
       results = filter(self.in_bounds, results)
       results = filter(self.passable, results)
       return results
 
     def cost(self, a, b):
-        return self.weights.get(b, 1)
+        c = self.weights.get(b, 1)
+        return c
 
 
 class PriorityQueue:
@@ -606,18 +607,18 @@ class PathFinder():
         path = self.reconstruct_path(came_from, start, goal)
         path.reverse()
         t1 = libtcod.sys_elapsed_seconds()
-        print "path found in ", (t1-t0)
+        print "path found in ", (t1-t0), " explored ", len(self.node_costs)
         return path
 
     def a_star(self, graph, start, goal):
         #todo: factor in the technology - can the ship travel the distances between nodes?
-        #todo: possibly havea seperate function that constructs a graph of reachable nodes to use for this.
+        #todo: possibly have a seperate function that constructs a graph of reachable nodes to use for this.
         self.frontier = PriorityQueue()
         self.frontier.put(start, 0)
 
         self.came_from = {}
         self.node_costs = {}
-        self.largest = 0
+        self.largest_cost = 0
         self.came_from[start] = None
         self.node_costs[str(start)] = 0
 
@@ -628,10 +629,11 @@ class PathFinder():
                 break
 
             for next in graph.neighbours(current):
-                new_cost = self.node_costs[str(current)] + graph.cost(current, next)  #+ heuristic(goal, next)
+                new_cost = self.node_costs[str(current)] + graph.cost(current, next)
                 if str(next) not in self.node_costs or new_cost < self.node_costs[str(next)]:
-                    self.node_costs[str(next)] = new_cost# cost, plus distance to end.
-                    priority = new_cost  + heuristic(goal, next)
+                    self.node_costs[str(next)] = new_cost
+                    #cost, plus distance to end.
+                    priority = new_cost + heuristic(goal, next)
                     self.frontier.put(next, priority)
                     self.came_from[next] = current
                     if new_cost > self.largest_cost:
