@@ -86,30 +86,30 @@ monsters = """{
 master_items_list = [
         ##[0_Value,1_Level,2_Power,3_type,4_ActualName,5_SubType,[6_Effect], 7_DC, 8_AC, 9_EV, [10_damage (times dice rolled), (dice sides), (bonus)], 11_UsefUnction]
         
-        [6, 1, 0,     "clothing", "Tatty Shirt",    "Cloth Scraps", [1],1, 1, 0, None],
-        [6, 1, 0,     "clothing", "Linen Sack",     "Cloth Scraps",[1],4, 1, 0, None],
+        [6, 1, 0,       "clothing", "Tatty Shirt",    "Cloth Scraps", [1],1, 1, 0, None],
+        [6, 1, 0,       "clothing", "Linen Sack",     "Cloth Scraps",[1],4, 1, 0, None],
         [8.9, 1, 1,     "clothing", "Tatty Robe",   "Cloth Robe", [1], 7, 1, 0, None],
-        [13, 1, 2,     "clothing", "Woven Robe",    "Cloth Robe", [1], 13, 2, 0, None],
-        [24, 2, 2,     "clothing", "Silk Robe",     "Cloth Robe", [1], 18, 3, 0, None],
+        [13, 1, 2,      "clothing", "Woven Robe",    "Cloth Robe", [1], 13, 2, 0, None],
+        [24, 2, 2,      "clothing", "Silk Robe",     "Cloth Robe", [1], 18, 3, 0, None],
         
-        [8, 1, 0,    "armour", "Farmers Garb",      "Leather Scraps", [1], 3, 2, -1, None],
-        [17, 1, 1,   "armour", "Hide Armour",       "Leather Armour", [1], 6, 2, 0, None],
-        [30, 1, 2,   "armour", "Leather Vest",      "Leather Armour", [1], 12, 2, -1, None],
-        [60, 2, 1,     "armour", "Chainmail",       "Metal Armour", [1], 14, 7, -4, None],
-        [100, 2, 2,  "armour", "Metal Breastplate", "Metal Armour", [1], 17, 10, -5, None],
+        [8, 1, 0,       "armour", "Farmers Garb",       "Leather Scraps", [1], 3, 2, -1, None],
+        [17, 1, 1,      "armour", "Hide Armour",        "Leather Armour", [1], 6, 2, 0, None],
+        [30, 1, 2,      "armour", "Leather Vest",       "Leather Armour", [1], 12, 2, -1, None],
+        [60, 2, 1,      "armour", "Chainmail",          "Metal Armour", [1], 14, 7, -4, None],
+        [100, 2, 2,     "armour", "Metal Breastplate",  "Metal Armour", [1], 17, 10, -5, None],
         
-        [4, 1, 0,    "weapon", "Tree Branch",     "Branch", [1], 4, 0, 0, [1, 4, 0]], 
-        [6, 1, 1,    "weapon", "Rusty Dagger",    "Dagger", [1], 6, 0, 0, [1, 6, 0]],
-        [13, 1, 2,     "weapon", "Dagger",          "Dagger", [1], 10, 0, 0,[2, 6, 0]], 
-        [25, 2, 1,     "weapon", "Short Sword",     "Sword", [1], 12, 0, 0, [2, 8, 4]],
-        [30, 2, 2,     "weapon", "Long Sword",      "Sword", [1], 14, 0, 0, [3, 8, 2]],
-        [45, 3, 1,     "weapon", "Rapier",          "Sword", [1], 16, 0, 0, [3, 10, 6]],
-        [65, 3, 2,     "weapon", "GreatSword",      "Sword", [1], 18, 0, 0, [2, 12, 8]],
+        [4, 1, 0,       "weapon", "Tree Branch",     "Club", [1], 4, 0, 0, [1, 4, 0]],
+        [6, 1, 1,       "weapon", "Rusty Dagger",    "Dagger", [1], 6, 0, 0, [1, 6, 0]],
+        [13, 1, 2,      "weapon", "Dagger",          "Dagger", [1], 10, 0, 0,[2, 6, 0]],
+        [25, 2, 1,      "weapon", "Short Sword",     "Sword", [1], 12, 0, 0, [2, 8, 4]],
+        [30, 2, 2,      "weapon", "Long Sword",      "Sword", [1], 14, 0, 0, [3, 8, 2]],
+        [45, 3, 1,      "weapon", "Rapier",          "Sword", [1], 16, 0, 0, [3, 10, 6]],
+        [65, 3, 2,      "weapon", "GreatSword",      "Sword", [1], 18, 0, 0, [2, 12, 8]],
         
-        [25, 1, 0,     "potion", "Healing Potion",  "Potion", [1], 18, 0, 0, None, "heal"],
-        [25, 1, 0,     "potion", "Hurtful Potion",  "Potion", [1], 19, 0, 0, None, "hurt"],
-        [25, 1, 0,     "potion", "Poison",          "Potion", [1], 18, 0, 0, None, "poison"],
-        [25, 1, 0,     "potion", "Hurtful Potion",  "Potion", [1], 19, 0, 0, None, "hurt"],
+        [25, 1, 0,      "potion", "Healing Potion",  "Potion", [1], 18, 0, 0, None, "heal"],
+        [25, 1, 0,      "potion", "Hurtful Potion",  "Potion", [1], 19, 0, 0, None, "hurt"],
+        [25, 1, 0,      "potion", "Poison",          "Potion", [1], 18, 0, 0, None, "poison"],
+        [25, 1, 0,      "potion", "Hurtful Potion",  "Potion", [1], 19, 0, 0, None, "hurt"],
         ]
 
 

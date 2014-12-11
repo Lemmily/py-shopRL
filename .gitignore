@@ -1,5 +1,2 @@
-/src/worldMap.pyc
-/src/R.pyc
-/src/dungeon.pyc
-/src/*.pyc
 *.pyc
+.idea/

@@ -128,6 +128,14 @@ raw_resources = """{
         "break_chance":1,
         "app_chance":"food"
         },
+    "food": {
+        "name":"food",
+        "category":"food",
+        "resource_class":"strategic",
+        "gather_amount":8,
+        "break_chance":1,
+        "app_chance":"food"
+        },
     "clay": {
         "name":"clay", 
         "category":"clays", 
@@ -221,18 +229,25 @@ finished_resources = """{
         "in_amt":1,
         "out_amt":1
         }
+    "luxury food": {
+        "category":"food",
+        "resource_class":"luxury",
+        "material":"food",
+        "in_amt":2,
+        "out_amt":1
+        }
 
 }"""
 
 gatherers_by_token = """{
-                         'food':{    'name':'Food Farmer',    'consumed':[], 'essential':['tools'], 'preferred':['clothing', 'furniture', 'pottery'] },
-                         'flax':{    'name':'Flax Farmer',    'consumed':[], 'essential':['tools'], 'preferred':['furniture', 'pottery'] },
-                         'copper':{  'name':'Copper Miner',   'consumed':[], 'essential':['tools'], 'preferred':['clothing'] },
-                         'bronze':{  'name':'Bronze Miner',   'consumed':[], 'essential':['tools'], 'preferred':['clothing'] },
-                         'iron':{    'name':'Iron Miner',     'consumed':[], 'essential':['tools'], 'preferred':['clothing'] },
-                         'clay':{    'name':'Clay Gatherer',  'consumed':[], 'essential':[],        'preferred':['clothing'] },
-                         'silt':{    'name':'Silt Gatherer',  'consumed':[], 'essential':[],        'preferred':['clothing'] },
-                         'wood':{    'name':'Woodcutter',     'consumed':[], 'essential':['tools'], 'preferred':['clothing'] }
+                         'food':{'name':'Food Farmer', 'consumed':[], 'essential':['tools'], 'preferred':['clothing', 'furniture', 'pottery'] },
+                         'flax':{'name':'Flax Farmer', 'consumed':[], 'essential':['tools'], 'preferred':['furniture', 'pottery'] },
+                         'copper':{'name':'Copper Miner', 'consumed':[], 'essential':['tools'], 'preferred':['clothing'] },
+                         'bronze':{'name':'Bronze Miner', 'consumed':[], 'essential':['tools'], 'preferred':['clothing'] },
+                         'iron':{'name':'Iron Miner', 'consumed':[], 'essential':['tools'], 'preferred':['clothing'] },
+                         'clay':{'name':'Clay Gatherer', 'consumed':[], 'essential':[], 'preferred':['clothing'] },
+                         'silt':{'name':'Silt Gatherer', 'consumed':[], 'essential':[], 'preferred':['clothing'] },
+                         'wood':{'name':'Woodcutter', 'consumed':[], 'essential':['tools'], 'preferred':['clothing'] }
                          }"""
 # Good producers
 producers_by_token = """{                     

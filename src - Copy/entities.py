@@ -341,7 +341,6 @@ class AI_CityTrader(Basic_AI):
         self.path = None
     
     def take_turn(self):
-        
         x = self.t_h.parent.x
         y = self.t_h.parent.y
         
