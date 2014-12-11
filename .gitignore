@@ -1,2 +1,4 @@
 *.pyc
 .idea/
+src/test_thing.py
+src/chiiis.py

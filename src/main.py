@@ -34,6 +34,8 @@ temperature = False
 continent = False
 pathfinding = False
 
+path_to_draw = 1
+
 local = False
 
 debug_mode = False
@@ -459,17 +461,26 @@ def render_all():
                         libtcod.console_set_char(con, x, y, " ")
 
                     elif pathfinding:
+
+
                         char = " "
                         if len(selected) > 0 and hasattr(selected[0], "ai") and selected[0].ai is not None: # and selected[0].ai.pather.end is not None:
+                            if path_to_draw == 2:
+                                draw_path =  selected[0].ai.path2
+                                pather = selected[0].ai.pather2
+                            else:
+                                draw_path =  selected[0].ai.path
+                                pather = selected[0].ai.pather
+
                             loc = (map_pos_x,map_pos_y)
                             loc_str = str(loc)
-                            if selected[0].ai.pather.node_costs.has_key(loc_str):
-                                v = float(selected[0].ai.pather.node_costs[loc_str])
-                                v /= selected[0].ai.pather.largest_cost
+                            if pather.node_costs.has_key(loc_str):
+                                v = float(pather.node_costs[loc_str])
+                                v /= pather.largest_cost
                                 v = int( v * 255 )
                                 colour = libtcod.Color(v, v, v)
 
-                                if loc in selected[0].ai.path:
+                                if loc in draw_path:
                                     char = "." #path tile
                             else:
                                 if tile.type == "water":
@@ -741,7 +752,7 @@ def handle_mouse():
 def handle_keys():
     global keys, player_turn, pause, game_speed, fov_recompute
 
-    global debug_mode, traffic, temperature, continent, local, pathfinding
+    global debug_mode, traffic, temperature, continent, local, pathfinding, path_to_draw
 
     #key = libtcod.console_check_for_keypress()  #real-time
     # key = libtcod.console_wait_for_keypress(True)  #turn-based
@@ -874,6 +885,12 @@ def handle_keys():
                     clear_consoles()
                     local = False
                     R.ui.message("DEBUG: Jumped to surface", colour=libtcod.light_flame)
+
+            if pathfinding:
+                if key_char == "1":
+                    path_to_draw = 1
+                elif key_char == "2":
+                    path_to_draw = 2
 
 
 def player_action():
@@ -1240,7 +1257,7 @@ def main_init():
 
     game_msgs = R.game_msgs = []
     ui = R.ui = UI.UI(con,game_msgs)
-    date = R.date = [0, [R.DAYS[0][0], 1, 1], [R.MONTHS[0][0], 1, 31], 1000]; #initialising to January
+    date = R.date = [0, [DAYS[0][0], 1, 1], [MONTHS[0][0], 1, 31], 1000]; #initialising to January
 
 
 #UNCOMMENT FOR PROFILING.

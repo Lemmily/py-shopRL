@@ -156,7 +156,7 @@ class Pather:
             self.tiles = tiles
 
         if len(tiles) <= 0 or start[0] < 0 or start[1] < 0 or end[0] < 0 or end[1] < 0:
-            print "FALSE"
+            print "FALSE, no tiles, or start/end is out of bounds"
             return None
 
         if self.check_blocked(start) and self.check_blocked(end):
@@ -532,8 +532,8 @@ class SquareGrid:
 
     def neighbours(self, id):
       (x, y) = id
-      # results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)] #orthogonal only
-      results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1), (x+1, y+1), (x-1, y-1), (x-1, y+1), (x-1, y+1)] #all directions
+      results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)] #orthogonal only
+      # results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1), (x+1, y+1), (x-1, y-1), (x-1, y+1), (x-1, y+1)] #all directions
       if (x + y) % 2 == 0: results.reverse() # aesthetics
       results = filter(self.in_bounds, results)
       results = filter(self.passable, results)
