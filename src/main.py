@@ -494,12 +494,20 @@ def render_all():
                                 else:
                                     colour = libtcod.Color(100, 10, 0)
                         else:
-                            colour = tile.bg
+                            if tile.type == "water":
+                                colour = libtcod.Color(0, 10, 100)
+                            elif tile.type == "grass":
+                                colour = libtcod.Color(0, 100, 10)
+                            elif tile.type == "coast":
+                                colour = libtcod.Color(50, 10, 100)
+                            elif tile.type == "path":
+                                colour = libtcod.Color(10, 60, 200)
+                            else:
+                                colour = libtcod.Color(100, 10, 0)
                         libtcod.console_set_char_background(con, x, y, colour, libtcod.BKGND_SET)
                         libtcod.console_set_char(con, x, y, char)
 
                     else:
-                        colour = tile.bg
                         libtcod.console_set_char(con, x, y, " ")
                         libtcod.console_set_char_background(con, x, y, colour, libtcod.BKGND_SET)
                         #libtcod.console_set_char_foreground(con, x, y, libtcod.black)
