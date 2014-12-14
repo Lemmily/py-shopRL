@@ -490,7 +490,7 @@ class Pather:
     def reconstruct_path(self, came_from, start, goal):
         current = goal
         path = [current.grid]
-        while current != start:
+        while str(current.grid) != str(start.grid): #string comparison
             current = came_from[current]
             path.append(current.grid)
 
@@ -532,8 +532,8 @@ class SquareGrid:
 
     def neighbours(self, id):
       (x, y) = id
-      results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)] #orthogonal only
-      # results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1), (x+1, y+1), (x-1, y-1), (x-1, y+1), (x-1, y+1)] #all directions
+      # results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)] #orthogonal only
+      results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1), (x+1, y+1), (x-1, y-1), (x-1, y+1), (x-1, y+1)] #all directions
       if (x + y) % 2 == 0: results.reverse() # aesthetics
       results = filter(self.in_bounds, results)
       results = filter(self.passable, results)
@@ -607,7 +607,7 @@ class PathFinder():
         path = self.reconstruct_path(came_from, start, goal)
         path.reverse()
         t1 = libtcod.sys_elapsed_seconds()
-        print "path found in ", (t1-t0), " explored ", len(self.node_costs)
+        print "path of length: ", len(path), " succeeded in %s" % (t1 - t0), "explored ", len(self.node_costs.keys())
         return path
 
     def a_star(self, graph, start, goal):
@@ -666,7 +666,7 @@ class Node():
         :param node: other node
         :return: direct cost of entry of other node plus distance.
         """
-        return node.direct_cost + heuristic(self.location, node.location)
+        return self.direct_cost + heuristic(self.location, node.location)
 
     def __str__(self):
         return str(self.location)
