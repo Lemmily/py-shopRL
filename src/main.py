@@ -465,7 +465,10 @@ def render_all():
 
                         char = " "
                         if len(selected) > 0 and hasattr(selected[0], "ai") and selected[0].ai is not None: # and selected[0].ai.pather.end is not None:
-                            if path_to_draw == 2:
+                            if path_to_draw == 3:
+                                draw_path =  selected[0].ai.path3
+                                pather = selected[0].ai.pather3
+                            elif path_to_draw == 2:
                                 draw_path =  selected[0].ai.path2
                                 pather = selected[0].ai.pather2
                             else:
@@ -474,8 +477,17 @@ def render_all():
 
                             loc = (map_pos_x,map_pos_y)
                             loc_str = str(loc)
-                            if pather.node_costs.has_key(loc_str):
+                            if path_to_draw < 3 and pather.node_costs.has_key(loc_str):
                                 v = float(pather.node_costs[loc_str])
+                                v /= pather.largest_cost
+                                v = int( v * 255 )
+                                colour = libtcod.Color(v, v, v)
+
+                                if loc in draw_path:
+                                    char = "." #path tile
+
+                            elif path_to_draw == 3 and pather.node_costs.has_key(loc): #todo: hack for old pather, remove!!!
+                                v = float(pather.node_costs[loc])
                                 v /= pather.largest_cost
                                 v = int( v * 255 )
                                 colour = libtcod.Color(v, v, v)
@@ -509,7 +521,7 @@ def render_all():
 
                     else:
                         libtcod.console_set_char(con, x, y, " ")
-                        libtcod.console_set_char_background(con, x, y, colour, libtcod.BKGND_SET)
+                        libtcod.console_set_char_background(con, x, y, tile.bg, libtcod.BKGND_SET)
                         #libtcod.console_set_char_foreground(con, x, y, libtcod.black)
                         #libtcod.console_set_char(con, x, y, libtcod.CHAR_BULLET)
                 else:
@@ -899,6 +911,8 @@ def handle_keys():
                     path_to_draw = 1
                 elif key_char == "2":
                     path_to_draw = 2
+                elif key_char == "3":
+                    path_to_draw = 3
 
 
 def player_action():

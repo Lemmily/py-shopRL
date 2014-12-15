@@ -218,8 +218,10 @@ class AI_Hero(Basic_AI):
         self.goal = None
         self.path = []
         self.path2 = []
+        self.path3 = []
         self.pather = PathFinder()
         self.pather2 = Pather()
+        self.pather3 = Pather()
 
         
     def assess_self(self):
@@ -309,6 +311,7 @@ class AI_Hero(Basic_AI):
             new_x = goal.x 
             new_y = goal.y
             # pathy_path = self.pather.new_find_path((self.parent.x,self.parent.y),(new_x,new_y), R.tiles)
+            print self.parent.name + " IS PATH FINDING"
             pathy_path = self.pather.find_path(R.world, (self.parent.x,self.parent.y),(new_x,new_y))
             if pathy_path is not None:
                 self.path = list(pathy_path)
@@ -317,6 +320,11 @@ class AI_Hero(Basic_AI):
             if pathy_path is not None:
                 self.path2 = list(pathy_path)
                 print self.parent.name + "'s second path is " + str(len(self.path2)) + " long!"
+            pathy_path = self.pather3.find_path((self.parent.x, self.parent.y),(new_x,new_y), R.tiles)
+            if pathy_path is not None:
+                self.path3 = list(pathy_path)
+                print self.parent.name + "'s third path is " + str(len(self.path3)) + " long!"
+            print self.parent.name + " ----------------------------"
              
         else:
             grid = self.path[0]
