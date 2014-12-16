@@ -162,9 +162,12 @@ def play_game():
     mouse = libtcod.Mouse()
     key = libtcod.Key()
 
+    start_time = libtcod.sys_elapsed_seconds()
     while not libtcod.console_is_window_closed():
 
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
+
+        delta_time = libtcod.sys_get_last_frame_length()
         #render the screen
         if not local:
 

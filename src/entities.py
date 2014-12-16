@@ -121,7 +121,7 @@ class Mover(Object):
 
 class Player(Mover):
     def __init__(self, d_l = 0):
-        Mover.__init__(self)
+        Mover.__init__(self, x=R.MAP_WIDTH/2, y = R.MAP_HEIGHT/2)
         
         self.dungeon_level = d_l #what is this? depth?
         self.inventory = R.inventory = sentient.Inventory() #= {"armour":[], "melee":[], "potions":[],"scrolls":[]}

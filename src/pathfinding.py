@@ -5,7 +5,7 @@ import libtcodpy as libtcod
 
 __author__ = 'Emily'
 
-STRAIGHT = 2
+STRAIGHT = 2.0
 DIAG = STRAIGHT + STRAIGHT
 
 GRASS = 15
@@ -416,7 +416,7 @@ class Pather:
         Y = current.grid[1]
         # distance = current.diag_heuristic(current.grid, end.grid)
         distance = current.find_heuristic(current.grid, end.grid)
-        distance *= (1.0 + 1 / 1000)  # agh
+        distance *= (1.0 + STRAIGHT / 100.0)  # agh
         # distance = distance + (distance * 0.1) #current distance + 10% so that it excludes directly away from the target.
         length_x = len(self.tiles) - 1
         length_y = len(self.tiles[0]) - 1
