@@ -69,6 +69,8 @@ class Dungeon():
         self.level = 1
         self.floors = []
 
+        self.monsters = []
+
         self.generate_floors(1, 3)
 
     def turmoil(self):
@@ -77,7 +79,20 @@ class Dungeon():
         pass
 
     def addMonster(self, type=""):
-        pass
+        #todo: add this to the floor instead of whole dungeon - for initial whole dungeone is fine.
+        if type == "":
+            keys =[]
+            for key in MONSTERS[self.level]:
+                keys.append(key)
+            type = libtcod.random_get_int(0, 0, len(keys)-1)
+        tile = None
+        while tile == None:
+            x = libtcod.random_get_int(0, 0, len(self.tiles))
+            y = libtcod.random_get_int(0, 0, len(self.tiles[0]))
+            if self.get_floor_tile(x,y).blocks is not True:
+                tile = self.get_floor_tile(x,y)
+
+        return create_monster(type,tile)
 
     def addFloor(self, level=-1):
         pass
@@ -577,4 +592,11 @@ class Floor:
     
           
         
-        
+
+def create_monster(type,level,tile):
+    BLUEPRINT = MONSTERS[level][type]
+    colour = libtcod.Color(BLUEPRINT[2][0],BLUEPRINT[2][1],BLUEPRINT[2][2])
+    monster = entities.Mover(x=tile.x,y=tile.y, char = BLUEPRINT[1],name=BLUEPRINT[0],colour = colour, always_visible = True);
+    stats = entities.Stats(array=BLUEPRINT[4])
+    monster.stats = stats
+    return monster
