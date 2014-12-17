@@ -255,7 +255,7 @@ class AI_Hero(Basic_AI):
             
         
     def add_motive(self, importance, main="",other=""):
-        motive = Motive(importance,main,other)
+        motive = Motive(importance, main, other)
         self.motivations.append(motive)
                 
     def assess_motives(self):
@@ -305,9 +305,9 @@ class AI_Hero(Basic_AI):
 #            self.assess_motives()
 
         if len(self.path) == 0:
-            goal = choice(R.cities)
+            goal = choice(R.pois)
             while goal == self.goal:
-                goal = choice(R.cities)
+                goal = choice(R.pois)
             self.goal = goal
             new_x = goal.x 
             new_y = goal.y

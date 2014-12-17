@@ -3,6 +3,8 @@ Created on 4 Mar 2013
 
 @author: Emily
 '''
+
+
 import math
 import libtcodpy as libtcod
 import random
@@ -10,7 +12,7 @@ import entities
 import utils
 import R
 
-from economy import *
+
 #master_commodity_list = [   "wool", "cloth", "clothes", 
 #                            "wood", "food", "ore", 
 #                            "metal", "tools", "weapons"];
@@ -26,7 +28,7 @@ class Settlement:
         self.colour = libtcod.Color(20,20,20)
         self.char = "+"
         self.trader = None #TODO: THIS probably needs it's own dedicated trader. not the same as just a "person" takes into account populations etc? Iuno.
-        
+
 class City:
     def __init__(self, x, y, POI, name = "name", resource_list = []):
         self.POI = POI
@@ -49,9 +51,9 @@ class City:
         #TODO: for now, void. there will be three type "raw"
         self.trader.believed_prices = {}
         for resource in R.resource_list:
-            self.trader.believed_prices[resource] = [38.00,10.00] #name as key. then [believed price, deviance]
-            self.trader.resources[resource] = [resource, 10.00] #resource as key, then the name and the quantity.
-        self.trader.believed_prices["produce"] = [50.0,30.0]
+            self.trader.believed_prices[resource] = [38.00, 10.00] #name as key. then [believed price, deviance]
+            self.trader.resources[resource] = [resource, 10.00] #resource name as key, then the name and the quantity.
+        self.trader.believed_prices["produce"] = [50.0, 30.0]
             
         self.producing = {} # these will be stored as ["resource_name", quantity generated per hour.0]
         self.define_generation_goods()
@@ -70,7 +72,7 @@ class City:
         self.activity_log = {"produced":[], "traded":[]}
         self.actions_queue = []
 
-    def checkForResources(self, key, needed, bonus = False):
+    def check_for_resources(self, key, needed, bonus=False):
         check = False
         if not bonus:
             for resource in needed[key][0]:
@@ -91,7 +93,7 @@ class City:
     
     def produce(self, key, needed):
         
-        if self.checkForResources(key, needed, True): #check for the "bonus" item.
+        if self.check_for_resources(key, needed, True): #check for the "bonus" item.
             for resource in needed[key][0]:
                 if resource.type != "none":
                     self.trader.resources[resource.type][1] -= resource.quantity
@@ -105,7 +107,7 @@ class City:
         else:#don't have or need a bonus item.
             for resource in needed[key][0]:
                 if resource.type != "none":
-                    self.resources[resource.type][1]-= resource.quantity
+                    self.resources[resource.type][1] -= resource.quantity
             self.trader.resources[key][1] += 1
             self.activity_log["produced"].append([self.name + " produced " + key, libtcod.amber])
             
@@ -138,7 +140,7 @@ class City:
             if self.producing[key][1] > 0:
                 quantity = self.producing[key][1]
                 for n in range(quantity):
-                    if self.checkForResources(key, master_raw_materials):
+                    if self.check_for_resources(key, master_raw_materials):
                         self.produce(key, master_raw_materials)
                 if utils.roll_100() > 75:
                     self.produce("trade", master_raw_materials)
@@ -152,7 +154,7 @@ class City:
             if self.producing[key][1] > 0:
                 quantity = self.producing[key][1]
                 for n in range(quantity):
-                    if self.checkForResources(key,master_raw_materials):
+                    if self.check_for_resources(key,master_raw_materials):
                         self.produce(key,master_raw_materials)
             
     def getCityRelationship(self, city):
@@ -162,9 +164,9 @@ class City:
         self.relationships[city] += quantity
         
     def createBaseRelationships(self, city_list):
-        '''
+        """
         input a list of all the cities /the ones it should know.
-        '''
+        """
         for city in city_list:
             if city != self:
                 self.relationships[city] = 0
@@ -183,7 +185,7 @@ class City:
         quantity_resources = libtcod.random_get_int(0, 2, 6)
         temp = []
         for n in range(quantity_resources):
-            resource = resource_list[libtcod.random_get_int(0,0,limit)]
+            resource = resource_list[libtcod.random_get_int(0, 0, limit)]
                 
             temp.append(resource)
             
@@ -215,7 +217,7 @@ class City:
                 #resource = "what"
                 resource = master_raw_materials[key][0][n]
                 if resource.type != "none":
-                    new_resource = Resource(type = resource.type, quantity = self.producing[key][1]*resource.quantity)
+                    new_resource = Resource(type=resource.type, quantity=self.producing[key][1]*resource.quantity)
                     temp.append(new_resource) 
                     
         for name in master_commodity_list:
@@ -261,16 +263,17 @@ class Action:
 
 
 class Component:
-    def __init__(self, parentSettlement):
-        self.parent = parentSettlement
+    def __init__(self, parent_settlement):
+        self.parent = parent_settlement
         
         
 class ProductionComponent(Component):
     """Component for each material produced there? they can be added and removed then."""
-    def __init__(self, parentSettlement):
-        Component.__init__(self, parentSettlement)
-        
-def chance_roll(chance = 50):
+    def __init__(self, parent_settlement):
+        Component.__init__(self, parent_settlement)
+
+
+def chance_roll(chance=50):
     if chance <= 0:
         return False
     elif chance >= 100: 
@@ -282,17 +285,17 @@ def chance_roll(chance = 50):
             return True
 
     
-master_raw_materials = {    "wool":[[Resource("none", 0)],[Resource("tools", 1)]], 
-                            "cloth":[[Resource("wool", 4)],[Resource("none", 0)]], 
+master_raw_materials = {    "wool":[[Resource("none", 0)],[Resource("tools", 1)]],
+                            "cloth":[[Resource("wool", 4)],[Resource("none", 0)]],
                             "clothes":[[Resource("cloth", 2), Resource("wool", 1)],[Resource("none", 0)]],
-                            "wood":[[Resource("none", 0)],[Resource("tools", 1)]], 
-                            "food":[[Resource("wood", 1)],[Resource("tools", 1)]], 
-                            "ore":[[Resource("none", 0)],[Resource("tools", 2)]], 
-                            "metal":[[Resource("ore", 2), Resource("wood", 1)],[Resource("tools", 1)]],  
-                            "tools":[[Resource("metal", 2), Resource("wood", 1)],[Resource("none", 0)]],  
+                            "wood":[[Resource("none", 0)],[Resource("tools", 1)]],
+                            "food":[[Resource("wood", 1)],[Resource("tools", 1)]],
+                            "ore":[[Resource("none", 0)],[Resource("tools", 2)]],
+                            "metal":[[Resource("ore", 2), Resource("wood", 1)],[Resource("tools", 1)]],
+                            "tools":[[Resource("metal", 2), Resource("wood", 1)],[Resource("none", 0)]],
                             "weapons":[[Resource("metal", 3), Resource("wood", 1)],[Resource("none", 0)]],
                             "raw":[[Resource("none", 0)],[Resource("none", 0)]],
                             "produce":[[Resource("raw", 2)],[Resource("none", 0)]],
                             "trade":[[Resource("produce", 1)],[Resource("none", 0)]]
-                            
-                            }           
+
+                            }

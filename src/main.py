@@ -1216,12 +1216,12 @@ def city_menu():
 
             for resource in selected_city.trade_house.supply_demand:
                 supply_demand = selected_city.trade_house.supply_demand[resource]
-                libtcod.console_print_ex(city_select_pop, 30, y, libtcod.BKGND_NONE, libtcod.LEFT, resource)
-                libtcod.console_print_ex(city_select_pop, 40, y, libtcod.BKGND_NONE, libtcod.LEFT,
+                libtcod.console_print_ex(city_select_pop, 20, y, libtcod.BKGND_NONE, libtcod.LEFT, resource)
+                libtcod.console_print_ex(city_select_pop, 30, y, libtcod.BKGND_NONE, libtcod.LEFT,
                                          str(supply_demand[0]))
-                libtcod.console_print_ex(city_select_pop, 47, y, libtcod.BKGND_NONE, libtcod.LEFT,
+                libtcod.console_print_ex(city_select_pop, 37, y, libtcod.BKGND_NONE, libtcod.LEFT,
                                          ", " + str(supply_demand[1]))
-                libtcod.console_print_ex(city_select_pop, 54, y, libtcod.BKGND_NONE, libtcod.LEFT,
+                libtcod.console_print_ex(city_select_pop, 44, y, libtcod.BKGND_NONE, libtcod.LEFT,
                                          ", " + str(supply_demand[2]))
                 #libtcod.console_print_ex(window, 30, y, libtcod.BKGND_NONE, libtcod.LEFT, str(resource.quantity))
                 #libtcod.console_print_ex(window, 30, y, libtcod.BKGND_NONE, libtcod.LEFT, str(resource.quantity))
@@ -1274,6 +1274,7 @@ def main_init():
     libtcod.console_set_custom_font("data\ont_big.png", libtcod.FONT_LAYOUT_ASCII_INROW)
     libtcod.console_init_root(R.SCREEN_WIDTH, R.SCREEN_HEIGHT, "Trader-RL", False)
     libtcod.sys_set_fps(R.LIMIT_FPS)
+
     con = R.con = libtcod.console_new(R.MAP_WIDTH, R.MAP_HEIGHT)
     con_char = R.con_char = libtcod.console_new(R.MAP_WIDTH, R.MAP_HEIGHT)
     inf = R.inf = libtcod.console_new(R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT - R.PANEL_HEIGHT)
