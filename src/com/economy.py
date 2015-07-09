@@ -1,4 +1,4 @@
-'''
+"""
 Created on 23 Mar 2013
 
 @author: Emily
@@ -6,7 +6,7 @@ Created on 23 Mar 2013
 For each class it will be noted if it is for use in macro(between cities) or micro(in the cities between people) economy, or both.
 
 
-'''
+"""
 import libtcodpy as libtcod
 import json
 import json_resources
