@@ -565,7 +565,6 @@ class PathFinder():
         self.node_costs = {}
         self.largest_cost = 0
 
-
     def dijkstra_search(self, graph, start, goal):
         #todo: factor in the technology - can the ship travel the distances between nodes?
         #todo: possibly havea seperate function that constructs a graph of reachable nodes to use for this.
@@ -592,7 +591,6 @@ class PathFinder():
                     self.came_from[next] = current
 
         return self.came_from, self.node_costs
-
 
     def find_path(self, world, start, goal):
 
@@ -641,7 +639,6 @@ class PathFinder():
 
         return self.came_from, self.node_costs
 
-
     def reconstruct_path(self, came_from, start, goal):
         current = goal
         path = [current]
@@ -677,9 +674,6 @@ class Node():
 
     def __eq__(self, other):
         return hash(str(self)) == hash(str(other))
-
-
-
 
 
 def heuristic(a, b):

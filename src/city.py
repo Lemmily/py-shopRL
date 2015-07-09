@@ -4,13 +4,10 @@ Created on 4 Mar 2013
 @author: Emily
 '''
 import math
-import libtcodpy as libtcod
-import random
-import entities
-import utils
-import R
 
-from economy import *
+import utils
+from src.com.economy import *
+
 #master_commodity_list = [   "wool", "cloth", "clothes", 
 #                            "wood", "food", "ore", 
 #                            "metal", "tools", "weapons"];

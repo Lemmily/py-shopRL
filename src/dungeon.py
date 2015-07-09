@@ -30,7 +30,7 @@ class Tile():
         self.blocks = blocks
         self.blocks_sight = blocks_sight
         self.explored = False
-        self.continent = -1  #this is here so the pathfinding can check it.
+        self.continent = -1  # this is here so the pathfinding can check it.
 
 
 class Rect:
@@ -65,7 +65,7 @@ class Dungeon():
         self.x = x
         self.y = y
         self.POI = POI
-        self.name = "Dungeon"  #TODO: Make a name generator.
+        self.name = "Dungeon"  # TODO: Make a name generator.
         self.level = 1
         self.floors = []
 
@@ -79,20 +79,20 @@ class Dungeon():
         pass
 
     def addMonster(self, type=""):
-        #todo: add this to the floor instead of whole dungeon - for initial whole dungeone is fine.
+        # todo: add this to the floor instead of whole dungeon - for initial whole dungeone is fine.
         if type == "":
-            keys =[]
+            keys = []
             for key in MONSTERS[self.level]:
                 keys.append(key)
-            type = libtcod.random_get_int(0, 0, len(keys)-1)
+            type = libtcod.random_get_int(0, 0, len(keys) - 1)
         tile = None
         while tile == None:
             x = libtcod.random_get_int(0, 0, len(self.tiles))
             y = libtcod.random_get_int(0, 0, len(self.tiles[0]))
-            if self.get_floor_tile(x,y).blocks is not True:
-                tile = self.get_floor_tile(x,y)
+            if self.get_floor_tile(x, y).blocks is not True:
+                tile = self.get_floor_tile(x, y)
 
-        return create_monster(type,tile)
+        return create_monster(type, tile)
 
     def addFloor(self, level=-1):
         pass
@@ -106,14 +106,14 @@ class Dungeon():
             for n in range(monster_num):
                 key = random.choice(MONSTERS[str(self.level)].keys())
                 mons = MONSTERS[str(self.level)][key]
-                #not finsiehd yet.
+                # not finsiehd yet.
                 colour = libtcod.Color(mons[2][0], mons[2][1], mons[2][2])
                 temp = entities.Object(0, 0, char=[1], name=mons[0], colour=colour, blocks=False, always_visible=False)
 
                 a_monst.append(mons)
             for n in range(item_num):
                 item = random.choice(ITEMS)
-                #colour = libtcod.Color(item["colour"][0],item["colour"][1],item["colour"][2])
+                # colour = libtcod.Color(item["colour"][0],item["colour"][1],item["colour"][2])
                 #temp = entities.Object(0,0, char=item["char"], name=item["name"], colour=colour, blocks=False, always_visible=False)
                 a_items.append(item)
             floor = Floor(ID, a_monst, a_items)
@@ -317,7 +317,7 @@ class Floor:
         for x in range(len(self.map)):
             for y in range(len(self.map[0])):
                 if self.is_wall(x, y):
-                    if self.is_wall(x, y + 1) and self.is_wall(x, y - 1):  #above and below.
+                    if self.is_wall(x, y + 1) and self.is_wall(x, y - 1):  # above and below.
                         if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):  #left and right.
                             if self.is_wall(x + 1, y + 1) and self.is_wall(x - 1, y + 1) and self.is_wall(x + 1,
                                                                                                           y - 1) and self.is_wall(
@@ -365,7 +365,7 @@ class Floor:
                                 tile = 180
                         else:
                             tile = 179
-                    elif self.is_wall(x, y + 1):  #below
+                    elif self.is_wall(x, y + 1):  # below
                         if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):  #left and right
                             if self.is_wall(x + 1, y + 1) and self.is_wall(x - 1, y + 1):
                                 tile = 196
@@ -378,7 +378,7 @@ class Floor:
                         else:
                             tile = 179
 
-                    elif self.is_wall(x, y - 1):  #above
+                    elif self.is_wall(x, y - 1):  # above
                         if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):  #left and right
                             if self.is_wall(x + 1, y - 1) and self.is_wall(x - 1, y - 1):
                                 tile = 196
@@ -567,7 +567,7 @@ class Floor:
 
                 if x + w >= len(self.map) or y + h >= len(self.map[0]):
                     print x, ",", y, "   ", w, h, "out of bounds"
-                    placed = True  #get rid.
+                    placed = True  # get rid.
 
                 else:
                     new = Rect(w, h, x, y)
@@ -581,22 +581,14 @@ class Floor:
                             self.rects.append(new)
                     else:
                         self.rects.append(new)
-                    placed = True            
+                    placed = True
 
-    
-    
-    
-    
-    
-    
-    
-          
-        
 
-def create_monster(type,level,tile):
+def create_monster(type, level, tile):
     BLUEPRINT = MONSTERS[level][type]
-    colour = libtcod.Color(BLUEPRINT[2][0],BLUEPRINT[2][1],BLUEPRINT[2][2])
-    monster = entities.Mover(x=tile.x,y=tile.y, char = BLUEPRINT[1],name=BLUEPRINT[0],colour = colour, always_visible = True);
+    colour = libtcod.Color(BLUEPRINT[2][0], BLUEPRINT[2][1], BLUEPRINT[2][2])
+    monster = entities.Mover(x=tile.x, y=tile.y, char=BLUEPRINT[1], name=BLUEPRINT[0], colour=colour,
+                             always_visible=True);
     stats = entities.Stats(array=BLUEPRINT[4])
     monster.stats = stats
     return monster

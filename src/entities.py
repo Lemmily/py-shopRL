@@ -3,10 +3,11 @@ Created on 16 Mar 2013
 
 @author: Emily
 """
+import math
+
 import libtcodpy as libtcod
 import R
-import math
-import economy
+from src.com import economy
 import sentient
 
 
@@ -132,19 +133,6 @@ class Player(Mover):
     def get_item(self, object):
         self.inventory.append(object)
 
-def is_blocked(x, y):
-    #first test the map tile
-    if x > len(R.tiles) - 1 or x < 0:
-        return True
-    if y > len(R.tiles[x]) - 1 or y < 0:
-        return True
-    if R.world.tiles[x][y].blocked:
-        return True
-    #now check for any blocking objects
-    for object_ in R.world_obj:
-        if object_.blocks and object_.x == x and object_.y == y:
-            return True
-    return False
 
 class Item:
     def __init__(self, use_function = None):

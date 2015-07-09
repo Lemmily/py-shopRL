@@ -31,7 +31,7 @@ def rand_choice_index(chances): #choose one option from the list of chances, ret
         choice += 1
         
                 
-def chance_roll(chance = 50):
+def chance_roll(chance=50):
     if chance <= 0:
         return False
     elif chance >= 100: 

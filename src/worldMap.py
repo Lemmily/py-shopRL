@@ -26,12 +26,11 @@ MOUNTAIN_THRESHOLD = int(255 * rockHeight)
 SNOW_THRESHOLD = int(255 * snowHeight)
 GRASS_THRESHOLD = int(255 * grassHeight)
 
-
 PATH_COST = 1.0
 GRASS_COST = 1.8
 COAST_COST = 2.5
 MOUNTAIN_COST = 3.5
-WATER_COST = 200.0 # potential for shippy ships later?
+WATER_COST = 200.0  # potential for shippy ships later?
 
 # WATER_THRESHOLD = 100
 # MOUNTAIN_THRESHOLD = 200
@@ -170,11 +169,11 @@ class Particle_Map:
                         for y in range(self.parent.h)]
                     for x in range(self.parent.w)]
 
-        #generate particle pool
+        # generate particle pool
         self.particles = [Particle(0, 0, 100) for n in range(num)]
 
     def add_particles(self, x, y, column=True):
-        #TODO: add in row . 
+        # TODO: add in row .
         for iy in range(len(self.map[x])):
             if len(self.particles) != 0 and len(self.particles) >= len(self.map[x]):
 
@@ -198,7 +197,7 @@ class Particle_Map:
 
     def run_simulation(self, rounds):
 
-        #put first "line" of wind particles in.
+        # put first "line" of wind particles in.
         self.add_particles(0, 0)
         render()
         for n in range(rounds):
@@ -238,7 +237,7 @@ class Particle_Map:
                         removed = False
 
                         if particle.x < R.MAP_WIDTH and particle.x >= 0 and particle.y < R.MAP_HEIGHT and particle.y >= 0:
-                            #all is fine to move around.
+                            # all is fine to move around.
                             if particle.x == R.MAP_WIDTH - 1:
                                 if utils.chance_roll(particle.speed):
                                     particle.move_to(0, particle.y)
@@ -253,7 +252,7 @@ class Particle_Map:
                         elif particle.x >= R.MAP_WIDTH or particle.x < 0 or particle.y >= R.MAP_HEIGHT or particle.y < 0:
                             print "the end of the map!"
                             if utils.chance_roll(90):
-                                #these shouldn't happen at all.
+                                # these shouldn't happen at all.
                                 if x > R.MAP_WIDTH - 1:
                                     print "somehow out of range x"
                                 if y > R.MAP_HEIGHT - 1:
@@ -270,7 +269,7 @@ class Particle_Map:
                                 elif particle.y < 0:
                                     particle.move_to(particle.x, R.MAP_HEIGHT - 1)
                             else:
-                                #it gets taken off the map!
+                                # it gets taken off the map!
                                 removed = True
                                 self.map[x][y].remove(particle)
                                 self.particles.append(particle)
@@ -279,11 +278,11 @@ class Particle_Map:
                         else:
                             print"the values are out of range. SOMETHING WENT WRONG."
 
-                            #NOW: do the moisture thaaaang.
+                            # NOW: do the moisture thaaaang.
 
                     else:
                         particle.previous = self.parent.tiles[particle.x][particle.y]
-                        #if not moved then assign the previous tile as the one it's in
+                        # if not moved then assign the previous tile as the one it's in
 
                     if not removed:
                         self.moisture_exchange(particle, x, y)
@@ -294,7 +293,7 @@ class Particle_Map:
 
 
     def moisture_exchange(self, the_particle, x, y):
-        #if particle.value > tile.humidity_per:
+        # if particle.value > tile.humidity_per:
         self.map[x][y].remove(the_particle)
         particle = the_particle
         previous = self.parent.tiles[x][y]
@@ -460,7 +459,7 @@ class Particle_Map:
 
         dif = (target - part_temp) / target
 
-        #TODO: average of both? probably better way to do this.
+        # TODO: average of both? probably better way to do this.
         temp_mod = (dif + t) / 2
 
         if particle.life >= 1:
@@ -481,7 +480,7 @@ class Particle_Map:
         previous = particle.previous
         tile = self.parent.tiles[particle.x][particle.y]
 
-        #TODO: finish this. moisture calcs,
+        # TODO: finish this. moisture calcs,
 
         #TEMPORARY!!!!!!!!!!!!!!
         if other == 0:
@@ -516,7 +515,7 @@ class Particle_Map:
                 if tile.type != "water":
                     tile.humidity = 255 * (tile.humidity_per / 100)
 
-                    #end particle map.
+                    # end particle map.
 
 
 class Map:
@@ -537,7 +536,7 @@ class Map:
         self.traffic = [[0
                          for y in range(h)]
                         for x in range(w)]
-        #this holds the *colour* value of the tiles temps.
+        # this holds the *colour* value of the tiles temps.
         self.temperature_map = [[0
                                  for y in range(h)]
                                 for x in range(w)]
@@ -550,7 +549,7 @@ class Map:
 
         self.hm = libtcod.heightmap_new(self.w, self.h)
 
-        self.generate(51708288)
+        self.generate(51708288)  #51708288)   55920912
 
         # self.hm2 = libtcod.heightmap_new(self.w, self.h)
         # self.hm3 = libtcod.heightmap_new(self.w, self.h)
@@ -585,9 +584,8 @@ class Map:
         self.dungeons = []
         self.pois = []
         # self.world_noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
-        self.generate_city( 4 + abs(libtcod.noise_get(self.map_noise1d,[0.5, 0.9, 1.0])) * 30)
+        self.generate_city(4 + abs(libtcod.noise_get(self.map_noise1d, [0.5, 0.9, 1.0])) * 30)
         self.generate_dungeons(10)
-
 
     def generate_city(self, num):
 
@@ -596,12 +594,14 @@ class Map:
             i = 1
             while not placed:
 
-                xh = self.w/2 - libtcod.noise_get_fbm(self.map_noise2d, [0.0, i/ self.w, 0.5, 0.0], 32.0, libtcod.NOISE_DEFAULT) * (
-                self.w / 2)
+                xh = self.w / 2 - libtcod.noise_get_fbm(self.map_noise2d, [0.0, i / self.w, 0.5, 0.0], 32.0,
+                                                        libtcod.NOISE_DEFAULT) * (
+                                      self.w / 2)
                 xh = int(xh)
 
-                yh = self.h/2 - libtcod.noise_get_fbm(self.map_noise2d, [0.0, i / self.h, 0.5, 0.0], 32.0, libtcod.NOISE_DEFAULT) * (
-                self.h / 2)
+                yh = self.h / 2 - libtcod.noise_get_fbm(self.map_noise2d, [0.0, i / self.h, 0.5, 0.0], 32.0,
+                                                        libtcod.NOISE_DEFAULT) * (
+                                      self.h / 2)
                 yh = int(yh)
                 # x = libtcod.random_get_int(0, 1, self.w - 1)
                 # y = libtcod.random_get_int(0, 1, self.h - 1)
@@ -663,14 +663,14 @@ class Map:
             self.continents.append(continent)
 
         tile.continent = ID
-        self.tiles[tile.x][tile.y] = tile  #don't think i need to do this.
-        if tile.x + 1 < len(self.tiles):  #the right
+        self.tiles[tile.x][tile.y] = tile  # don't think i need to do this.
+        if tile.x + 1 < len(self.tiles):  # the right
             self.flood_fill(self.tiles[tile.x + 1][tile.y], ID)
         if tile.x - 1 > 0:  # the left
             self.flood_fill(self.tiles[tile.x - 1][tile.y], ID)
-        if tile.y + 1 < len(self.tiles[0]):  #below
+        if tile.y + 1 < len(self.tiles[0]):  # below
             self.flood_fill(self.tiles[tile.x][tile.y + 1], ID)
-        if tile.y - 1 > 0:  #above
+        if tile.y - 1 > 0:  # above
             self.flood_fill(self.tiles[tile.x][tile.y - 1], ID)
 
         return
@@ -695,20 +695,18 @@ class Map:
                 continue
             else:
                 tile.continent = ID
-                if tile.x + 1 < len(self.tiles):  #the right
+                if tile.x + 1 < len(self.tiles):  # the right
                     toFill.add(self.tiles[tile.x + 1][tile.y])
                 if tile.x - 1 > 0:  # the left
                     toFill.add(self.tiles[tile.x - 1][tile.y])
-                if tile.y + 1 < len(self.tiles[0]):  #below
+                if tile.y + 1 < len(self.tiles[0]):  # below
                     toFill.add(self.tiles[tile.x][tile.y + 1])
-                if tile.y - 1 > 0:  #above
+                if tile.y - 1 > 0:  # above
                     toFill.add(self.tiles[tile.x][tile.y - 1])
 
         return
 
     def connect_cities(self):
-
-
         pather = pathfinding.Pather()
         for city in self.cities:
             for other_city in self.cities:
@@ -725,45 +723,45 @@ class Map:
 
 
 
-        # i = 0.1
-        #
-        # fc = libtcod.noise_get_fbm(self.map_noise2d, [0.0, 0.5, i / 2], 32.0, libtcod.NOISE_SIMPLEX) * ( len(self.cities) - 1)
-        # fc = int(abs(fc))
-        #
-        # oc = libtcod.noise_get_fbm(self.map_noise2d, [0.0, 0.5, i * 2], 32.0, libtcod.NOISE_DEFAULT) * ( len(self.cities) - 1)
-        # oc = int(abs(oc))
-        # pather = pathfinding.Pather()
-        # city_one = self.cities[fc]
-        # city_two = self.cities[oc]#libtcod.random_get_int(0, 0, len(self.cities) - 1)]
-        #
-        # while city_one == city_two and len(self.cities) > 1 and city_one:
-        #     fc = 0.0 + libtcod.noise_get(self.map_noise1d, [0.0, 0.5, i * len(self.cities)], libtcod.NOISE_DEFAULT) * ( len(self.cities) - 1)
-        #     fc = int(abs(fc))
-        #     city_two = self.cities[fc]
-        #     i += 0.1
-        #
-        # path = pather.new_find_path((city_one.x, city_one.y), (city_two.x, city_two.y), self.tiles)
-        #
-        # while path == None:
-        #     path = pather.new_find_path((city_one.x, city_one.y), (city_two.x, city_two.y), self.tiles)
-        #
-        #     # if path == None:
-        #     #     city_one = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
-        #     #     city_two = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
-        #     #
-        #     #     while city_one == city_two and len(self.cities) > 1:
-        #     #         city_two = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
-        #
-        # # for node in path:
-        #
-        # while len(path) > 0:
-        #     node = path.pop()
-        #     self.tiles[node[0]][node[1]].bg = libtcod.Color(200, 200, 10)
-        #     self.tiles[node[0]][node[1]].cost = PATH_COST
-        #     self.tiles[node[0]][node[1]].type = "path"
-        #     # path = path.parent_node
+                    # i = 0.1
+                    #
+                    # fc = libtcod.noise_get_fbm(self.map_noise2d, [0.0, 0.5, i / 2], 32.0, libtcod.NOISE_SIMPLEX) * ( len(self.cities) - 1)
+                    # fc = int(abs(fc))
+                    #
+                    # oc = libtcod.noise_get_fbm(self.map_noise2d, [0.0, 0.5, i * 2], 32.0, libtcod.NOISE_DEFAULT) * ( len(self.cities) - 1)
+                    # oc = int(abs(oc))
+                    # pather = pathfinding.Pather()
+                    # city_one = self.cities[fc]
+                    # city_two = self.cities[oc]#libtcod.random_get_int(0, 0, len(self.cities) - 1)]
+                    #
+                    # while city_one == city_two and len(self.cities) > 1 and city_one:
+                    # fc = 0.0 + libtcod.noise_get(self.map_noise1d, [0.0, 0.5, i * len(self.cities)], libtcod.NOISE_DEFAULT) * ( len(self.cities) - 1)
+                    #     fc = int(abs(fc))
+                    #     city_two = self.cities[fc]
+                    #     i += 0.1
+                    #
+                    # path = pather.new_find_path((city_one.x, city_one.y), (city_two.x, city_two.y), self.tiles)
+                    #
+                    # while path == None:
+                    #     path = pather.new_find_path((city_one.x, city_one.y), (city_two.x, city_two.y), self.tiles)
+                    #
+                    #     # if path == None:
+                    #     #     city_one = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
+                    #     #     city_two = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
+                    #     #
+                    #     #     while city_one == city_two and len(self.cities) > 1:
+                    #     #         city_two = self.cities[libtcod.random_get_int(0, 0, len(self.cities) - 1)]
+                    #
+                    # # for node in path:
+                    #
+                    # while len(path) > 0:
+                    #     node = path.pop()
+                    #     self.tiles[node[0]][node[1]].bg = libtcod.Color(200, 200, 10)
+                    #     self.tiles[node[0]][node[1]].cost = PATH_COST
+                    #     self.tiles[node[0]][node[1]].type = "path"
+                    #     # path = path.parent_node
 
-        # print "........................connected ", city_one.name, " and ", city_two.name
+                    # print "........................connected ", city_one.name, " and ", city_two.name
 
     def add_foot_traffic(self, x, y):
         self.traffic[x][y] += 1
@@ -782,13 +780,13 @@ class Map:
                     lowest = [self.traffic[x][y][0], x, y]
 
         if highest:
-            return highest  #can return lowest too.
+            return highest  # can return lowest too.
         else:
             return lowest
 
     def generate_mini_map(self, zone=10, hm=None):
 
-        if hm == None:
+        if hm is None:
             hm = self.hm
 
         if (self.w % zone) > 0:
@@ -814,7 +812,7 @@ class Map:
                     for cell_y in range(zone):
                         if y + cell_y > len(self.tiles[cell_x]) - 1:
                             break
-                        #TODO: put in catches for the "end" bits where there is less tiles left than the "zone".
+                        # TODO: put in catches for the "end" bits where there is less tiles left than the "zone".
                         value = int(libtcod.heightmap_get_value(hm, x + cell_x, y + cell_y))
                         if value > WATER_THRESHOLD:
                             tiles[0][0] += 1
@@ -825,17 +823,17 @@ class Map:
                             tiles[1][1].append(value)
 
                 if tiles[0] > tiles[1]:
-                    #make land
+                    # make land
                     sum_ = sum(num for num in tiles[0][1])
                     value = sum_ / len(tiles[0][1])
                     self.mini_map[a][b] = Tile(cell_x, cell_y, False, map_tile=True, bg=[10, value, 10])
                 elif tiles[1] > tiles[0]:
-                    #make water
+                    # make water
                     sum_ = sum(num for num in tiles[1][1])
                     value = sum_ / len(tiles[1][1])
                     self.mini_map[a][b] = Tile(cell_x, cell_y, True, map_tile=True, bg=[10, 10, value])
                 else:
-                    #flip for either.
+                    # flip for either.
                     flip = libtcod.random_get_int(0, 0, 1)
                     if flip == 1:
                         #water
@@ -848,28 +846,27 @@ class Map:
                         value = sum_ / len(tiles[0][1])
                         self.mini_map[a][b] = Tile(cell_x, cell_y, False, map_tile=True, bg=[10, value, 10])
 
-                    #     def generate_land(self,hm):
-                    #
-                    #         print hm.w, hm.h
-                    #         #self.noise = perlin_noise.PerlinNoiseGenerator()
-                    #         #self.noise.generate_noise(self.w, self.h, 1, 16)
-                    #         #print str(self.noise.noise[1][1])
-                    #
-                    #         self.add_hill(self.w/2, self.h/2, hm)
-                    #         self.noise = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY)
-                    #         libtcod.heightmap_add_fbm(hm, self.noise, 1, 1, 0, 0, 8, 0.5, 0.8)
-                    #         print "scale", str(libtcod.heightmap_get_value(hm, 1, 1))
-                    #         self.noise = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY)
-                    #         libtcod.noise_set_type(self.noise, libtcod.NOISE_PERLIN)
-                    #         libtcod.heightmap_scale_fbm(hm, self.noise, 1, 1, 0, 0, 8, 0.5, 0.8)
-                    # #        self.noise = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY)
-                    # #        libtcod.heightmap_add_fbm(hm, self.noise, 1, 1, 0, 0, 8, 0.8, 0.5)
-                    # #
-                    #         libtcod.heightmap_normalize(hm, 0, 255)
-                    #         print "normalized", str(libtcod.heightmap_get_value(hm, 1, 1))
-                    #
-                    #         # return hm
-
+                        #     def generate_land(self,hm):
+                        #
+                        #         print hm.w, hm.h
+                        #         #self.noise = perlin_noise.PerlinNoiseGenerator()
+                        #         #self.noise.generate_noise(self.w, self.h, 1, 16)
+                        #         #print str(self.noise.noise[1][1])
+                        #
+                        #         self.add_hill(self.w/2, self.h/2, hm)
+                        #         self.noise = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY)
+                        #         libtcod.heightmap_add_fbm(hm, self.noise, 1, 1, 0, 0, 8, 0.5, 0.8)
+                        #         print "scale", str(libtcod.heightmap_get_value(hm, 1, 1))
+                        #         self.noise = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY)
+                        #         libtcod.noise_set_type(self.noise, libtcod.NOISE_PERLIN)
+                        #         libtcod.heightmap_scale_fbm(hm, self.noise, 1, 1, 0, 0, 8, 0.5, 0.8)
+                        # #        self.noise = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY)
+                        # #        libtcod.heightmap_add_fbm(hm, self.noise, 1, 1, 0, 0, 8, 0.8, 0.5)
+                        # #
+                        #         libtcod.heightmap_normalize(hm, 0, 255)
+                        #         print "normalized", str(libtcod.heightmap_get_value(hm, 1, 1))
+                        #
+                        #         # return hm
 
     def add_noise(self):
         libtcod.heightmap_normalize(self.hm, 0, 1)
@@ -882,7 +879,7 @@ class Map:
         self.noise = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY)
         # libtcod.noise_set_type(self.noise, libtcod.NOISE_PERLIN)
         libtcod.heightmap_scale_fbm(self.hm, self.noise, 1, 1, 1, 1, 16, 0.5, 0.5)
-        #libtcod.heightmap_normalize(self.hm, 0, 255)
+        # libtcod.heightmap_normalize(self.hm, 0, 255)
 
     def add_hill(self, x, y, hm):
         r = 20
@@ -896,7 +893,7 @@ class Map:
 
         if hill_height > 0:
             libtcod.heightmap_add_hill(hm, x, y, r, 1)
-            #     libtcod.heightmap_normalize(hm, 0, 255)
+            # libtcod.heightmap_normalize(hm, 0, 255)
 
     def turn_to_tiles(self):
         if R.DEBUG:
@@ -912,21 +909,22 @@ class Map:
             for cell_y in range(self.h):
                 value = int(libtcod.heightmap_get_value(self.hm, cell_x, cell_y))
 
-                if value < WATER_THRESHOLD:  #water
+                if value < WATER_THRESHOLD:  # water
                     tote = value + libtcod.random_get_int(0, -5, 5)
                     if tote > 255:
                         tote = 255
                     if tote < 0:
                         tote = 0
 
-                    self.tiles[cell_x][cell_y] = Tile(cell_x, cell_y, True, map_tile=True, bg=[10, 10, tote], cost=WATER_COST)
+                    self.tiles[cell_x][cell_y] = Tile(cell_x, cell_y, True, map_tile=True, bg=[10, 10, tote],
+                                                      cost=WATER_COST)
                     self.tiles[cell_x][cell_y].elevation = value
                     self.tiles[cell_x][cell_y].humidity = 255
                     self.tiles[cell_x][cell_y].humidity_per = 100.0
                     self.tiles[cell_x][cell_y].type = "water"
                     self.blocked.append((cell_x, cell_y))  #add water tile to blocked.
 
-                elif value < GRASS_THRESHOLD:  #coast
+                elif value < GRASS_THRESHOLD:  # coast
                     test = int(math.sqrt(value))
                     # test = test ** 3
                     self.tiles[cell_x][cell_y] = Tile(cell_x, cell_y, False, map_tile=True,
@@ -940,7 +938,7 @@ class Map:
                     self.tiles[cell_x][cell_y].humidity_per = (self.tiles[cell_x][cell_y].humidity / 255) * 100
                     self.tiles[cell_x][cell_y].type = "coast"
 
-                elif value < MOUNTAIN_THRESHOLD:  #grass
+                elif value < MOUNTAIN_THRESHOLD:  # grass
                     ran_1 = 255 - (value + libtcod.random_get_int(0, -5, 5))
                     if ran_1 > 255:
                         ran_1 = 255
@@ -975,7 +973,7 @@ class Map:
                     self.tiles[cell_x][cell_y].humidity_per = (self.tiles[cell_x][cell_y].humidity / 255) * 100
                     self.tiles[cell_x][cell_y].type = "mountain"
 
-                self.weights[(cell_x,cell_y)] = self.tiles[cell_x][cell_y].cost #add the weight!
+                self.weights[(cell_x, cell_y)] = self.tiles[cell_x][cell_y].cost  # add the weight!
         #
         if R.DEBUG:
             t1 = libtcod.sys_elapsed_seconds()
@@ -984,7 +982,7 @@ class Map:
             # self.tiles = []
             #
             # self.tiles = [[ Tile(ix,iy, False, map_tile=True)
-            #     for iy in range(self.h) ]
+            # for iy in range(self.h) ]
             #         for ix in range(self.w)]
             #
             # for cell_x in range(self.w):
@@ -1036,7 +1034,6 @@ class Map:
             #             self.tiles[cell_x][cell_y].humidity_per = 100.0
             #             self.tiles[cell_x][cell_y].type = "water"
 
-
     def get_temperature(self, x, y):
         return self.temperature_map[x][y]
 
@@ -1055,8 +1052,8 @@ class Map:
                         distance_from_equator = float(self.equator - y)
                     elif y > self.equator:
                         distance_from_equator = float(y - self.equator)
-                        #this needs to be softer. too "bandy" at the moment. somehow do this ona  scale rather than BAM you're now x.
-                    #                     if distance_from_equator <= TROPICS_THRESHOLD:
+                        # this needs to be softer. too "bandy" at the moment. somehow do this ona  scale rather than BAM you're now x.
+                    # if distance_from_equator <= TROPICS_THRESHOLD:
                     #                         temp = 30 + libtcod.random_get_int(0,-3,3)
                     #                     elif distance_from_equator <= TEMPERATE_THRESHOLD:
                     #                         temp = 20 + libtcod.random_get_int(0,-3,3)
@@ -1100,9 +1097,9 @@ class Map:
                         distance_from_equator = float(self.equator - y)
                     elif y > self.equator:
                         distance_from_equator = float(y - self.equator)
-                        #start at equator temp
+                        # start at equator temp
                     temp = 5
-                    #percent of total possible distance
+                    # percent of total possible distance
                     max_ = float(self.equator)
                     pre = distance_from_equator / max_
                     if y == 10:
@@ -1129,7 +1126,7 @@ class Map:
 
         largest = 0
         smallest = 999999
-        #find the high and low temps.
+        # find the high and low temps.
         for x in range(self.w):
             for y in range(self.h):
                 self.tiles[x][y].temperature += 100
@@ -1148,7 +1145,7 @@ class Map:
     def normalise_humidity(self):
         largest = 0
         smallest = 999999
-        #find the high and low temps.
+        # find the high and low temps.
         for x in range(self.w):
             for y in range(self.h):
                 if self.tiles[x][y].humidity_per > largest:
@@ -1171,8 +1168,10 @@ class Map:
         else:
             self.rand = libtcod.random_new_from_seed(seed)
 
-        self.map_noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
-        self.map_noise2d = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
+        self.map_noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY,
+                                             self.rand)
+        self.map_noise2d = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY,
+                                             self.rand)
 
         self.hm = libtcod.heightmap_new(self.w, self.h)
         self.hm_wo_erosion = libtcod.heightmap_new(self.w, self.h)
@@ -1185,7 +1184,8 @@ class Map:
         self.add_hills(self.hm, 800, 16.0 * self.w / 200.0, 0.7, 0.3)
 
         # libtcod.heightmap_normalize(self.hm)
-        libtcod.heightmap_add_fbm(self.hm, self.map_noise2d, 2.20 * self.w / 400.0, 2.20 * self.h / 400.0, 0, 0, 5.0, 1.0,
+        libtcod.heightmap_add_fbm(self.hm, self.map_noise2d, 2.20 * self.w / 400.0, 2.20 * self.h / 400.0, 0, 0, 5.0,
+                                  1.0,
                                   2.05)
         # libtcod.heightmap_add_fbm(self.hm, self.noise2d, 1, 1, 0, 0, 10.0, 1, 1)
 
@@ -1200,13 +1200,15 @@ class Map:
         t00 = t0 = libtcod.sys_elapsed_seconds()
 
         if seed is None:
-            self.rand = libtcod.random_new()  #random seed
+            self.rand = libtcod.random_new()  # random seed
         else:
-            self.rand = libtcod.random_new_from_seed(seed)  #specified seed
+            self.rand = libtcod.random_new_from_seed(seed)  # specified seed
 
         print self.rand
-        self.map_noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
-        self.map_noise2d = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, self.rand)
+        self.map_noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY,
+                                             self.rand)
+        self.map_noise2d = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY,
+                                             self.rand)
 
         self.hm = libtcod.heightmap_new(self.w, self.h)
         self.hm_wo_erosion = libtcod.heightmap_new(self.w, self.h)
@@ -1254,7 +1256,7 @@ class Map:
 
         # smooth rains
 
-        #do temps and biomes
+        # do temps and biomes
         self.determine_temperatures()  #own hacky version?
         # self.normalise_temperatures()
 
@@ -1414,7 +1416,7 @@ class Map:
         print self.hm.w, self.hm.h
         self.add_hills(self.hm, 600, 16.0 * self.w / 200.0, 0.7, 0.3)
         # center = [libtcod.heightmap_get_value(self.hm, self.w / 2, self.h / 2),
-        #           libtcod.heightmap_get_value(self.hm, self.w / 2 - 1, self.h / 2 - 1),
+        # libtcod.heightmap_get_value(self.hm, self.w / 2 - 1, self.h / 2 - 1),
         #           libtcod.heightmap_get_value(self.hm, self.w / 2, self.h / 2 - 1)]
         # # self.average_point(self.w / 2 + 1, self.h / 2 + 1)
 
@@ -1425,7 +1427,8 @@ class Map:
             print "init hills %s" % (t1 - t0)
             t0 = t1
 
-        libtcod.heightmap_add_fbm(self.hm, self.map_noise2d, 2.20 * self.w / 200.0, 2.20 * self.h / 200.0, 0, 0, 10.0, 1.0,
+        libtcod.heightmap_add_fbm(self.hm, self.map_noise2d, 2.20 * self.w / 200.0, 2.20 * self.h / 200.0, 0, 0, 10.0,
+                                  1.0,
                                   2.05)
         # libtcod.heightmap_add_fbm(self.hm, self.noise2d, 0.20 * self.w / 400.0, 2.20 * self.h / 350.0, 100, 5, 10.0, 1.0,
         #                           2.05)
@@ -1488,11 +1491,11 @@ class Map:
             yh = self.h / 2
             # xh = (libtcod.noise_get_fbm(self.noise2d, [self.w * (i + 1), i / num, self.w], 3.0, libtcod.NOISE_PERLIN) * self.w) + 1
             xh -= libtcod.noise_get_fbm(self.map_noise2d, [0.0, i / num, 0.5, 0.0], 32.0, libtcod.NOISE_DEFAULT) * (
-            self.w / 2) + 1
+                self.w / 2) + 1
             # yh = (self.h / 2 + libtcod.random_get_int(0, -variance, variance))
             # yh = (libtcod.noise_get_fbm(self.noise2d, [self.h / (i + 1), i * num, self.h], 5.0, libtcod.NOISE_SIMPLEX) * self.h) + 1
             yh -= libtcod.noise_get_fbm(self.map_noise2d, [0.0, i / num, 0.5], 32.0, libtcod.NOISE_PERLIN) * (
-            self.h / 2) + 1
+                self.h / 2) + 1
             # xh = int(min(max(radius + 1, int(xh)), self.w - 1 - radius))
             # yh = int(min(max(radius + 1, int(yh)), self.h - 1 - radius))
             # yh = R.MAP_HEIGHT/2
@@ -1593,7 +1596,7 @@ class Continent:
             print "POI not in list."
 
     def on_continent(self, x, y):
-        #todo: make this quick and easy? - maybe dict instead of list.
+        # todo: make this quick and easy? - maybe dict instead of list.
         pass
 
 
@@ -1620,7 +1623,7 @@ class POI:
         self.component = None
 
 
-#        if self.type == "Dungeon":
+# if self.type == "Dungeon":
 #            self.component = Dungeon.Dungeon()
 
 class Dungeon(POI):
@@ -1757,7 +1760,7 @@ def handle_mouse():
         libtcod.console_set_char(con, ax, ay, "#")
 
 
-    #     if mouse.lbutton_pressed:
+        #     if mouse.lbutton_pressed:
 
 
 #         print "hill"
