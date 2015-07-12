@@ -37,5 +37,3 @@ __author__ = 'Emily'
 #         self.owner = owner
 #
 #         self.bidders = []
-
-

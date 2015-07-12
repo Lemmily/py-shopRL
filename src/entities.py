@@ -3,9 +3,10 @@ Created on 16 Mar 2013
 
 @author: Emily
 """
+import math
+
 import libtcodpy as libtcod
 import R
-import math
 import economy
 import sentient
 
@@ -143,7 +144,7 @@ def is_blocked(x, y):
         return True
     if R.world.tiles[x][y].blocked:
         return True
-    #now check for any blocking objects
+    # now check for any blocking objects
     for object_ in R.world_obj:
         if object_.blocks and object_.x == x and object_.y == y:
             return True
@@ -180,7 +181,7 @@ class Trader:
 
         for resource in R.resource_list:
             # self.believed_prices[resource] = [35.00,10.00] #name as key. then [believed price, deviance]
-            self.resources[resource] = [resource, 10.00]  #resource as key, then the name and the quantity.
+            self.resources[resource] = [resource, 10.00]  # resource as key, then the name and the quantity.
 
         for resource in R.resource_list:
             self.trades["asks"][resource] = []
@@ -225,7 +226,7 @@ class Trader:
         believed -= (believed * 0.02) * quantity
         deviance += deviance * 0.05
 
-        #TODO: here would just be pushing the resource object back into the array.
+        # TODO: here would just be pushing the resource object back into the array.
         self.resources[commodity][1] += quantity
 
         deviance += (deviance * 0.1)
@@ -234,7 +235,7 @@ class Trader:
 
     def place_bid(self, trade_house, commodity, quantity, offerprice, time=5):
         # trade_house
-        offer = economy.Offer(self, price=offerprice, commodity=commodity, quantity=quantity)  #, time=time)
+        offer = economy.Offer(self, price=offerprice, commodity=commodity, quantity=quantity)  # , time=time)
         self.trades["buys"][commodity].append(offer)
         trade_house.trades["buys"][commodity].append(offer)
 
@@ -278,7 +279,7 @@ class Trader:
         if price < 0:
             print "uh-oh price of %s in %s is less than 0" % (commodity, trade_house.parent.name)
             price = believed  # for now.
-            #TODO: temporary until I can work out a better way to get a price.
+            # TODO: temporary until I can work out a better way to get a price.
         return price
 
     def check_for_offer(self, bid, commodity, limit, actual, quantity, price):

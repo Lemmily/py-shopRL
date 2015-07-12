@@ -65,7 +65,7 @@ def example2():
                           ["carry-rawmeat"]))
 
     actions.append(Action("new-destination",
-        [],
+                          [],
                           ["ready-to-move"],
                           ["at-forest", "at-gates", "at-armory",
                            "at-kitchen", "at-farmhouse"]))
@@ -123,4 +123,3 @@ def example2():
 # >>>
 #
 #  Plan:  ['moveto-farmhouse', 'harvest-rice']
-

@@ -14,8 +14,8 @@ class Stack:
     def append(self, obj):
         self.data.append(obj)
 
-class FSM:
 
+class FSM:
     def __init__(self):
         self.state_stack = Stack()
 

@@ -7,12 +7,12 @@ For each class it will be noted if it is for use in macro(between cities) or mic
 
 
 """
-import libtcodpy as libtcod
 import json
-import json_resources
-import R
 import random
 
+import libtcodpy as libtcod
+import json_resources
+import R
 
 data = json.loads(json_resources.raw_resources)
 # city = json.loads(json_resources.city_gatherers_templates)
@@ -347,7 +347,6 @@ class TradeHouse:
                 # buys.remove(buyer)
                 buyer.owner.sold_out(buyer, False)
 
-
     def resolve_offers_city(self, commodity, city):
         buys = self.trades["buys"][commodity]  # passing these like this means the root list does not change.
         asks = city.trade_house.trades["asks"][commodity]
@@ -435,7 +434,7 @@ class TradeHouse:
 
         trader.goal_city = city
         trader.trading_for = 5
-        #TODO
+        # TODO
 
 
 class Offer:
@@ -451,10 +450,10 @@ class Offer:
         self.commodity = commodity
         self.price = price
         if quantity < 0:
-            quantity = 1  #TODO: find out why this can be negative. - probably th emodifier
+            quantity = 1  # TODO: find out why this can be negative. - probably th emodifier
         self.quantity = quantity
         self.time = time
-        #self.resources = resources
+        # self.resources = resources
 
     def time_out(self):
         self.owner.rejected_offer(self.commodity, self.price, self.quantity)
@@ -599,7 +598,6 @@ class Agent(object):
                 max(self.perceived_values[type_of_item].center - N_DIF_ADJ,
                     (self.economy.local_taxes) + self.perceived_values[type_of_item].uncertainty)
 
-
     def eval_bid_rejected(self, type_of_item, price=None):
         # What to do when we've bid on something and didn't get it
         if self.economy.auctions[type_of_item].supply:
@@ -703,7 +701,6 @@ class Resource_Gatherer(Agent):
         R.ui.message(self.name + " has starved!", libtcod.dark_sea, R.date)
         self.economy.resource_gatherers.remove(self)
         if self.economy.owner: self.economy.owner.former_agents.append(self)
-
 
     def eval_need(self):
         critical_items, other_items = self.check_for_needed_items()
@@ -1017,7 +1014,6 @@ class Merchant(object):
         self.sell_economy.sell_merchants.remove(self)
         if self.economy.owner: self.economy.owner.former_agents.append(self)
 
-
     def bankrupt(self):
         self.buy_economy.buy_merchants.remove(self)
         self.sell_economy.sell_merchants.remove(self)
@@ -1134,7 +1130,6 @@ class Merchant(object):
                     max(self.sell_perceived_values[type_of_item].center - N_DIF_ADJ,
                         (self.sell_economy.local_taxes) + self.sell_perceived_values[type_of_item].uncertainty)
 
-
     def eval_bid_rejected(self, type_of_item, price=None):
         # What to do when we've bid on something and didn't get it
         if self.current_location.auctions[type_of_item].supply:
@@ -1189,7 +1184,6 @@ class Merchant(object):
         # Take into account the taxes we pay
         production_cost += (self.buy_economy.local_taxes)
         return production_cost
-
 
     def eval_sell_rejected(self, type_of_item):
         # What to do when we put something up for sale and nobody bought it
@@ -1394,12 +1388,12 @@ class Economy(object):
                     # decide privce amount
                     quantity = min(buyer.quantity, seller.quantity)
                     price = int(round(
-                        buyer.price + seller.price) / 2)  #this is where powers of persuasion could come into play.
+                        buyer.price + seller.price) / 2)  # this is where powers of persuasion could come into play.
 
                     buyer.owner.eval_trade_accepted(buyer.commodity, price)
                     seller.owner.eval_trade_accepted(seller.commodity, price)
 
-                    #updating the inventories and wealth
+                    # updating the inventories and wealth
                     for i in xrange(quantity):
                         buyer.owner.inventory.append(buyer.commodity)
                         buyer.quantity -= 1
@@ -1440,8 +1434,8 @@ class Economy(object):
                 # Track mean price for last N turns
                 auction.update_mean_price()
                 # print (auction.commodity + ': ' + str(auction.mean_price) + '. This round: ' +
-                #str(len(prices[commodity])) + ' ' + commodity + ' averaged at $' + str(price_mean) +
-                #' (' + str(num_bids) + ' bids, ' + str(num_sells) + ' sells)')
+                # str(len(prices[commodity])) + ' ' + commodity + ' averaged at $' + str(price_mean) +
+                # ' (' + str(num_bids) + ' bids, ' + str(num_sells) + ' sells)')
             elif auction.commodity is not 'nothing':
                 auction.price_history.append(auction.price_history[-1])
                 # print (commodity + ' was not sold this round (' + str(num_bids) + ' bids, ' + str(num_sells) + ' sells)')
@@ -1620,12 +1614,12 @@ class City_Economy(object):
                     # decide privce amount
                     quantity = min(buyer.quantity, seller.quantity)
                     price = int(round(
-                        buyer.price + seller.price) / 2)  #this is where powers of persuasion could come into play.
+                        buyer.price + seller.price) / 2)  # this is where powers of persuasion could come into play.
 
                     buyer.owner.eval_trade_accepted(buyer.commodity, price)
                     seller.owner.eval_trade_accepted(seller.commodity, price)
 
-                    #updating the inventories and wealth
+                    # updating the inventories and wealth
                     for i in xrange(quantity):
                         buyer.owner.inventory.append(buyer.commodity)
                         buyer.quantity -= 1
@@ -1666,8 +1660,8 @@ class City_Economy(object):
                 # Track mean price for last N turns
                 auction.update_mean_price()
                 # print (auction.commodity + ': ' + str(auction.mean_price) + '. This round: ' +
-                #str(len(prices[commodity])) + ' ' + commodity + ' averaged at $' + str(price_mean) +
-                #' (' + str(num_bids) + ' bids, ' + str(num_sells) + ' sells)')
+                # str(len(prices[commodity])) + ' ' + commodity + ' averaged at $' + str(price_mean) +
+                # ' (' + str(num_bids) + ' bids, ' + str(num_sells) + ' sells)')
             elif auction.commodity is not 'nothing':
                 auction.price_history.append(auction.price_history[-1])
                 # print (commodity + ' was not sold this round (' + str(num_bids) + ' bids, ' + str(num_sells) + ' sells)')
@@ -1698,6 +1692,5 @@ def main():
 
 def setup_city_economy():
     pass
-
 
 # main()

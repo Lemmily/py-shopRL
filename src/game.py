@@ -3,6 +3,7 @@ __author__ = 'lemmily'
 import random
 import threading
 import time
+
 from src import R
 from src.entities import Object
 
@@ -10,7 +11,6 @@ __author__ = 'emily'
 
 import libtcodpy as libtcod
 
-# Game object!
 
 class Thread(threading.Thread):
     NUM = 0
@@ -19,6 +19,9 @@ class Thread(threading.Thread):
         threading.Thread.__init__(self, target=target, args=args)
         self.NUM += 1
         self.name = "Thread " + str(self.NUM)
+
+
+# Game object!
 
 
 class Game():

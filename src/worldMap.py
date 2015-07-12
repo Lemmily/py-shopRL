@@ -8,13 +8,11 @@ import math
 
 import libtcodpy as libtcod
 import R
-import entities
 import dungeon
 import json_map
 import city
 import utils
 import pathfinding
-
 
 SAND_HEIGHT = 0.14
 grassHeight = 0.16
@@ -76,7 +74,6 @@ class Tile:
 
         self.type = ""
 
-
     def mapTile(self):
         self.POI = None
         self.continent = -1  # used for pathfining. if on the same "continent", can reach.
@@ -118,7 +115,6 @@ class Particle:
         self.previous = None
         self.max_value = max_
 
-
     def move(self, dx, dy):
 
         if dx > 0 or dy > 0:
@@ -152,7 +148,6 @@ class Particle:
         self.x = x
         self.y = y
 
-
     def is_max_value(self):
         if self.value >= self.max_value:
             self.value = self.max_value
@@ -166,7 +161,7 @@ class Particle_Map:
         self.parent = parent
         self.particles = []
         self.map = [[[]
-                        for y in range(self.parent.h)]
+                     for y in range(self.parent.h)]
                     for x in range(self.parent.w)]
 
         # generate particle pool
@@ -185,7 +180,7 @@ class Particle_Map:
                 self.map[x][iy].append(particle)
 
             else:
-                #make some more particles and continue!
+                # make some more particles and continue!
                 self.particles = [Particle(0, 0) for n in range(500)]
                 r = len(self.particles) - 1
                 bleh = libtcod.random_get_int(0, 0, r)
@@ -193,7 +188,7 @@ class Particle_Map:
                 particle.x = x
                 particle.y = iy
                 self.map[x][iy].append(particle)
-                #y += 1
+                # y += 1
 
     def run_simulation(self, rounds):
 
@@ -201,9 +196,9 @@ class Particle_Map:
         self.add_particles(0, 0)
         render()
         for n in range(rounds):
-            #this goes in reverse.
+            # this goes in reverse.
             if utils.chance_roll(50):
-                #x_loc = libtcod.random_get_int(0, 0, R.MAP_WIDTH-1)
+                # x_loc = libtcod.random_get_int(0, 0, R.MAP_WIDTH-1)
                 self.add_particles(0, 0)
             for x in reversed(range(self.parent.w)):
                 for y in reversed(range(self.parent.h)):
@@ -211,7 +206,7 @@ class Particle_Map:
 
             print "round ", n
 
-            #self.humidity_colourise()
+            # self.humidity_colourise()
 
             """ THIS NEEDS REMOVING AFTER TESTING"""
             render()
@@ -291,17 +286,16 @@ class Particle_Map:
                     print"the values are out of range. SOMETHING WENT WRONG."
                     pass
 
-
     def moisture_exchange(self, the_particle, x, y):
         # if particle.value > tile.humidity_per:
         self.map[x][y].remove(the_particle)
         particle = the_particle
         previous = self.parent.tiles[x][y]
-        #particle = previous
+        # particle = previous
         tile = self.parent.tiles[particle.x][particle.y]
 
         if previous.elevation < tile.elevation and (tile.type != "water" and previous.type != "water"):
-            #if the current tile is HIGHER than the previous
+            # if the current tile is HIGHER than the previous
             target = tile.height_metres
             last = previous.height_metres
             if previous.height_metres < 0:
@@ -311,7 +305,7 @@ class Particle_Map:
 
             n = target - last
             if last != 0:
-                z = (n / last)  #incline increase
+                z = (n / last)  # incline increase
             else:
                 z = 10
             if utils.chance_roll(50):
@@ -328,14 +322,14 @@ class Particle_Map:
                     dif = particle.value
                     particle.value -= dif * 0.15
                     if tile.type != "water":
-                        tile.humidity_per += dif * 0.1  #%5 is lost in translation.
+                        tile.humidity_per += dif * 0.1  # %5 is lost in translation.
 
             elif particle.value < tile.humidity_per:
                 if utils.chance_roll(tile.humidity_per + tile.humidity_per * z):
                     dif = tile.humidity_per
                     particle.value += dif * 0.05
                     if tile.type != "water":
-                        tile.humidity_per -= dif * 0.1  #%5 is lost in translation.
+                        tile.humidity_per -= dif * 0.1  # %5 is lost in translation.
             else:
                 if utils.chance_roll(50):
                     particle.value -= tile.humidity_per * 0.1
@@ -347,7 +341,7 @@ class Particle_Map:
                         tile.humidity_per -= tile.humidity_per * 0.1
 
         elif previous.elevation > tile.elevation and (tile.type != "water" and previous.type != "water"):
-            #the current tile is LOWER than the previous.
+            # the current tile is LOWER than the previous.
             n = previous.height_metres - tile.height_metres
             if tile.height_metres != 0:
                 z = n / tile.height_metres
@@ -380,7 +374,7 @@ class Particle_Map:
                         tile.humidity_per += tile.humidity_per * 0.05
 
         else:
-            #the height is the same? 
+            # the height is the same?
             if particle.value > tile.humidity_per:
                 if utils.chance_roll(tile.humidity_per):
                     particle.value += tile.humidity_per * 0.1
@@ -398,12 +392,12 @@ class Particle_Map:
 
         """check life values are within limits!"""
         if particle.life < 1:
-            #particle has *died" so as it is already removed, just add it into the particles list.
+            # particle has *died" so as it is already removed, just add it into the particles list.
             self.particles.append(particle)
 
         else:
             if utils.chance_roll(5):
-                #chaance to disappear.
+                # chaance to disappear.
                 particle.value = 0
                 self.particles.append(particle)
             else:
@@ -482,7 +476,7 @@ class Particle_Map:
 
         # TODO: finish this. moisture calcs,
 
-        #TEMPORARY!!!!!!!!!!!!!!
+        # TEMPORARY!!!!!!!!!!!!!!
         if other == 0:
             mod_tot = (height + temp) / 2.0
         else:
@@ -549,7 +543,7 @@ class Map:
 
         self.hm = libtcod.heightmap_new(self.w, self.h)
 
-        self.generate(51708288)  #51708288)   55920912
+        self.generate(51708288)  # 51708288)   55920912
 
         # self.hm2 = libtcod.heightmap_new(self.w, self.h)
         # self.hm3 = libtcod.heightmap_new(self.w, self.h)
@@ -633,7 +627,6 @@ class Map:
                     print "Dungeon succeeded", x, y, temp.name
                 else:
                     print "failed", x, y
-
 
     def seperate_continents(self):
         self.continents = [None]
@@ -836,12 +829,12 @@ class Map:
                     # flip for either.
                     flip = libtcod.random_get_int(0, 0, 1)
                     if flip == 1:
-                        #water
+                        # water
                         sum_ = sum(num for num in tiles[1][1])
                         value = sum_ / len(tiles[1][1])
                         self.mini_map[a][b] = Tile(cell_x, cell_y, True, map_tile=True, bg=[10, 10, value])
                     if flip == 0:
-                        #land
+                        # land
                         sum_ = sum(num for num in tiles[0][1])
                         value = sum_ / len(tiles[0][1])
                         self.mini_map[a][b] = Tile(cell_x, cell_y, False, map_tile=True, bg=[10, value, 10])
@@ -886,7 +879,7 @@ class Map:
         xh = self.w
         yh = self.h
 
-        one = (x - xh ) * (x - xh )
+        one = (x - xh) * (x - xh)
         two = (y - yh) * (y - yh)
 
         hill_height = ((r * r) + one + two) / 4
@@ -922,7 +915,7 @@ class Map:
                     self.tiles[cell_x][cell_y].humidity = 255
                     self.tiles[cell_x][cell_y].humidity_per = 100.0
                     self.tiles[cell_x][cell_y].type = "water"
-                    self.blocked.append((cell_x, cell_y))  #add water tile to blocked.
+                    self.blocked.append((cell_x, cell_y))  # add water tile to blocked.
 
                 elif value < GRASS_THRESHOLD:  # coast
                     test = int(math.sqrt(value))
@@ -1061,9 +1054,9 @@ class Map:
                     #                         temp = 5 + libtcod.random_get_int(0,-3,3)
                     #                     else: #polar
                     #                         temp = -10 + libtcod.random_get_int(0,-5,5)
-                    #start at equator temp
+                    # start at equator temp
                     temp = 30
-                    #percent of total possible distance
+                    # percent of total possible distance
                     max_ = float(self.equator)
                     pre = distance_from_equator / max_
                     if y == 10:
@@ -1071,14 +1064,14 @@ class Map:
                     if distance_from_equator == max_:
                         pre = 1
                     percent = pre * 100
-                    #for a drop of upto 30.
-                    #temp_drop = (0.002*percent)**2 + 0.1*percent - 3.92896*10**-14
-                    #for a drop of upto 60.
+                    # for a drop of upto 30.
+                    # temp_drop = (0.002*percent)**2 + 0.1*percent - 3.92896*10**-14
+                    # for a drop of upto 60.
                     temp_drop = 0.006 * percent ** 2 + 5.71976 * 10 ** -16 * percent - 5.89344 * 10 ** -14
                     temp = temp - math.ceil(temp_drop)
 
-                    #Now for altitude effects.
-                    #if height_in_metres % 500 < height_in_metres:
+                    # Now for altitude effects.
+                    # if height_in_metres % 500 < height_in_metres:
                     degree_shift = (height_in_metres / 500) * 3
                     #                     else:
                     #                         degree_shift = - 1
@@ -1107,14 +1100,14 @@ class Map:
                     if distance_from_equator == max_:
                         pre = 1
                     percent = pre * 100
-                    #for a drop of upto 30.
-                    #temp_drop = (0.002*percent)**2 + 0.1*percent - 3.92896*10**-14
-                    #for a drop of upto 60.
+                    # for a drop of upto 30.
+                    # temp_drop = (0.002*percent)**2 + 0.1*percent - 3.92896*10**-14
+                    # for a drop of upto 60.
                     temp_drop = 0.006 * percent ** 2 + 5.71976 * 10 ** -16 * percent - 5.89344 * 10 ** -14
                     temp = temp - math.ceil(temp_drop)
 
-                    #Now for altitude effects.
-                    #if height_in_metres % 500 < height_in_metres:
+                    # Now for altitude effects.
+                    # if height_in_metres % 500 < height_in_metres:
                     degree_shift = (depth_in_metres / 500) * 5
                     #                     else:
                     #                         degree_shift = - 1
@@ -1135,7 +1128,7 @@ class Map:
                 if self.tiles[x][y].temperature < smallest:
                     smallest = self.tiles[x][y].temperature
 
-        #now to normalise.
+        # now to normalise.
         for x in range(self.w):
             for y in range(self.h):
                 percent = (self.tiles[x][y].temperature - smallest) / (largest - smallest)
@@ -1152,7 +1145,7 @@ class Map:
                     largest = self.tiles[x][y].humidity_per
                 if self.tiles[x][y].humidity_per < smallest:
                     smallest = self.tiles[x][y].humidity_per
-        #now to normalise.
+        # now to normalise.
         for x in range(self.w):
             for y in range(self.h):
                 percent = (self.tiles[x][y].humidity_per - smallest) / (largest - smallest)
@@ -1257,10 +1250,10 @@ class Map:
         # smooth rains
 
         # do temps and biomes
-        self.determine_temperatures()  #own hacky version?
+        self.determine_temperatures()  # own hacky version?
         # self.normalise_temperatures()
 
-        #do colours n shit
+        # do colours n shit
 
         libtcod.heightmap_normalize(self.hm, 0, 255)
 
@@ -1270,7 +1263,6 @@ class Map:
         t0 = t1
 
         print "total time.. %s" % (t1 - t00)
-
 
     def compute_precipitations(self):
         if R.DEBUG:
@@ -1302,7 +1294,7 @@ class Map:
                         else:
                             slope = h - libtcod.heightmap_get_value(self.hm, x, y - diry)
                         if slope >= 0.0:
-                            precip = water_amount * (base_precip + slope * slope_coef )
+                            precip = water_amount * (base_precip + slope * slope_coef)
                             libtcod.heightmap_set_value(self.precipitation_map, x, y,
                                                         libtcod.heightmap_get_value(self.precipitation_map, x,
                                                                                     y) + precip)
@@ -1337,7 +1329,7 @@ class Map:
                         else:
                             slope = h - libtcod.heightmap_get_value(self.hm, x - dirx, y)
                         if slope >= 0.0:
-                            precip = water_amount * (base_precip + slope * slope_coef )
+                            precip = water_amount * (base_precip + slope * slope_coef)
                             libtcod.heightmap_set_value(self.precipitation_map, x, y,
                                                         libtcod.heightmap_get_value(self.precipitation_map, y,
                                                                                     y) + precip)
@@ -1384,10 +1376,8 @@ class Map:
                 v = get_interpolated_float(low_res, x * coef, y * coef, small_width, small_height)
                 libtcod.heightmap_set_value(self.precipitation_map, x, y, v)
 
-
     def other_erode(self):
         libtcod.heightmap_rain_erosion(self.hm, 10000, 0.1, 0.1)
-
 
     def smooth_map(self):
         smooth_kernel_size = 9
@@ -1470,7 +1460,6 @@ class Map:
             #     for y in xrange(self.h):
             #         f[1] = 6.0 * (float(y) / self.h)
             #         self.clouds[x][y] = 0.5 * (1.0 + 0.8 * libtcod.noise_get_fbm(self.noise2d, f, 4.0))
-
 
     def add_hills(self, hm, number, baseRadius, radius_var, height):
         for i in range(number):
@@ -1580,7 +1569,7 @@ class Continent:
         self.poi_ls = []
         self.ID = ID
         self.tiles = [[[]
-                          for y in range(h)]
+                       for y in range(h)]
                       for x in range(w)]
 
     def add_POI(self, POI):
@@ -1772,11 +1761,11 @@ def handle_mouse():
 
 def handle_keys():
     if key.vk == libtcod.KEY_ESCAPE:
-        return "exit"  #exit game
+        return "exit"  # exit game
 
     if key.vk == libtcod.KEY_SPACE:
         pass
-        #TODO: write function to initiate biome analysis.
+        # TODO: write function to initiate biome analysis.
 
 
 #     if key.vk == libtcod.KEY_SPACE:
@@ -1813,14 +1802,8 @@ def main():
 
         handle_mouse()
 
-
-#cProfile.run('main()')  
+# cProfile.run('main()')
 # main()
 #
 
-#buh = Dungeon(0,0,1)       
-        
-        
-    
-    
-        
+# buh = Dungeon(0,0,1)

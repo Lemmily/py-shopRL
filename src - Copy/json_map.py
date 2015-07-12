@@ -4,7 +4,6 @@ Created on 29 Mar 2013
 @author: Emily
 '''
 
-
 rooms = """{
     "crypt":{
                 "monster types": ["undead","bandits"],
@@ -29,7 +28,7 @@ rooms = """{
             },
 
     }"""
-    
+
 monsters = """{
     "1":{
                    "Goblin":{  "name":"goblin",
