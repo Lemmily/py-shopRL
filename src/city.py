@@ -9,6 +9,7 @@ import math
 import libtcodpy as libtcod
 import random
 import entities
+from economy import Resource, TradeHouse
 import utils
 import R
 
