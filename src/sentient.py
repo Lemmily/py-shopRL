@@ -319,14 +319,14 @@ class AI_Hero(Basic_AI):
             if pathy_path is not None:
                 self.path = list(pathy_path)
                 print self.parent.name + "'s second path is " + str(len(self.path)) + " long!"
-            # pathy_path = self.pather2.find_path(R.world, (self.parent.x,self.parent.y),(new_x,new_y))
-            # if pathy_path is not None:
-            #     self.path = list(pathy_path)
-            #     print self.parent.name + "'s first path is " + str(len(self.path)) + " long!"
-            # pathy_path = self.pather3.find_path((self.parent.x, self.parent.y),(new_x,new_y), R.tiles)
-            # if pathy_path is not None:
-            #     self.path3 = list(pathy_path)
-            #     print self.parent.name + "'s third path is " + str(len(self.path3)) + " long!"
+            pathy_path = self.pather2.find_path(R.world, (self.parent.x,self.parent.y),(new_x,new_y))
+            if pathy_path is not None:
+                self.path = list(pathy_path)
+                print self.parent.name + "'s first path is " + str(len(self.path)) + " long!"
+            pathy_path = self.pather3.find_path((self.parent.x, self.parent.y),(new_x,new_y), R.tiles)
+            if pathy_path is not None:
+                self.path3 = list(pathy_path)
+                print self.parent.name + "'s third path is " + str(len(self.path3)) + " long!"
             print self.parent.name + " ----------------------------"
 
         else:

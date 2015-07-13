@@ -4,7 +4,7 @@ Created on 4 Mar 2013
 @author: Emily
 """
 import time
-from pyglet.libs.x11.xlib import XInitThreads
+import platform
 
 import libtcodpy as libtcod
 
@@ -20,11 +20,15 @@ import threading
 
 import sentient
 
+if "linux" in platform.system().lower():
+    from pyglet.libs.x11.xlib import XInitThreads
+    XInitThreads()
+
+
 # import numpy as np
 # import numpy
 
 
-XInitThreads()
 
 SLOW_SPEED = 8
 NORM_SPEED = 12
@@ -127,6 +131,11 @@ def new_game():
     # hero = entities.Mover(39,17, name="tester", ai=sentient.AI_Hero())
     # hero.ai.pather.new_find_path((hero.x,hero.y),(42,17), R.tiles)
     selected.append(hero)
+    for objects in R.world_obj:
+        if objects.ai:
+            objects.clear(cam_x, cam_y)
+            objects.ai.take_turn()
+            objects.draw(cam_x, cam_y)
     render_world()
 
     world.connect_cities()
@@ -177,7 +186,7 @@ def play_game():
     key = libtcod.Key()
 
     start_time = libtcod.sys_elapsed_seconds()
-    render_thread = Thread(target=render, name="Render Thread").start()
+    # render_thread = Thread(target=render, name="Render Thread").start()
     # render_thread.start()
     while not libtcod.console_is_window_closed():
 
@@ -199,7 +208,7 @@ def play_game():
                 break
 
             handle_mouse()
-            # render_local()
+            render_local()
 
         else:
 
@@ -216,12 +225,12 @@ def play_game():
             if player_action == "exit":
                 save_game()
                 break
-            if not pause:  # and not player_turn:
+            if not pause and not player_turn:
                 advance_time()
                 # player_turn = True
 
             handle_mouse()
-            # render_all()
+            render_world()
 
         if R.msg_redraw:
             update_msg_bar()
@@ -878,14 +887,31 @@ def handle_keys():
             # test for other keys
             key_char = chr(key.c)
 
-            if key_char == "d":
+            if key_char == "c":
+                city_menu()
+            elif key_char == "d":
                 if debug_mode:
                     debug_mode = False
                 else:
                     debug_mode = True
 
+            elif key_char == "e":
+                player_turn = not player_turn
+            elif key_char == "f":
+                # debug key to look at traffic maps.
+                if traffic is False:
+                    traffic = True
+                elif traffic is True:
+                    traffic = False
+
             elif key_char == "i":
                 inventory_menu()
+
+            elif key_char == "k":
+                if continent is False:
+                    continent = True
+                elif continent is True:
+                    continent = False
 
             elif key_char == "p":
                 player_menu()
@@ -893,11 +919,6 @@ def handle_keys():
             elif key_char == "q":
                 pathfinding = not pathfinding
 
-            elif key_char == "c":
-                city_menu()
-
-            elif key_char == "v":
-                city_production_menu()
 
             elif key_char == "t":
                 # debug mode to look at temperature
@@ -906,18 +927,10 @@ def handle_keys():
                 elif temperature is True:
                     temperature = False
 
-            elif key_char == "f":
-                # debug key to look at traffic maps.
-                if traffic is False:
-                    traffic = True
-                elif traffic is True:
-                    traffic = False
+            elif key_char == "v":
+                city_production_menu()
 
-            elif key_char == "k":
-                if continent is False:
-                    continent = True
-                elif continent is True:
-                    continent = False
+
 
             elif key_char == ",":
                 pick_up()
@@ -1301,7 +1314,7 @@ def main_menu():
 
 def main_init():
     global con, con_char, inf, minmap, message_bar, date, ui, game_msgs
-    libtcod.console_set_custom_font("data/arial10x10.png", libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
+    libtcod.console_set_custom_font("data/font.png", libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_ASCII_INROW)
     # libtcod.console_set_custom_font("data\ont_big.png", libtcod.FONT_LAYOUT_ASCII_INROW)
     libtcod.console_init_root(R.SCREEN_WIDTH, R.SCREEN_HEIGHT, "Trader-RL", False)
     libtcod.sys_set_fps(R.LIMIT_FPS)
