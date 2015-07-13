@@ -27,24 +27,24 @@ skill_list_1 = [  # // 0_name:string, 1_attribute, 2_needTraining:Boolean, 3_des
                   ]
 
 
-class Skills:
-    def __init__(self):
-        pass
-        self.dict = {}
-        for line in skill_list_1:
-            self.dict[line[0]] = Skill(line[0], line[1])
-
-    def skill_level_check(self, skill):
-        sk_exp = self.dict[skill].exp
-
-        return sk_exp  # TODO: make lookup table to look up what level the skill is at. for now just retrun this/
-
-
-class Skill:
-    def __init__(self, name, group="None"):
-        self.name = name
-        self.group = group
-        self.exp = 0
+# class Skills:
+#     def __init__(self):
+#         pass
+#         self.dict = {}
+#         for line in skill_list_1:
+#             self.dict[line[0]] = Skill(line[0], line[1])
+#
+#     def skill_level_check(self, skill):
+#         sk_exp = self.dict[skill].exp
+#
+#         return sk_exp  # TODO: make lookup table to look up what level the skill is at. for now just retrun this/
+#
+#
+# class Skill:
+#     def __init__(self, name, group="None"):
+#         self.name = name
+#         self.group = group
+#         self.exp = 0
 
 
 class Inventory:
@@ -85,6 +85,10 @@ class Inventory:
         for wound in wounds:
             self.equipment.pop(wound, None)
 
+    def append(self, game_object):
+        # add object
+        self.contents.append(game_object)
+
 
 class Basic_AI:
     def __init__(self):
@@ -95,7 +99,7 @@ class Basic_AI:
 
 
 # pawn = self.parent
-#         path = self.path
+# path = self.path
 #         if len(path) == 0:
 #             new_x = libtcod.random_get_int(0, 0, len(self.tiles) - 1)
 #             new_y = libtcod.random_get_int(0, 0, len(self.tiles[new_x]) - 1)
@@ -152,12 +156,12 @@ class AI_CityTrader(Basic_AI):
         if self.t_h == R.cities[0].trade_house:
             print "aha"
 
-        if self.goal_city != None and self.goal_city.x == self.parent.x and self.goal_city.y == self.parent.y:
+        if self.goal_city is not None and self.goal_city.x == self.parent.x and self.goal_city.y == self.parent.y:
             print "I am at the city!"
             self.path = []
             self.goal_city = None
 
-        if self.goal_city == None and x == self.parent.x and y == self.parent.y:
+        if self.goal_city is None and x == self.parent.x and y == self.parent.y:
             print "I am at my home city!"
             self.path = []
             self.goal_city = None
@@ -168,8 +172,8 @@ class AI_CityTrader(Basic_AI):
             pass
 
         elif self.resting <= 0 or self.trading <= 0:
-            if self.goal_city != None:
-                if self.path != None and len(self.path) > 0:
+            if self.goal_city is not None:
+                if self.path is not None and len(self.path) > 0:
                     grid = self.path[0]
                     dx = grid[0] - self.parent.x
                     dy = grid[1] - self.parent.y
@@ -185,7 +189,7 @@ class AI_CityTrader(Basic_AI):
                     print "finding new path to ", self.goal_city.name
                     self.path = self.parent.pather.find_path((self.parent.x, self.parent.y),
                                                              (self.goal_city.x, self.goal_city.y))
-                    if self.path == None:
+                    if self.path is None:
                         self.goal_city = None
                         # shift itself back to the parent city.
                         self.goal_city = None
@@ -195,7 +199,7 @@ class AI_CityTrader(Basic_AI):
             else:
                 # ask city tradehouse about what goods to take to where.
                 # self.t_h.get_trade_mission(self)
-                if self.goal_city == None and self.parent.x == self.t_h.parent.x and self.parent.y == self.t_h.parent.y:
+                if self.goal_city is None and self.parent.x == self.t_h.parent.x and self.parent.y == self.t_h.parent.y:
                     if self.t_h.caravans_out.count(self) > 0:
                         self.t_h.caravans_out.remove(self)
                     else:
@@ -227,16 +231,16 @@ class AI_Hero(Basic_AI):
         self.pather3 = Pather()
 
     def assess_self(self):
-        '''
+        """
         this needs to be called whenever the character has to make a decision about something. SO hopefully not every turn.
-        
+
         for example:
-            the hero has just finished fighting a monster. 
+            the hero has just finished fighting a monster.
             it now needs to assess its health levels and if they are low find some sort of healing.
-            this function should "deal" out the motivaitons. they are tallied by assess_motives() 
-            
+            this function should "deal" out the motivaitons. they are tallied by assess_motives()
+
             and then acted upon in TODO: action function
-        '''
+        """
         cur_health = self.parent.fighter.health
         max_health = self.parent.fighter.max_hp
         if cur_health <= max_health:
@@ -271,23 +275,23 @@ class AI_Hero(Basic_AI):
                 else:
                     self.dict_motive[motive.other] = motive.other_imp
 
-                #             if motive.main == "none":
-                #                 pass
-                #                 #pick a random goal.
-                #             elif motive.main == "health":
-                #                 pass
-                #             elif motive.main == "wealth":
-                #                 pass
-                #             elif motive.main == "comfort":
-                #                #go to civilisation of any kind. house/village/town/city depending on desperation.
-                #                 pass
-                #             elif motive.main == "adventure":
-                #                #go cave/dungeon/ruin delving to find monsters and treasure.
-                #                 pass
-                #             elif motive.main == "buy":
-                #                 pass
-                #             elif motive.main == "sell":
-                #                 pass
+                    #             if motive.main == "none":
+                    #                 pass
+                    #                 #pick a random goal.
+                    #             elif motive.main == "health":
+                    #                 pass
+                    #             elif motive.main == "wealth":
+                    #                 pass
+                    #             elif motive.main == "comfort":
+                    #                #go to civilisation of any kind. house/village/town/city depending on desperation.
+                    #                 pass
+                    #             elif motive.main == "adventure":
+                    #                #go cave/dungeon/ruin delving to find monsters and treasure.
+                    #                 pass
+                    #             elif motive.main == "buy":
+                    #                 pass
+                    #             elif motive.main == "sell":
+                    #                 pass
         highest_no = 0
         highest = ""
         for key in self.dict_motive.keys():

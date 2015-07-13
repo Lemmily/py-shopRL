@@ -9,6 +9,7 @@ import libtcodpy as libtcod
 import R
 import economy
 import sentient
+from src import skills
 
 
 class Object:
@@ -129,10 +130,13 @@ class Player(Mover):
 
         self.dungeon_level = d_l  # what is this? depth?
         self.inventory = R.inventory = sentient.Inventory()  # = {"armour":[], "melee":[], "potions":[],"scrolls":[]}
-        self.skills = sentient.Skills()
+        self.skills = skills.Stats()
         self.depth = 0
 
-    def get_item(self, obj):
+    """
+    pick up item
+    """
+    def pick_up_item(self, obj):
         self.inventory.append(obj)
 
 

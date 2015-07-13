@@ -4,6 +4,7 @@ Created on 4 Mar 2013
 @author: Emily
 """
 import time
+from pyglet.libs.x11.xlib import XInitThreads
 
 import libtcodpy as libtcod
 
@@ -21,6 +22,9 @@ import sentient
 
 # import numpy as np
 # import numpy
+
+
+XInitThreads()
 
 SLOW_SPEED = 8
 NORM_SPEED = 12
@@ -114,6 +118,7 @@ def new_game():
     you = R.you = entities.Player()  # name = "player") #you = entities.Player())
     R.inventory = you.inventory
     world_obj.append(you)
+    hero = None
     for a in range(5):
         x, y = worldMap.place_on_land()
         hero = R.hero = entities.Mover(x=x, y=y, name="hero " + str(a), pather=sentient.Pather(), ai=sentient.AI_Hero())
@@ -122,13 +127,9 @@ def new_game():
     # hero = entities.Mover(39,17, name="tester", ai=sentient.AI_Hero())
     # hero.ai.pather.new_find_path((hero.x,hero.y),(42,17), R.tiles)
     selected.append(hero)
-    render_all()
+    render_world()
 
     world.connect_cities()
-    # world.connect_cities()
-    # world.connect_cities()
-    # world.connect_cities()
-    # world.connect_cities()
     # world.connect_cities()
     #    point = (0,0)
     #    diction = dict()
@@ -226,12 +227,13 @@ def play_game():
             update_msg_bar()
             # update_info_bar()
 
-            # erase all objectsat their old locations, before they move
+            # erase all objects at their old locations, before they move
             # for object in objects:
             #    object.clear(con)
 
             # handle_mouse()
         libtcod.console_flush()
+        # time.sleep(0.1)
 
 
 def advance_time():
@@ -358,14 +360,13 @@ def render():
         if local:
             render_local()
         else:
-            render_all()
-        libtcod.console_blit(con, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0)
-        libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
-        libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0, R.MAP_VIEW_WIDTH, 0)
-        libtcod.console_blit(minmap, 0, 0, R.INFO_BAR_WIDTH, R.PANEL_HEIGHT, 0, R.MAP_VIEW_WIDTH, R.PANEL_Y)
+            render_world()
+        # libtcod.console_blit(con, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0)
+        # libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
+        # libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0, R.MAP_VIEW_WIDTH, 0)
+        # libtcod.console_blit(minmap, 0, 0, R.INFO_BAR_WIDTH, R.PANEL_HEIGHT, 0, R.MAP_VIEW_WIDTH, R.PANEL_Y)
         # libtcod.console_flush()
 
-        time.sleep(0.1)
 
 
 def render_wilderness():
@@ -408,8 +409,12 @@ def render_wilderness():
                 libtcod.console_set_char_background(con, x, y, colour, libtcod.BKGND_SET)
 
 
-def render_all():
+def render_world():
     global cam_x, cam_y, selected
+
+    # erase all objects at their old locations, before they move
+    # for object in objects:
+    #    object.clear(con)
 
     # clear the city locations using OLD cam position.
     for city in R.cities:
@@ -437,9 +442,7 @@ def render_all():
             map_pos_y = y + cam_y
 
             # skip if out of bounds
-            if map_pos_x >= R.MAP_WIDTH:
-                continue
-            if map_pos_y >= R.MAP_HEIGHT:
+            if map_pos_x >= R.MAP_WIDTH or map_pos_y >= R.MAP_HEIGHT:
                 continue
 
             tile = R.world.tiles[map_pos_x][map_pos_y]
@@ -453,7 +456,7 @@ def render_all():
                 # if it"s not visible right the player can only see it if it"s explored
                 # if tile.explored:
                 # if wall:
-                #    libtcod.console_set_char_backgrnow, ound(con, x, y, color_dark_wall, libtcod.BKGND_SET)
+                #    libtcod.console_set_char_background(con, x, y, color_dark_wall, libtcod.BKGND_SET)
                 #    libtcod.console_set_char(con, x, y, " ")
                 # else:
                 #    libtcod.console_set_char_background(con, x, y, color_dark_ground, libtcod.BKGND_SET)
@@ -568,9 +571,8 @@ def render_all():
             objects.draw(cam_x, cam_y)
     you.draw(cam_x, cam_y)
 
-
-
-    # libtcod.console_print_ex(message_bar, R.SCREEN_WIDTH - R.INFO_BAR_WIDTH, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse())
+    # libtcod.console_print_ex(message_bar, R.SCREEN_WIDTH - R.INFO_BAR_WIDTH, 0,
+    #                                   libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse())
     # libtcod.console_set_default_background(con, libtcod.white)
     libtcod.console_blit(con, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0)
     libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
@@ -592,7 +594,7 @@ def render_minimap():
 
 
 def render_local():
-    global map_, fov_recompute
+    global map_, fov_recompute#, cam_x, cam_y
 
     if len(R.map_) > R.MAP_VIEW_WIDTH:
         cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH_HALF + 1, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
@@ -603,6 +605,8 @@ def render_local():
     else:
         cam_y = 0
 
+    for objects in R.world_obj:
+        objects.clear(cam_x, cam_y)
     # cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH / 2, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
     # cam_y = scrolling_map(you.y, R.MAP_VIEW_HEIGHT / 2, R.MAP_VIEW_HEIGHT, R.MAP_HEIGHT)
 
@@ -737,7 +741,7 @@ def update_info_bar():
     #        y += 1
 
     libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0, R.MAP_VIEW_WIDTH, 0)
-    libtcod.console_flush()
+    # libtcod.console_flush()
 
 
 # def get_names_under_mouse():
