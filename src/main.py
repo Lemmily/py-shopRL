@@ -39,7 +39,7 @@ game_speed = NORM_SPEED
 turns = 0
 pause = False
 
-##Render Modes##
+# #Render Modes##
 traffic = False
 temperature = False
 continent = False
@@ -375,7 +375,6 @@ def render():
         # libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0, R.MAP_VIEW_WIDTH, 0)
         # libtcod.console_blit(minmap, 0, 0, R.INFO_BAR_WIDTH, R.PANEL_HEIGHT, 0, R.MAP_VIEW_WIDTH, R.PANEL_Y)
         # libtcod.console_flush()
-
 
 
 def render_wilderness():
@@ -714,6 +713,7 @@ def update_msg_bar():
 
 
 def update_info_bar():
+    global selected
     # TODO: seperate the UI updating into THIS function. the rest of the game updates in the render_all.
     # Fetch all the code into this function basically.
     # TODO: make a function for the ui to prin a message in this area. Possibly with choices whether to wipe it first or add to it.
@@ -730,13 +730,15 @@ def update_info_bar():
             try:
                 if sel.component.trade_house:
                     libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, sel.char)
-                    resources = [obj + " " + str(sel.component.resources[obj][1]) for obj in sel.component.resources]
+                    resources = [sel + " " + str(sel.component.resources[obj][1]) for obj in sel.component.resources]
 
                     resources = "\n".join(resources)
                     libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, resources)
                     y += 1
             except:
                 libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, sel.char)
+
+            y += 2
 
         y += 4
     for (line, colour) in test_msgs:
@@ -750,24 +752,6 @@ def update_info_bar():
     #        y += 1
 
     libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0, R.MAP_VIEW_WIDTH, 0)
-    # libtcod.console_flush()
-
-
-# def get_names_under_mouse():
-#    global mouse
-#
-#    (x, y) = (mouse.cx, mouse.cy)
-#    x += cam_x
-#    y += cam_y
-#    
-#    names = [obj.name for obj in R.cities
-#        if obj.x == x and obj.y == y] #and libtcod.map_is_in_fov(fov_map, obj.x, obj.y)]
-#    if len(names) > 0:
-#        names = ", ".join(names)
-#        return names.capitalize() + str(x) + " " + str(y)
-#    else:
-#        return str(R.world.tiles[x][y].temperature)# 
-#    
 
 def handle_mouse():
     global selected
@@ -791,7 +775,6 @@ def handle_mouse():
         for poi in R.pois:
             if poi.x == x + cam_x and poi.y == y + cam_y:
                 selected.append(poi)
-                update_info_bar()
                 found = True
                 #
                 #        for city in R.cities:
@@ -803,11 +786,11 @@ def handle_mouse():
         for obj in R.world_obj:
             if obj.x == cam_x + x and obj.y == cam_y + y:
                 selected.append(obj)
-                update_info_bar()
                 found = True
                 # if found == False and R.world.w >= (x + cam_x) and R.world.h >= (y + cam_y):
                 #     print str(R.world.tiles[x + cam_x][y + cam_y].temperature) + "/" + str(
                 #         R.world.tiles[x + cam_x][y + cam_y].elevation)
+        update_info_bar()
 
 
 def handle_keys():

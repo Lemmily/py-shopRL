@@ -1,8 +1,8 @@
-'''
+"""
 Created on 29 Aug 2013
 
 @author: Emily
-'''
+"""
 import R
 import libtcodpy as libtcod
 
@@ -18,15 +18,14 @@ class Skills:
     def _get_level(self):
         pass
 
-#
+
+#################################################################
 # class Skill:
 #     def __init__(self, name, attr, sk_amt=0):
 #         self.name = name
 #         self.attr = attr  # main attribute for skill
 #         self.exp = sk_amt
-
-
-################################################################
+#################################################################
 
 
 attributes = ["str", "con", "dex", "int", "cha", "wis", "luc"]

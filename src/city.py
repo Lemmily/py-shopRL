@@ -1,8 +1,8 @@
-'''
+"""
 Created on 4 Mar 2013
 
 @author: Emily
-'''
+"""
 
 import math
 import random

@@ -62,9 +62,9 @@ class Tile:
             bg[2] = 254
         self.bg = libtcod.Color(bg[0], bg[1], bg[2])
         self.fg = libtcod.Color(fg[0], fg[1], fg[2])
-        self.explored = False  #:all tiles start unexplored
+        self.explored = False  # all tiles start unexplored
         self.char = char
-        self.cost = cost  #:10 for normal tile, 5 for road?
+        self.cost = cost  # 10 for normal tile, 5 for road?
 
         self.blocked = blocked
         self.block_sight = block_sight
@@ -109,7 +109,7 @@ class Particle:
         self.value = 0
         self.temperature = 18  #
         self.speed = 100  # out of 100
-        self.life = 1000  #:life of the particle.
+        self.life = 1000  # life of the particle.
         self.x = x
         self.y = y
         self.previous = None
@@ -156,7 +156,7 @@ class Particle:
             return False
 
 
-class Particle_Map:
+class ParticleMap:
     def __init__(self, parent, num):
         self.parent = parent
         self.particles = []
@@ -572,7 +572,7 @@ class Map:
         self.seperate_continents()
         self.determine_temperatures()
         # self.normalise_temperatures()
-        self.wind_gen = Particle_Map(self, 1500)
+        self.wind_gen = ParticleMap(self, 1500)
         self.generate_mini_map(10)
         self.cities = []
         self.dungeons = []
@@ -601,12 +601,12 @@ class Map:
                 # y = libtcod.random_get_int(0, 1, self.h - 1)
                 tile = self.tiles[xh][yh]
                 if tile.POI is None and tile.blocked is not True and tile.type != "coast":
-                    tempCity = City(xh, yh)
-                    self.cities.append(tempCity.component)
-                    self.pois.append(tempCity)
-                    self.tiles[xh][yh].POI = tempCity
+                    temp_city = City(xh, yh)
+                    self.cities.append(temp_city.component)
+                    self.pois.append(temp_city)
+                    self.tiles[xh][yh].POI = temp_city
                     placed = True
-                    print "City succeeded", xh, yh, tempCity.name
+                    print "City succeeded", xh, yh, temp_city.name
                 else:
                     print "failed", xh, yh
                     i += 1
@@ -646,7 +646,7 @@ class Map:
                         self.continents[tile.continent].add_POI(tile.POI)
 
     def flood_fill_recur(self, tile, ID=-1):
-        ## Recursion error. Max recurion depth exceeded.
+        # Recursion error. Max recursion depth exceeded.
         if tile.type == "water":
             print "huh, found water", tile.x, tile.y
             return
@@ -669,7 +669,7 @@ class Map:
         return
 
     def flood_fill(self, tile, ID=-1):
-        ## Recursion error. Max recurion depth exceeded.
+        # Recursion error. Max recursion depth exceeded.
         if tile.type == "water":
             print "huh, found water", tile.x, tile.y
             return
@@ -1590,7 +1590,7 @@ class Continent:
 
 
 def within_bounds(x, y, map_=None):
-    if map_ == None:
+    if map_ is None:
         map_ = R.world
     if x >= 0 and x < len(map_) and y >= 0 and y < len(map_[0]):
         return True
@@ -1603,7 +1603,7 @@ class POI:
         self.x = x
         self.y = y
         self.colour = colour
-        if self.colour == None:
+        if self.colour is None:
             self.colour = libtcod.Color(libtcod.random_get_int(0, 0, 255), libtcod.random_get_int(0, 0, 255),
                                         libtcod.random_get_int(0, 0, 255))
         self.char = char

@@ -18,13 +18,13 @@ class PathNode:
     OPEN = 0
     CLOSED = 1
 
-    def __init__(self, grid, cost, parentNode=None, endNode=None):
+    def __init__(self, grid, cost, parent_node=None, endNode=None):
         self.grid = grid  # location
         self.cost = cost  # cost of journey to this node so far.
         # self.cost = 0 #cost of  and estimate for distance left
         self.open = self.OPEN
 
-        self.parent_node = parentNode
+        self.parent_node = parent_node
         self.end_node = endNode
 
         # if self.end_node != None:
