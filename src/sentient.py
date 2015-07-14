@@ -97,7 +97,6 @@ class Basic_AI:
     def take_turn(self):
         pass
 
-
 # pawn = self.parent
 # path = self.path
 #         if len(path) == 0:
@@ -143,7 +142,7 @@ class AI_CityTrader(Basic_AI):
         self.trader.parent = self
         self.goal_city = None  # goal for trading mish.
         self.resting = 0  # 0 is no, any other number is days.
-        self.trading = 0  # 0 is no, any othe rnumber is days left.
+        self.trading = 0  # 0 is no, any other number is days left.
         self.city_gold = 0  # how much the trader has to spend when on trade mish.
         self.t_h = trade_house
         self.path = None
@@ -237,7 +236,7 @@ class AI_Hero(Basic_AI):
         for example:
             the hero has just finished fighting a monster.
             it now needs to assess its health levels and if they are low find some sort of healing.
-            this function should "deal" out the motivaitons. they are tallied by assess_motives()
+            this function should "deal" out the motivations. they are tallied by assess_motives()
 
             and then acted upon in TODO: action function
         """
@@ -318,15 +317,15 @@ class AI_Hero(Basic_AI):
             pathy_path = self.pather.new_find_path((self.parent.x, self.parent.y), (new_x, new_y), R.tiles)
             if pathy_path is not None:
                 self.path = list(pathy_path)
-                print self.parent.name + "'s second path is " + str(len(self.path)) + " long!"
-            pathy_path = self.pather2.find_path(R.world, (self.parent.x,self.parent.y),(new_x,new_y))
-            if pathy_path is not None:
-                self.path = list(pathy_path)
                 print self.parent.name + "'s first path is " + str(len(self.path)) + " long!"
-            pathy_path = self.pather3.find_path((self.parent.x, self.parent.y),(new_x,new_y), R.tiles)
-            if pathy_path is not None:
-                self.path3 = list(pathy_path)
-                print self.parent.name + "'s third path is " + str(len(self.path3)) + " long!"
+            # pathy_path = self.pather2.find_path(R.world, (self.parent.x,self.parent.y),(new_x,new_y))
+            # if pathy_path is not None:
+            #     self.path = list(pathy_path)
+            #     print self.parent.name + "'s second path is " + str(len(self.path)) + " long!"
+            # pathy_path = self.pather3.find_path((self.parent.x, self.parent.y),(new_x,new_y), R.tiles)
+            # if pathy_path is not None:
+            #     self.path3 = list(pathy_path)
+            #     print self.parent.name + "'s third path is " + str(len(self.path3)) + " long!"
             print self.parent.name + " ----------------------------"
 
         else:

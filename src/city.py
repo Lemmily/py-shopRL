@@ -1,8 +1,8 @@
-'''
+"""
 Created on 4 Mar 2013
 
 @author: Emily
-'''
+"""
 
 import math
 import random
@@ -65,7 +65,7 @@ class City:
         self.producing = {}  # these will be stored as ["resource_name", quantity generated per hour.0]
         self.define_generation_goods()
         # self.pickGeneratedResources(resource_list) #TODO: re-initialise this.
-        self.findDesiredResources()
+        self.find_desired_resources()
         self.relationships = {}  # name of city, or city object.
 
         self.in_city = []
@@ -163,13 +163,13 @@ class City:
                     if self.check_for_resources(key, master_raw_materials):
                         self.produce(key, master_raw_materials)
 
-    def getCityRelationship(self, city):
+    def get_city_relationship(self, city):
         return self.relationships[city]
 
-    def changeCityRelationship(self, city, quantity):
+    def change_city_relationship(self, city, quantity):
         self.relationships[city] += quantity
 
-    def createBaseRelationships(self, city_list):
+    def create_base_relationships(self, city_list):
         """
         input a list of all the cities /the ones it should know.
         """
@@ -182,7 +182,7 @@ class City:
         self.producing["raw"] = ["raw", libtcod.random_get_int(0, 0, 16)]
         self.producing["produce"] = ["produce", libtcod.random_get_int(0, 0, 15)]
 
-    def pickGeneratedResources(self, resource_list):
+    def pick_generated_resources(self, resource_list):
 
         limit = len(resource_list) - 1
         # selections = {}
@@ -210,9 +210,9 @@ class City:
                 print resource + str(self.producing[resource][1])
         print "\n"
 
-        self.findDesiredResources()
+        self.find_desired_resources()
 
-    def findDesiredResources(self):
+    def find_desired_resources(self):
         self.desired = {}
         for resource in R.resource_list:
             self.desired[resource] = 0
