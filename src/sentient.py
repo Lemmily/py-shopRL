@@ -44,7 +44,45 @@ class Skill:
         self.group = group
         self.exp = 0
         
-        
+
+class Inventory:
+    def __init__(self):
+        self.contents = [] #might make this a dict. then pre sorted into categories.
+        self.equipment = {"head":None,"torso":None,"legs":None,"hands":None,"right":None,"left":None,
+                          "ring left":None, "ring right":None, "amulet":None, "neck":None}
+
+    def store_item(self,item):
+        self.contents.append(item)
+
+    def retrieve_item(self,item):
+        if self.check_for_item(item):
+            self.contents.remove(item)
+
+    def check_for_item(self,item):
+        if item in self.contents:
+            return True
+        else:
+            return False
+
+    def check_for_type(self,type):
+        for item in self.contents:
+            if item.type == type:
+                return True
+        return False
+
+    def retrieve_all_type(self, type):
+        all_items_type = []
+
+        for item in self.contents:
+            if item.type == type:
+                all_items_type.append(item)
+
+        return all_items_type
+
+    def get_disfigured(self,wounds):
+        for wound in wounds:
+            self.equipment.pop(wound,None)
+
     
 class Basic_AI:
     def __init__(self):
@@ -74,48 +112,11 @@ class Basic_AI:
 #             
 #             if check is False:
 #                 self.path = []
-            
-class Inventory:
-    def __init__(self):
-        self.contents = [] #might make this a dict. then pre sorted into categories.
-        self.equipment = {"head":None,"torso":None,"legs":None,"hands":None,"right":None,"left":None, 
-                          "ring left":None, "ring right":None, "amulet":None, "neck":None}
-        
-    def store_item(self,item):
-        self.contents.append(item)
-        
-    def retrieve_item(self,item):
-        if self.check_for_item(item):
-            self.contents.remove(item)
-            
-    def check_for_item(self,item):
-        if item in self.contents:
-            return True
-        else:
-            return False
-        
-    def check_for_type(self,type):
-        for item in self.contents:
-            if item.type == type:
-                return True
-        return False
-    
-    def retrieve_all_type(self, type):
-        all_items_type = []
-        
-        for item in self.contents:
-            if item.type == type:
-                all_items_type.append(item)
-                
-        return all_items_type
 
-    def get_disfigured(self,wounds):
-        for wound in wounds:
-            self.equipment.pop(wound,None)
-            
             
 class Hero(Basic_AI):
     def __init__(self):
+        Basic_AI.__init__(self)
         self.path = []
         self.personality = pick_personality()
         
@@ -218,8 +219,10 @@ class AI_Hero(Basic_AI):
         self.goal = None
         self.path = []
         self.path2 = []
-        self.pather = PathFinder()
-        self.pather2 = Pather()
+        self.path3 = []
+        self.pather = Pather()
+        self.pather2 = PathFinder()
+        self.pather3 = Pather()
 
         
     def assess_self(self):
@@ -252,7 +255,7 @@ class AI_Hero(Basic_AI):
             
         
     def add_motive(self, importance, main="",other=""):
-        motive = Motive(importance,main,other)
+        motive = Motive(importance, main, other)
         self.motivations.append(motive)
                 
     def assess_motives(self):
@@ -302,21 +305,26 @@ class AI_Hero(Basic_AI):
 #            self.assess_motives()
 
         if len(self.path) == 0:
-            goal = choice(R.cities)
+            goal = choice(R.pois)
             while goal == self.goal:
-                goal = choice(R.cities)
+                goal = choice(R.pois)
             self.goal = goal
             new_x = goal.x 
             new_y = goal.y
-            # pathy_path = self.pather.new_find_path((self.parent.x,self.parent.y),(new_x,new_y), R.tiles)
-            pathy_path = self.pather.find_path(R.world, (self.parent.x,self.parent.y),(new_x,new_y))
+            print self.parent.name + " IS PATH FINDING"
+            pathy_path = self.pather.new_find_path((self.parent.x, self.parent.y),(new_x,new_y), R.tiles)
             if pathy_path is not None:
                 self.path = list(pathy_path)
-                print self.parent.name + "'s first path is " + str(len(self.path)) + " long!"
-            pathy_path = self.pather2.new_find_path((self.parent.x, self.parent.y),(new_x,new_y), R.tiles)
-            if pathy_path is not None:
-                self.path2 = list(pathy_path)
-                print self.parent.name + "'s second path is " + str(len(self.path2)) + " long!"
+                print self.parent.name + "'s second path is " + str(len(self.path)) + " long!"
+            # pathy_path = self.pather2.find_path(R.world, (self.parent.x,self.parent.y),(new_x,new_y))
+            # if pathy_path is not None:
+            #     self.path = list(pathy_path)
+            #     print self.parent.name + "'s first path is " + str(len(self.path)) + " long!"
+            # pathy_path = self.pather3.find_path((self.parent.x, self.parent.y),(new_x,new_y), R.tiles)
+            # if pathy_path is not None:
+            #     self.path3 = list(pathy_path)
+            #     print self.parent.name + "'s third path is " + str(len(self.path3)) + " long!"
+            print self.parent.name + " ----------------------------"
              
         else:
             grid = self.path[0]
