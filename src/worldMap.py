@@ -1,8 +1,8 @@
-'''
+"""
 Created on 16 Mar 2013
 
 @author: Emily
-'''
+"""
 import json
 import math
 
@@ -537,13 +537,14 @@ class Map:
         self.moisture_map = [[0
                               for y in range(h)]
                              for x in range(w)]
+        self.continents = [None]
 
         self.blocked = []
         self.weights = {}
 
         self.hm = libtcod.heightmap_new(self.w, self.h)
 
-        self.generate(51708288)  # 51708288)   55920912
+        self.generate(55920912)#48869824)  # 51708288)   55920912 #38522096
 
         # self.hm2 = libtcod.heightmap_new(self.w, self.h)
         # self.hm3 = libtcod.heightmap_new(self.w, self.h)
@@ -569,7 +570,7 @@ class Map:
         # # self.add_noise()
 
         self.turn_to_tiles()
-        self.seperate_continents()
+        self.separate_continents()
         self.determine_temperatures()
         # self.normalise_temperatures()
         self.wind_gen = ParticleMap(self, 1500)
@@ -628,8 +629,7 @@ class Map:
                 else:
                     print "failed", x, y
 
-    def seperate_continents(self):
-        self.continents = [None]
+    def separate_continents(self):
         for x in range(len(self.tiles) - 1):
             for y in range(len(self.tiles[0]) - 1):
                 tile = self.tiles[x][y]
@@ -703,7 +703,7 @@ class Map:
         pather = pathfinding.Pather()
         for city in self.cities:
             for other_city in self.cities:
-                if city == other_city:
+                if city == other_city or other_city.name in city.connections:
                     continue
                 else:
                     path = pather.new_find_path((city.x, city.y), (other_city.x, other_city.y), self.tiles) or []
@@ -713,7 +713,8 @@ class Map:
                         self.tiles[node[0]][node[1]].cost = PATH_COST
                         self.tiles[node[0]][node[1]].type = "path"
                     print "........................connected ", city.name, " and ", other_city.name
-
+                    city.connections[other_city.name] = (other_city.x, other_city.y)
+                    other_city.connections[city.name] = (city.x, city.y)
 
 
                     # i = 0.1
@@ -1028,7 +1029,7 @@ class Map:
             #             self.tiles[cell_x][cell_y].type = "water"
 
     def get_temperature(self, x, y):
-        return self.temperature_map[x][y]
+        return libtcod.heightmap_get_value(self.temperature_map, x, y)
 
     def determine_temperatures(self):
 
@@ -1632,7 +1633,6 @@ class City(POI):
         self.component = city.City(x, y, self)
         self.name = self.component.name
         self.type = "city"
-        self.connections = {}
 
 
 class Resource(POI):
@@ -1775,7 +1775,7 @@ def handle_keys():
 #         print "multiply"
 #         #map_.multiply_noise()
 
-####FOR TESTING~~~~~
+# ###FOR TESTING~~~~~
 def main():
     global key, mouse, map_, con
 

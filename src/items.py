@@ -1,8 +1,8 @@
-'''
+"""
 Created on 27 Aug 2013
 
 @author: Emily
-'''
+"""
 import libtcodpy as libtcod
 import entities.Object as Object
 

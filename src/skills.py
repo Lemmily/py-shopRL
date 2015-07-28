@@ -11,9 +11,9 @@ class Skills:
     def __init__(self):
         self.dict = {}
         for line in R.skill_list:
-            tempSkill = Skill(line[0],
-                              line[1])
-            self.dict[tempSkill.name] = tempSkill
+            temp_skill = Skill(line[0],
+                               line[1])
+            self.dict[temp_skill.name] = temp_skill
 
     def _get_level(self):
         pass
@@ -82,7 +82,8 @@ class Stats:
             return roll_d20() + skill.level + self.attr[skill.group].modifier
 
     def gain_exp(self, amount, skill):
-        # TODO: this is temporary - I want to have exp spread over multiple skills. similar to crawl.
+        # TODO this is temporary - I want to have exp spread over multiple skills. similar to crawl.
+        # TODO though when doing one thing eg "blacksmithing" why would it spread? for fighting you could block and stab
         self.skills[skill].gain(amount)
 
 
@@ -102,7 +103,7 @@ class Skill:
             R.ui.message("You have leveled up " + self.name + " to level " + str(self.level))
 
 
-class Attribute():
+class Attribute:
     def __init__(self, name, value):
         self.name = name
         self.value = value
@@ -135,3 +136,5 @@ class Attribute():
 
 def roll_d20():
     return libtcod.random_get_int(0, 1, 20)
+
+

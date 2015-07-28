@@ -50,11 +50,11 @@ class City:
                 self.name = "couldn't generate"
         self.trader = entities.Trader()
         if len(resource_list) == 0:
-            resource_list = master_commodity_list
+            self.resource_list = master_commodity_list
 
         self.treasury = 10000
         self.resources = self.trader.resources = {}  # these will be stroed as ["resource_name", quantity generated per hour.0]
-
+        self.desired = {}
         # TODO: for now, void. there will be three type "raw"
         self.trader.believed_prices = {}
         for resource in R.resource_list:
@@ -67,13 +67,13 @@ class City:
         # self.pickGeneratedResources(resource_list) #TODO: re-initialise this.
         self.find_desired_resources()
         self.relationships = {}  # name of city, or city object.
-
+        self.connections = {} #poi's connected by road
         self.in_city = []
 
         # self.productionRound()
 
         self.trade_house = TradeHouse(self)
-        for resource in master_commodity_list:
+        for resource in self.resource_list:
             self.trade_house.collect_info(resource)
 
         self.activity_log = {"produced": [], "traded": []}
@@ -99,7 +99,7 @@ class City:
         return check
 
     def produce(self, key, needed):
-
+        #TODO: work out what this is doing properly.
         if self.check_for_resources(key, needed, True):  # check for the "bonus" item.
             for resource in needed[key][0]:
                 if resource.type != "none":
@@ -108,10 +108,11 @@ class City:
                 if chance_roll(20):
                     self.trader.resources[resource.type][1] -= 1
 
-            self.trader.resources[key][1] += 1 * 1.25  # 1.25 is modifier
+            # this is a bonus from having the "extra" item.
+            self.trader.resources[key][1] += 1 * 1.25  # 1.25 is the modifier.... this could be reflected from quality?
             self.activity_log["produced"].append([self.name + " produced an excess of " + key, libtcod.gold])
 
-        else:  # don't have or need a bonus item.
+        else:  # don't have or need any bonus items.
             for resource in needed[key][0]:
                 if resource.type != "none":
                     self.resources[resource.type][1] -= resource.quantity
@@ -140,7 +141,7 @@ class City:
                 price = self.trader.get_price(commodity, self.trade_house)
                 self.trader.place_ask(self.trade_house, commodity, leftover, price)
 
-    def productionRound_temp(self):
+    def production_round_temp(self):
 
         for key in self.producing:
             if self.producing[key][1] > 0:
@@ -155,7 +156,7 @@ class City:
         self.sell_spare()
         # self.trade_house.sell_spare("trade")
 
-    def productionRound(self):
+    def production_round(self):
         for key in self.producing:
             if self.producing[key][1] > 0:
                 quantity = self.producing[key][1]
@@ -213,7 +214,6 @@ class City:
         self.find_desired_resources()
 
     def find_desired_resources(self):
-        self.desired = {}
         for resource in R.resource_list:
             self.desired[resource] = 0
         temp = []
@@ -226,7 +226,7 @@ class City:
                     new_resource = Resource(type=resource.type, quantity=self.producing[key][1] * resource.quantity)
                     temp.append(new_resource)
 
-        for name in master_commodity_list:
+        for name in self.resource_list:
             resource = Resource(name, 0)
             for test_for in temp:
                 if test_for.type == name:

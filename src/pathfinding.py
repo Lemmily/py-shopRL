@@ -185,7 +185,7 @@ class Pather:
             if current_node.is_equal_to_node(
                     end_node):  # and current_node == self.open_list[0]: #why does this need to be 0?
                 best_path = []
-                while current_node != None:
+                while current_node is not None:
                     best_path.insert(0, current_node.grid)
                     current_node = current_node.parent_node
                 # return the path of grid points.
@@ -218,7 +218,7 @@ class Pather:
                 #                     continue
 
                 for neighbour in self.find_adjacent_nodes_3(current_node, end_node):
-                    if self.node_status.has_key(neighbour.grid):
+                    if neighbour.grid in self.node_status:
                         if self.node_status[neighbour.grid] == self.CLOSED:
                             continue
                         if self.node_status[neighbour.grid] == self.OPEN or neighbour.cost < self.node_costs[
@@ -513,7 +513,7 @@ class Graph:
         self.edges[tuple(node.location)] = neighbours
 
     def add_connection(self, node, new_neighbours):
-        if self.edges.has_key(tuple(node.location)):
+        if tuple(node.location) in self.edges:
             (self.edges[tuple(node.location)].append(neighbour) for neighbour in new_neighbours)
 
     def cost(self, a, b):
@@ -539,7 +539,8 @@ class SquareGrid:
         # results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)] #orthogonal only
         results = [(x + 1, y), (x, y - 1), (x - 1, y), (x, y + 1), (x + 1, y + 1), (x - 1, y - 1), (x - 1, y + 1),
                    (x - 1, y + 1)]  # all directions
-        if (x + y) % 2 == 0: results.reverse()  # aesthetics
+        if (x + y) % 2 == 0:
+            results.reverse()  # aesthetics
         results = filter(self.in_bounds, results)
         results = filter(self.passable, results)
         return results

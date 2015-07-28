@@ -132,7 +132,7 @@ def setup_resources():
              iron_sword, copper_sword]
     GOODS_TYPES = {}
     GOODS_BY_RESOURCE_TOKEN = {}
-    # # Key = category, calue = list of resources
+    # # Key = category, value = list of resources
     for goods in GOODS:
         COMMODITY_TOKENS[goods.name] = goods
 
@@ -299,7 +299,7 @@ class TradeHouse:
         amount_cost = 0.0
 
         for offer in self.trades[transaction_type][commodity]:
-            amount += offer.quantity;
+            amount += offer.quantity
             amount_cost += (offer.quantity * offer.price);
 
         return amount, amount_cost
@@ -313,6 +313,12 @@ class TradeHouse:
         else:
             # make a ask offer.
             pass
+
+    def submit_bid(self, offer):
+        self.trades["buys"][offer.commodity].append(offer)
+
+    def submit_ask(self, offer):
+        self.trades["asks"][offer.commodity].append(offer)
 
     def resolve_offers(self, commodity):
         buys = self.trades["buys"][commodity]
@@ -401,7 +407,6 @@ class TradeHouse:
     #             self.caravans_in.append(merchant)
     #             self.caravans_out.append(merchant)
 
-
     def check_for_time_out(self, asks, buys, city=None, other_city=None):
         for i in range(len(asks)):
             asks[i].time -= 1
@@ -434,7 +439,8 @@ class TradeHouse:
 
         trader.goal_city = city
         trader.trading_for = 5
-        # TODO
+        # TODO work out what mission city needs to give trader.
+        # TODO cities/factions could have desires???
 
 
 class Offer:
@@ -548,7 +554,6 @@ class Agent(object):
 
         self.last_turn = []
         self.perceived_values = {}
-
 
     def pay_taxes(self):
         if self.economy is not None:
@@ -1571,8 +1576,8 @@ class CityEconomy(object):
         self.add_commodity_to_economy(goods)
 
     def add_agent_based_on_token(self, token):
-        ''' If we only have a token and don't know whether it's a resource or a commodity,
-        this function helps us figure out which method to call'''
+        """ If we only have a token and don't know whether it's a resource or a commodity,
+        this function helps us figure out which method to call"""
         for resource in RESOURCES:
             if resource.name == token:
                 self.add_resource_gatherer(token)

@@ -3,32 +3,23 @@ Created on 4 Mar 2013
 
 @author: Emily
 """
-import time
 import platform
 
 import libtcodpy as libtcod
 
-# import math
 import shelve
-# import random
 import R
 import UI
 import worldMap
 import entities
 import threading
-# from R import con_char, inf#, #map_
 
 import sentient
 
 if "linux" in platform.system().lower():
     from pyglet.libs.x11.xlib import XInitThreads
+
     XInitThreads()
-
-
-# import numpy as np
-# import numpy
-
-
 
 SLOW_SPEED = 8
 NORM_SPEED = 12
@@ -86,7 +77,7 @@ game_msgs = []
 
 def new_game():
     global game_msgs, test_msgs, ui, game_state
-    global world, world_obj, cities, pois, you, selected, player_turn
+    global world, world_obj, cities, pois, you, selected, player_turn, player_moved
     global tiles, cam_x, cam_y
     global key, mouse
     global map_, local, fov_recompute
@@ -110,11 +101,11 @@ def new_game():
     for city in cities:
         # print city.name + str(city.x) + "/" +  str(city.y)
         R.ui.message(city.name + str(city.x) + "/" + str(city.y), libtcod.light_grey)
-        city.createBaseRelationships(cities)
+        city.create_base_relationships(cities)
 
     # for n in range(5):
-    #        city = City(name = libtcod.namegen_generate("city"), resource_list =master_resource_list)
-    #        cities.append(city)
+    # city = City(name = libtcod.namegen_generate("city"), resource_list =master_resource_list)
+    # cities.append(city)
     #    city = None
     #    for city in cities:
     #        city.createBaseRelationships(cities)
@@ -145,6 +136,7 @@ def new_game():
     #    diction[(0,0)] = 10
     #    print str(diction[point])
     player_turn = True
+    player_moved = True
     local = False
     fov_recompute = False
     # path = hero.pather.find_path((10,10),(0,0))
@@ -180,7 +172,7 @@ class Thread(threading.Thread):
 
 
 def play_game():
-    global key, mouse, player_turn
+    global key, mouse, player_turn, player_moved
 
     mouse = libtcod.Mouse()
     key = libtcod.Key()
@@ -195,8 +187,8 @@ def play_game():
         delta_time = libtcod.sys_get_last_frame_length()
         if local:
 
-            #            for object_ in R.locale_obj:
-            #                object_.clear(cam_x,cam_y)
+            # for object_ in R.locale_obj:
+            # object_.clear(cam_x,cam_y)
             #
             #            you.clear(cam_x, cam_y)
 
@@ -214,10 +206,10 @@ def play_game():
 
             # Clear the characters from screen.
             # for object_ in R.world_obj:
-            #     object_.clear(cam_x, cam_y)
+            # object_.clear(cam_x, cam_y)
 
             # for city in cities:
-            #     for merchant in city.trade_house.caravans_out:
+            # for merchant in city.trade_house.caravans_out:
             #         merchant.clear(cam_x, cam_y)
 
             # handles the keys and exit if needed.
@@ -225,9 +217,11 @@ def play_game():
             if player_action == "exit":
                 save_game()
                 break
-            if not pause and not player_turn:
+
+            if not pause and player_moved:
                 advance_time()
                 # player_turn = True
+                player_moved = False
 
             handle_mouse()
             render_world()
@@ -238,7 +232,7 @@ def play_game():
 
             # erase all objects at their old locations, before they move
             # for object in objects:
-            #    object.clear(con)
+            # object.clear(con)
 
             # handle_mouse()
         libtcod.console_flush()
@@ -268,8 +262,8 @@ def advance_time():
         date[0] += 1  # //increase hour
         # //passHour();
         # if  ( date[0] % 3 ) == 0:
-        #            print "the time is ", str(date[0])
-        #            for city in cities:
+        # print "the time is ", str(date[0])
+        # for city in cities:
         #                for merchant in city.trade_house.caravans_out:
         #                    #merchant.clear(cam_x,cam_y)
         #                    merchant.ai.take_turn()
@@ -283,12 +277,12 @@ def advance_time():
                 merchant.ai.take_turn()
 
             for city in cities:
-                city.productionRound_temp()
+                city.production_round_temp()
 
         if date[0] == 24:  # // increase the day.
 
             for city in cities:
-                city.productionRound_temp()
+                city.production_round_temp()
                 for resource in R.resource_list:
                     city.trade_house.collect_info(resource)
                     other_city = city
@@ -370,11 +364,11 @@ def render():
             render_local()
         else:
             render_world()
-        # libtcod.console_blit(con, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0)
-        # libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
-        # libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0, R.MAP_VIEW_WIDTH, 0)
-        # libtcod.console_blit(minmap, 0, 0, R.INFO_BAR_WIDTH, R.PANEL_HEIGHT, 0, R.MAP_VIEW_WIDTH, R.PANEL_Y)
-        # libtcod.console_flush()
+            # libtcod.console_blit(con, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0)
+            # libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
+            # libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0, R.MAP_VIEW_WIDTH, 0)
+            # libtcod.console_blit(minmap, 0, 0, R.INFO_BAR_WIDTH, R.PANEL_HEIGHT, 0, R.MAP_VIEW_WIDTH, R.PANEL_Y)
+            # libtcod.console_flush()
 
 
 def render_wilderness():
@@ -406,8 +400,8 @@ def render_wilderness():
                 # if it"s not visible right now, the player can only see it if it"s explored
                 # if tile.explored:
                 # if wall:
-                #    libtcod.console_set_char_background(con, x, y, color_dark_wall, libtcod.BKGND_SET)
-                #    libtcod.console_set_char(con, x, y, " ")
+                # libtcod.console_set_char_background(con, x, y, color_dark_wall, libtcod.BKGND_SET)
+                # libtcod.console_set_char(con, x, y, " ")
                 # else:
                 #    libtcod.console_set_char_background(con, x, y, color_dark_ground, libtcod.BKGND_SET)
                 #    libtcod.console_set_char(con, x, y, " ")
@@ -422,7 +416,7 @@ def render_world():
 
     # erase all objects at their old locations, before they move
     # for object in objects:
-    #    object.clear(con)
+    # object.clear(con)
 
     # clear the city locations using OLD cam position.
     for city in R.cities:
@@ -464,7 +458,7 @@ def render_world():
                 # if it"s not visible right the player can only see it if it"s explored
                 # if tile.explored:
                 # if wall:
-                #    libtcod.console_set_char_background(con, x, y, color_dark_wall, libtcod.BKGND_SET)
+                # libtcod.console_set_char_background(con, x, y, color_dark_wall, libtcod.BKGND_SET)
                 #    libtcod.console_set_char(con, x, y, " ")
                 # else:
                 #    libtcod.console_set_char_background(con, x, y, color_dark_ground, libtcod.BKGND_SET)
@@ -580,7 +574,7 @@ def render_world():
     you.draw(cam_x, cam_y)
 
     # libtcod.console_print_ex(message_bar, R.SCREEN_WIDTH - R.INFO_BAR_WIDTH, 0,
-    #                                   libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse())
+    # libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse())
     # libtcod.console_set_default_background(con, libtcod.white)
     libtcod.console_blit(con, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0)
     libtcod.console_blit(con_char, 0, 0, R.MAP_VIEW_WIDTH, R.MAP_VIEW_HEIGHT, 0, 0, 0, 1.0, 0.0)
@@ -596,13 +590,13 @@ def render_minimap():
             colour = world.mini_map[cell_x][cell_y].bg
             libtcod.console_set_char_background(minmap, cell_x, cell_y, colour, libtcod.BKGND_SET)
 
-            #    for char in R.world_obj:
-            #        if char != you:
+            # for char in R.world_obj:
+            # if char != you:
             #            char.draw(cam_x, cam_y)
 
 
 def render_local():
-    global map_, fov_recompute#, cam_x, cam_y
+    global map_, fov_recompute  # , cam_x, cam_y
 
     if len(R.map_) > R.MAP_VIEW_WIDTH:
         cam_x = scrolling_map(you.x, R.MAP_VIEW_WIDTH_HALF + 1, R.MAP_VIEW_WIDTH, R.MAP_WIDTH)
@@ -684,7 +678,7 @@ def is_blocked(x, y, map=None):
         else:
             # now check for objects that block.
             for item in R.locale_obj:
-                if item.x == you.x and item.y == you.y and item.blocks == True:
+                if item.x == you.x and item.y == you.y and item.blocks is True:
                     return True
             return False
     else:
@@ -746,12 +740,13 @@ def update_info_bar():
         libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, line)
         y += 1
     # y = 1
-    #    for (line, colour) in test_msgs:
-    #        libtcod.console_set_default_foreground(inf, colour)
+    # for (line, colour) in test_msgs:
+    # libtcod.console_set_default_foreground(inf, colour)
     #        libtcod.console_print_ex(inf, 2, y, libtcod.BKGND_NONE, libtcod.LEFT, line)
     #        y += 1
 
     libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0, R.MAP_VIEW_WIDTH, 0)
+
 
 def handle_mouse():
     global selected
@@ -760,9 +755,9 @@ def handle_mouse():
     (x, y) = (mouse.cx, mouse.cy)
 
     # if x > R.MAP_WIDTH - 1:
-    #     x = R.MAP_WIDTH - 1
+    # x = R.MAP_WIDTH - 1
     # if y > R.MAP_HEIGHT - 1:
-    #     y = R.MAP_HEIGHT - 1
+    # y = R.MAP_HEIGHT - 1
     # if x < 0:
     #     x = 0
     # if y < 0:
@@ -944,9 +939,10 @@ def handle_keys():
 
 
 def player_action():
-    global player_turn
+    global player_turn, player_moved
 
-    player_turn = not player_turn
+    player_moved = True
+    # player_turn = not player_turn
 
 
 def player_move_or_attack(dx, dy):
@@ -970,7 +966,7 @@ def player_move_or_attack(dx, dy):
         # you.move(dx, dy)
         # fov_recompute = True
         # if player:
-        #    advance_time()
+        # advance_time()
     else:
         you.move_p(dx, dy)
         fov_recompute = True
@@ -1025,7 +1021,7 @@ def go_down():
                 R.ui.message("You can't go down anymore!", colour=libtcod.white)
 
     else:
-        ## check to see if the player is stood on a visitable local POI. Atm, just dungeons.
+        # check to see if the player is stood on a visitable local POI. Atm, just dungeons.
         on_dun = False
         for dungeon in R.world.dungeons:
             if dungeon.x == you.x and dungeon.y == you.y:
@@ -1067,8 +1063,8 @@ def inventory_menu():
 
 def player_menu():
     options = []
-    for key in you.skills.dict.keys():
-        line = you.skills.dict[key].name + " - " + str(you.skills.dict[key].exp)
+    for key in you.stats.skills.keys():
+        line = you.stats.dict[key].name + " - " + str(you.stats.dict[key].exp)
         options.append(line)
 
     R.ui.menu("Skills:", options, 15)
@@ -1311,6 +1307,7 @@ def main_init():
     game_msgs = R.game_msgs = []
     ui = R.ui = UI.UI(con, game_msgs)
     date = R.date = [0, [DAYS[0][0], 1, 1], [MONTHS[0][0], 1, 31], 1000];  # initialising to January
+
 
 # UNCOMMENT FOR PROFILING.
 # profiler = cProfile.run("main_menu()","profile")

@@ -130,7 +130,7 @@ class Player(Mover):
 
         self.dungeon_level = d_l  # what is this? depth?
         self.inventory = R.inventory = sentient.Inventory()  # = {"armour":[], "melee":[], "potions":[],"scrolls":[]}
-        self.skills = skills.Stats()
+        self.stats = skills.Stats()
         self.depth = 0
 
     """
@@ -237,25 +237,24 @@ class Trader:
         self.believed_prices[commodity][0] = round(believed, 2)
         self.believed_prices[commodity][0] = round(deviance, 2)
 
-    def place_bid(self, trade_house, commodity, quantity, offerprice, time=5):
+    def place_bid(self, trade_house, commodity, quantity, offer_price, time=5):
         # trade_house
-        offer = economy.Offer(self, price=offerprice, commodity=commodity, quantity=quantity)  # , time=time)
-        self.trades["buys"][commodity].append(offer)
-        trade_house.trades["buys"][commodity].append(offer)
+        offer = economy.Offer(self, price=offer_price, commodity=commodity, quantity=quantity)  # , time=time)
+        self.log_bid(offer)
+        trade_house.submit_bid(offer)
 
     def place_ask(self, trade_house, commodity, quantity, price, time=5):
-
         if price < 0:
             print "uh-oh a minus."
         offer = economy.Offer(self, price=price, commodity=commodity, quantity=quantity)  # time=time)
-        self.trades["asks"][commodity].append(offer)
-        trade_house.trades["asks"][commodity].append(offer)
+        self.log_ask(offer)
+
+        trade_house.submit_ask(offer)
 
     def get_quantity(self, commodity, actual, total_needed, trade_house):
-
         modifier = trade_house.supply_demand[commodity][0]
         quantity = 0.0
-        if actual < total_needed + total_needed * 0.1 and actual > total_needed:
+        if total_needed + total_needed * 0.1 > actual > total_needed:
             quantity = round(total_needed * 0.25, 2)
         elif actual < total_needed:
             if actual < total_needed * 0.25:
@@ -288,7 +287,8 @@ class Trader:
 
     def check_for_offer(self, bid, commodity, limit, actual, quantity, price):
         """
-        bid - is this a buy offer
+        bid - is this a buy offer?
+        commodity - what are they buying/selling?
         limit     - for a bid this is used to know how much at least they need to BUY
                   -for a sale this is used to know how much at most they can sell.
         actual - the quantity of resource the entity ACTUALLY has right now.
@@ -328,3 +328,17 @@ class Trader:
                 #                if total < limit:
                 #                    #PLACE MORE asks.
                 return total  # - limit
+
+    def get_num_resource(self, resource_type):
+        if self.has_resource(resource_type):
+            return self.resources[resource_type][1]
+        return 0
+
+    def has_resource(self, resource_type):
+        return resource_type in self.resources
+
+    def log_bid(self, offer):
+        self.trades["buys"][offer.commodity].append(offer)
+
+    def log_ask(self, offer):
+        self.trades["asks"][offer.commodity].append(offer)
