@@ -3,23 +3,32 @@ Created on 4 Mar 2013
 
 @author: Emily
 """
+import time
 import platform
 
 import libtcodpy as libtcod
 
+# import math
 import shelve
+# import random
 import R
 import UI
 import worldMap
 import entities
 import threading
+# from R import con_char, inf#, #map_
 
 import sentient
 
 if "linux" in platform.system().lower():
     from pyglet.libs.x11.xlib import XInitThreads
-
     XInitThreads()
+
+
+# import numpy as np
+# import numpy
+
+
 
 SLOW_SPEED = 8
 NORM_SPEED = 12
@@ -746,6 +755,7 @@ def update_info_bar():
     #        y += 1
 
     libtcod.console_blit(inf, 0, 0, R.INFO_BAR_WIDTH, R.SCREEN_HEIGHT, 0, R.MAP_VIEW_WIDTH, 0)
+    # libtcod.console_flush()
 
 
 def handle_mouse():
