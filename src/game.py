@@ -1,15 +1,15 @@
-__author__ = 'lemmily'
-
 import random
+from multiprocessing import Process, Event
+# from threading import Thread
 import threading
 import time
-
 from src import R
 from src.entities import Object
+import libtcodpy as libtcod
 
 __author__ = 'emily'
 
-import libtcodpy as libtcod
+# Game object!
 
 
 class Thread(threading.Thread):
@@ -21,16 +21,12 @@ class Thread(threading.Thread):
         self.name = "Thread " + str(self.NUM)
 
 
-# Game object!
-
-
-class Game():
+class Game:
     def __init__(self, console):
         self.console = console
         self.you = R.you = Object()
         self.local = True  # zoom level
         self.render_thread = Thread(target=self.render, name="Render Thread")
-
         self.update_thread = None
         R.map_ = self.map = [[0 for _ in xrange(R.SCREEN_HEIGHT)] for _ in xrange(R.SCREEN_WIDTH)]
 
@@ -44,14 +40,16 @@ class Game():
 
         self.render_thread.start()
         while not libtcod.console_is_window_closed():
-            libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
+            dt = libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
+
+            print dt
 
             self.handle_mouse()
             self.handle_keyboard()
             self.update()
             # self.render_all()
-            # libtcod.console_blit(self.console, 0, 0, R.SCREEN_WIDTH, R.SCREEN_HEIGHT, 0, 0, 0, 1.0, 0.7)
-            # libtcod.console_flush()
+            libtcod.console_blit(self.console, 0, 0, R.SCREEN_WIDTH, R.SCREEN_HEIGHT, 0, 0, 0, 1.0, 0.7)
+            libtcod.console_flush()
 
         R.playing = False
 
@@ -150,7 +148,7 @@ def func(*tile_map):
     # else:
     #     tile_map = tile_map[0]
     print("Thread", id)
-    time.sleep(random.random() * 1)
+    time.sleep(random.random() * 5)
     x = random.randint(0, len(tile_map) - 1)
     y = random.randint(0, len(tile_map[0]) - 1)
     print x, y, "changed to 1"
@@ -160,13 +158,13 @@ def func(*tile_map):
 
 def scrolling_map(p, hs, s, m):
     """
-   Get the position of the camera in a scrolling map:
+    Get the position of the camera in a scrolling map:
 
-    - p is the position of the player.
-    - hs is half of the screen size
-    - s is the full screen size.
-    - m is the size of the map.
-   """
+     - p is the position of the player.
+     - hs is half of the screen size
+     - s is the full screen size.
+     - m is the size of the map.
+    """
     if p < hs:
         return 0
     elif p > m - hs:
@@ -174,7 +172,7 @@ def scrolling_map(p, hs, s, m):
     else:
         return p - hs
 
-        #
-        # class CalculationThread(Thread):
-        #     def __init__(self, p_target):
-        #         super(target=p_target)
+#
+# class CalculationThread(Thread):
+#     def __init__(self, p_target):
+#         super(target=p_target)

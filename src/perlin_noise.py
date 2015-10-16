@@ -1,12 +1,18 @@
 import random
 
 
+
+
+
 class PerlinNoiseGenerator:
+
+
     def __init__(self):
 
         self.noise = []
         self.noise_width = 0
         self.noise_height = 0
+
 
     def generate_noise(self, width, height, frequency, octaves):
 
@@ -19,7 +25,7 @@ class PerlinNoiseGenerator:
         for y in range(0, self.noise_height):
             noise_row = []
             for x in range(0, self.noise_width):
-                noise_row.append(random.randint(0, 1000) / 1000.0)
+                noise_row.append(random.randint(0, 1000)/1000.0)
             self.noise.append(noise_row)
 
         result = []
@@ -27,12 +33,13 @@ class PerlinNoiseGenerator:
         for y in range(0, self.noise_height):
             row = []
             for x in range(0, self.noise_width):
-                row.append(int(self.turbulence(x * frequency,
-                                               y * frequency,
+                row.append(int(self.turbulence(x*frequency,
+                                               y*frequency,
                                                octaves)))
             result.append(row)
 
         return result
+
 
     def smooth_noise(self, x, y):
 
@@ -49,12 +56,13 @@ class PerlinNoiseGenerator:
         y2 = (y1 + self.noise_height - 1) % self.noise_height
 
         value = 0.0
-        value += fractX * fractY * self.noise[y1][x1]
-        value += fractX * (1 - fractY) * self.noise[y2][x1]
-        value += (1 - fractX) * fractY * self.noise[y1][x2]
+        value += fractX       * fractY       * self.noise[y1][x1]
+        value += fractX       * (1 - fractY) * self.noise[y2][x1]
+        value += (1 - fractX) * fractY       * self.noise[y1][x2]
         value += (1 - fractX) * (1 - fractY) * self.noise[y2][x2]
 
         return value
+
 
     def turbulence(self, x, y, size):
 

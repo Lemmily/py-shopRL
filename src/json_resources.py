@@ -259,9 +259,9 @@ producers_by_token = """{
                          'wood furniture':{'name':'Wood Carptenter', 'finished_good':'wood furniture', 'consumed':[], 'essential':['tools'], 'preferred':['clothing'] },
                          'flax clothing':{'name':'Flax Clothier', 'finished_good':'flax clothing', 'consumed':[], 'essential':['tools'], 'preferred':[] }
                          }"""
-
-
-
+                         
+                  
+                  
 # How many gatherers of a resource a city starts with.
 city_gatherers_templates = """
                 {
@@ -275,7 +275,7 @@ city_gatherers_templates = """
                     "8": {"ores": 9, "foods":2,     "cloths":2, "clays":7, "woods":10}
                      
                 }"""
-
+                
 # How many producers of goods a city starts with.
 city_producers_templates = """
                 {
@@ -289,3 +289,7 @@ city_producers_templates = """
                     "8": {"copper tools": 8, "bronze tools":9, "iron tools":1, "silt pottery":8, "clay pottery":1, "wood furniture":4, "flax clothing":1},
                      
                 }"""
+                
+                
+                    
+                         

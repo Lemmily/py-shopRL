@@ -4,11 +4,11 @@ Created on 21 Aug 2013
 @author: Emily
 '''
 
+import libtcodpy as libtcod
 import random
 import json
-
-import libtcodpy as libtcod
 import json_map
+
 import entities
 import utils
 
@@ -114,7 +114,7 @@ class Dungeon():
             for n in range(item_num):
                 item = random.choice(ITEMS)
                 # colour = libtcod.Color(item["colour"][0],item["colour"][1],item["colour"][2])
-                # temp = entities.Object(0,0, char=item["char"], name=item["name"], colour=colour, blocks=False, always_visible=False)
+                #temp = entities.Object(0,0, char=item["char"], name=item["name"], colour=colour, blocks=False, always_visible=False)
                 a_items.append(item)
             floor = Floor(ID, a_monst, a_items)
             self.floors.append(floor)
@@ -171,6 +171,7 @@ class Floor:
         self.make_line(self.rects[0].x, self.rects[0].y, self.rects[1].x, self.rects[1].y)
         self.place_rooms()
 
+
     def construct_objects(self):
         stair = entities.Object(self.up[0], self.up[1], char="<", name="stair", colour=libtcod.purple, blocks=False,
                                 always_visible=False)
@@ -196,6 +197,7 @@ class Floor:
                 return
 
         return rect
+
 
     def make_room_random(self):
 
@@ -294,11 +296,13 @@ class Floor:
                     for xo in range(lx, bx):
                         self.map[xo][ly] = 0
 
+
     def make_corridors(self, st_x, st_y, en_x, en_y):
         bx = 0
         by = 0
         for x in range(st_x, st_y):
             pass
+
 
     def make_fov_map(self):
 
@@ -314,37 +318,37 @@ class Floor:
             for y in range(len(self.map[0])):
                 if self.is_wall(x, y):
                     if self.is_wall(x, y + 1) and self.is_wall(x, y - 1):  # above and below.
-                        if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):  # left and right.
+                        if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):  #left and right.
                             if self.is_wall(x + 1, y + 1) and self.is_wall(x - 1, y + 1) and self.is_wall(x + 1,
                                                                                                           y - 1) and self.is_wall(
-                                        x - 1, y - 1):
-                                # Completeley surrounded by wall.
+                                            x - 1, y - 1):
+                                #Completeley surrounded by wall.
                                 tile = ord(" ")
                             elif self.is_wall(x + 1, y - 1) and self.is_wall(x - 1, y - 1) and self.is_wall(x + 1,
-                                                                                                            y + 1):  # bottom left empty.
+                                                                                                            y + 1):  #bottom left empty.
                                 tile = 191
                             elif self.is_wall(x + 1, y + 1) and self.is_wall(x - 1, y + 1) and self.is_wall(x + 1,
-                                                                                                            y - 1):  # top left empty.
+                                                                                                            y - 1):  #top left empty.
                                 tile = 217
 
                             elif self.is_wall(x + 1, y - 1) and self.is_wall(x - 1, y - 1) and self.is_wall(x - 1,
-                                                                                                            y + 1):  # bottom right empty
+                                                                                                            y + 1):  #bottom right empty
                                 tile = 218
                             elif self.is_wall(x + 1, y + 1) and self.is_wall(x - 1, y + 1) and self.is_wall(x - 1,
                                                                                                             y - 1):  # top right empty.
                                 tile = 192
 
                             elif self.is_wall(x + 1, y - 1) and self.is_wall(x - 1,
-                                                                             y - 1):  # bottom left and right empty. T shaped
+                                                                             y - 1):  #bottom left and right empty. T shaped
                                 tile = 194
                             elif self.is_wall(x + 1, y + 1) and self.is_wall(x - 1,
-                                                                             y + 1):  # top left and right empty.T shaped
+                                                                             y + 1):  #top left and right empty.T shaped
                                 tile = 193
                             elif self.is_wall(x - 1, y - 1) and self.is_wall(x - 1,
-                                                                             y + 1):  # top right and bottom right empty.T shaped
+                                                                             y + 1):  #top right and bottom right empty.T shaped
                                 tile = 195
                             elif self.is_wall(x + 1, y - 1) and self.is_wall(x + 1,
-                                                                             y + 1):  # top right and bottom right empty.T shaped
+                                                                             y + 1):  #top right and bottom right empty.T shaped
                                 tile = 180
                             else:
                                 tile = 197
@@ -362,7 +366,7 @@ class Floor:
                         else:
                             tile = 179
                     elif self.is_wall(x, y + 1):  # below
-                        if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):  # left and right
+                        if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):  #left and right
                             if self.is_wall(x + 1, y + 1) and self.is_wall(x - 1, y + 1):
                                 tile = 196
                             else:
@@ -375,7 +379,7 @@ class Floor:
                             tile = 179
 
                     elif self.is_wall(x, y - 1):  # above
-                        if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):  # left and right
+                        if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):  #left and right
                             if self.is_wall(x + 1, y - 1) and self.is_wall(x - 1, y - 1):
                                 tile = 196
                             else:
@@ -401,6 +405,7 @@ class Floor:
                     tile = 056
                     self.tiles[x][y] = Tile(x, y, False, char=chr(tile))
 
+
     def is_wall(self, x, y):
         if 0 <= x < len(self.map) and 0 <= y < len(self.map[x]):
             if self.map[x][y] != 0:
@@ -411,6 +416,7 @@ class Floor:
             return False
 
     def bsp_gen(self):
+
 
         w = self.w - 2
         h = self.h - 2
@@ -481,6 +487,7 @@ class Floor:
             if baby.end != True:
                 self.split(baby)
 
+
     def new_split(self, rect):
         if rect.w > MIN_BSP_SIZE * 2 and rect.h > MIN_BSP_SIZE * 2:
             if utils.flip() and rect.x + rect.w / 2 + MIN_BSP_SIZE < len(
@@ -514,6 +521,7 @@ class Floor:
         for baby in rect.babies:
             if baby.end != True:
                 self.new_split(baby)
+
 
     def convert_to_rects(self, rect):
         pool = []

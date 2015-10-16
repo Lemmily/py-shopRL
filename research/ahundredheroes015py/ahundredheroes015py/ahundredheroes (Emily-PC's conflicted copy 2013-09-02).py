@@ -275,6 +275,7 @@ f = open('data/dungeons/dungeon_layouts.txt', 'r')
 dungeon_layouts = yaml.load(f.read())
 f.close()
 
+
 # ~ dungeon_layouts = {
 # ~ 'default':{'trap': 10, 'treasure_room': 10, 'secret_room': 20, 'trap_door': 20, 'mundane': 200 },
 # ~ 'lair':{'trap': 20, 'lair': 60, 'graveyard':10, 'mundane': 100 },
@@ -316,6 +317,7 @@ def floor_feature(dungeon_type):
                 libtcod.light_grey)
 
     return room_type
+
 
 #############################
 ## GAME FLOW and OTHER VARIABLES  ##
@@ -409,6 +411,7 @@ tax_rate = 25  # starter tax, per month. To change depending on circumstances (m
 
 selling_goods = 1  # shop open for business
 accepting_offers = 0  # won't accept offers from Heroes
+
 
 ##############
 ##    CLASSES    ##
@@ -877,8 +880,8 @@ class Hero:
             self.x = x
             self.y = y
 
-    def browse_stock(self,
-                     type='all'):  # currently make an attempt to buy anything we like the look of. Can ask for a type.
+    def browse_stock(self, type='all'):
+        # currently make an attempt to buy anything we like the look of. Can ask for a type.
         x = self.x
         y = self.y
         # which shop are we at? Location defined by location of hero ...
@@ -3756,6 +3759,7 @@ def blank_faction_relations():  # helper function to generate a baseline diction
 
     return faction_rep
 
+
 ######################
 ## DEFAULT PERSONALITIES ##
 ######################
@@ -3987,6 +3991,7 @@ default_personality = {
         ),
 }
 
+
 ####################
 ## MARKETING / METRICS ##
 ##############################################################################
@@ -4199,7 +4204,8 @@ def measure_world_evil():  # Is there a neater or more intuitive way to deal wit
         item_evil += dung_evil_mod
 
     total_item_evil = (
-    (item_evil * 100) / (average_evil + item_evil))  # normalised value between 1 - 100 for the total item evil in town
+        (item_evil * 100) / (
+        average_evil + item_evil))  # normalised value between 1 - 100 for the total item evil in town
 
     evil_measure = 50 - total_item_evil
     if evil_measure < 0:
@@ -10450,6 +10456,7 @@ def rebuild_hero_lists_after_loading():
     for corpse in dead_heroes:
         if corpse[1] < hero_rot_time:  # hero is still solid
             town_heroes.append(corpse[0])  # add partially rotted corpse back in to town list
+
 
 ###############
 ## main game loop ##

@@ -1,72 +1,11 @@
-{
-  "1": {
-    "goblin": [
-      "goblin",
-      "g",
-      [
-        10,
-        100,
-        10
-      ],
-      [
-        "head",
-        "torso",
-        "left",
-        "right"
-      ]
-    ],
-    "wolf": [
-      "wolf",
-      "w",
-      [
-        50,
-        50,
-        50
-      ],
-      []
-    ],
-    "giant rat": [
-      "giant rat",
-      "r",
-      [
-        80,
-        10,
-        80
-      ],
-      []
-    ]
-  },
-  "2": {
-    "orc": [
-      "orc",
-      "o",
-      [
-        70,
-        140,
-        70
-      ],
-      [
-        "head",
-        "torso",
-        "legs",
-        "left",
-        "right"
-      ]
-    ],
-    "kobold": [
-      "kobold",
-      "k",
-      [
-        218,
-        160,
-        30
-      ],
-      [
-        "head",
-        "torso",
-        "left",
-        "right"
-      ]
-    ]
-  }
-}
+		{
+            "1":{
+                    "goblin":   ["goblin","g",[10,100,10],["head","torso","left","right"]],
+                    "wolf":     ["wolf","w",[50,50,50],[]],
+                    "giant rat":   ["giant rat","r",[80,10,80],[]]
+                },
+            "2":{
+                    "orc":      ["orc","o",[70,140,70],["head","torso","legs","left","right"]],
+                    "kobold":   ["kobold","k",[218,160,30],["head","torso","left","right"]]
+                }
+        } 

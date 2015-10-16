@@ -85,7 +85,7 @@ def new_game():
     for city in cities:
         # print city.name + str(city.x) + "/" +  str(city.y)
         R.ui.message(city.name + str(city.x) + "/" + str(city.y), libtcod.light_grey)
-        city.createBaseRelationships(cities)
+        city.create_base_relationships(cities)
 
     #    for n in range(5):
     #        city = City(name = libtcod.namegen_generate("city"), resource_list =master_resource_list)
@@ -210,7 +210,7 @@ def advance_time():
                 merchant.ai.take_turn()
                 # merchant.draw(cam_x,cam_y)
             for city in cities:
-                city.productionRound_temp()
+                city.production_round_temp()
 
     if date[0] == 24:  # // increase the day.
         ##
@@ -236,7 +236,7 @@ def advance_time():
 
         # libtcod.namegen_parse('data/names.txt')
         for city in cities:
-            city.productionRound_temp()
+            city.production_round_temp()
             for resource in R.resource_list:
                 city.trade_house.collect_info(resource)
                 other_city = city

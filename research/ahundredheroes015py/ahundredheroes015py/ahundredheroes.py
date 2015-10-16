@@ -275,6 +275,7 @@ f = open('data/dungeons/dungeon_layouts.txt', 'r')
 dungeon_layouts = yaml.load(f.read())
 f.close()
 
+
 # ~ dungeon_layouts = {
 # ~ 'default':{'trap': 10, 'treasure_room': 10, 'secret_room': 20, 'trap_door': 20, 'mundane': 200 },
 # ~ 'lair':{'trap': 20, 'lair': 60, 'graveyard':10, 'mundane': 100 },
@@ -316,6 +317,7 @@ def floor_feature(dungeon_type):
                 libtcod.light_grey)
 
     return room_type
+
 
 #############################
 ## GAME FLOW and OTHER VARIABLES  ##
@@ -409,6 +411,7 @@ tax_rate = 25  # starter tax, per month. To change depending on circumstances (m
 
 selling_goods = 1  # shop open for business
 accepting_offers = 0  # won't accept offers from Heroes
+
 
 ##############
 ##    CLASSES    ##
@@ -1762,8 +1765,8 @@ class Hero:
 
                 elif action == 'buy':
                     if map[x][y].shop:
-                        self.browse_stock(
-                            self.brain.contract.target_name)  # need a better function to assess whether the item is better than the one we hold?
+                        self.browse_stock(self.brain.contract.target_name)
+                            # need a better function to assess whether the item is better than the one we hold?
                     self.brain.decisions.pop(-1)
                 elif action == 'sell':
                     if map[x][y].shop:
@@ -1831,7 +1834,7 @@ class Hero:
                             corpse_location[1]), libtcod.light_grey, libtcod.light_grey)
                     if corpse_location[2]:  # hero in a dungeon
                         for n in range(corpse_location[2]):
-                            ##AAARGH WHAT ABOUT KNOWING WHICH DUNGEON TO GO TO? SHALL WE CHANGE IT HERE?
+                            # #AAARGH WHAT ABOUT KNOWING WHICH DUNGEON TO GO TO? SHALL WE CHANGE IT HERE?
 
                             self.brain.decisions.append('descend')
                         self.brain.contract.target_name = map[corpse_location[0]][
@@ -2100,8 +2103,8 @@ class Hero:
         if self.hp['current'] > 1:
             self.hp['current'] -= 1
 
-    def check_cursed(self,
-                     status):  # returns a list of heroes equipment, and whether this is cursed / blessed / uncursed (by request)
+    def check_cursed(self, status):
+                     # returns a list of heroes equipment, and whether this is cursed / blessed / uncursed (by request)
 
         curse_items = []
 
@@ -2110,11 +2113,11 @@ class Hero:
                 curse_items.append([items, 'inventory'])
 
         if self.equipment['armor'][6] == status:
-            curse_items.append([equipment['armor'], 'armor'])
+            curse_items.append([self.equipment['armor'], 'armor'])
         if self.equipment['weapon'][6] == status:
-            curse_items.append([equipment['weapon'], 'weapon'])
+            curse_items.append([self.equipment['weapon'], 'weapon'])
         if self.equipment['clothing'][6] == status:
-            curse_items.append([equipment['clothing'], 'clothing'])
+            curse_items.append([self.equipment['clothing'], 'clothing'])
 
         for items in self.activitylog['contract_cargo']:
             if items[6] == status:
@@ -2179,7 +2182,8 @@ class Hero:
         else:
             return False
 
-    def self_motivate(self, motive):  ##NEEDS A BIT MORE CREATIVE THOUGHT ON ADDITIONAL CONTRACTS ETC. PLUS PETITIONS
+    def self_motivate(self, motive):
+        # #NEEDS A BIT MORE CREATIVE THOUGHT ON ADDITIONAL CONTRACTS ETC. PLUS PETITIONS
         x = self.x
         y = self.y
 
@@ -2241,7 +2245,6 @@ class Hero:
                 else:
                     self.brain.phase = 'Phase_3'  # let us leave town
                     return False
-
 
         elif motive == 'glory':
             if dice_roll < 65:  # hang about for a bit, but do naught else
@@ -2319,7 +2322,8 @@ class Hero:
             if danger < 0:
                 danger = 0
 
-            price -= danger  # modify the price so that more dangerous tasks appear below equivalently priced tasks in priority terms
+            price -= danger
+            # modify the price so that more dangerous tasks appear below equivalently priced tasks in priority terms
 
             tasks_sorted.append([price, danger, task])
 
@@ -3756,6 +3760,7 @@ def blank_faction_relations():  # helper function to generate a baseline diction
 
     return faction_rep
 
+
 ######################
 ## DEFAULT PERSONALITIES ##
 ######################
@@ -3987,6 +3992,7 @@ default_personality = {
         ),
 }
 
+
 ####################
 ## MARKETING / METRICS ##
 ##############################################################################
@@ -4199,7 +4205,8 @@ def measure_world_evil():  # Is there a neater or more intuitive way to deal wit
         item_evil += dung_evil_mod
 
     total_item_evil = (
-    (item_evil * 100) / (average_evil + item_evil))  # normalised value between 1 - 100 for the total item evil in town
+        (item_evil * 100) / (
+        average_evil + item_evil))  # normalised value between 1 - 100 for the total item evil in town
 
     evil_measure = 50 - total_item_evil
     if evil_measure < 0:
@@ -10213,7 +10220,8 @@ def continue_game():
     hero_message('The Heroes return!', libtcod.white, libtcod.light_grey)
 
 
-def menu(header, options, width):  ## code almost entirely reappropriated from Jotaf's Tutorial --- Thanks Jotaf!
+def menu(header, options, width):
+    # # code almost entirely reappropriated from Jotaf's Tutorial --- Thanks Jotaf!
     if len(options) > 26: raise ValueError('Cannot have a menu with more than 26 options.')
 
     # calculate total height for the header (after auto-wrap) and one line per option
@@ -10450,6 +10458,7 @@ def rebuild_hero_lists_after_loading():
     for corpse in dead_heroes:
         if corpse[1] < hero_rot_time:  # hero is still solid
             town_heroes.append(corpse[0])  # add partially rotted corpse back in to town list
+
 
 ###############
 ## main game loop ##
