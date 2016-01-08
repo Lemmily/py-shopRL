@@ -3,12 +3,11 @@ Created on 6 Sep 2013
 
 @author: Emily
 '''
-import math
+from random import choice
+
 import R
 import entities
-from random import choice
 from src.pathfinding import Pather, PathFinder
-
 
 GRASS = 15
 MOUNTAIN = 40
@@ -175,7 +174,7 @@ class AI_CityTrader(Basic_AI):
                     check = self.parent.move(dx,dy)
                     if check:
                         #TODO: 
-                        R.world.add_foot_traffic(self.parent.x,self.parent.y)
+                        R.world.add_foot_traffic(self.parent.x, self.parent.y)
                         del self.path[0]
                     if check is False:
                         self.path = []
@@ -312,7 +311,7 @@ class AI_Hero(Basic_AI):
             new_x = goal.x 
             new_y = goal.y
             print self.parent.name + " IS PATH FINDING"
-            pathy_path = self.pather.new_find_path((self.parent.x, self.parent.y),(new_x,new_y), R.tiles)
+            pathy_path = self.pather.new_find_path((self.parent.x, self.parent.y), (new_x,new_y), R.tiles)
             if pathy_path is not None:
                 self.path = list(pathy_path)
                 print self.parent.name + "'s second path is " + str(len(self.path)) + " long!"
@@ -331,7 +330,7 @@ class AI_Hero(Basic_AI):
             dx = grid[0] - self.parent.x
             dy = grid[1] - self.parent.y
             self.parent.move_p(dx,dy)
-            R.world.add_foot_traffic(self.parent.x,self.parent.y)
+            R.world.add_foot_traffic(self.parent.x, self.parent.y)
              
             self.path.remove(grid)
         

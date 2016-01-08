@@ -6,15 +6,13 @@ Created on 16 Mar 2013
 import json
 import math
 
-import libtcodpy as libtcod
 import R
-import entities
+import city
 import dungeon
 import json_map
-import city
-import utils
 import pathfinding
-
+import utils
+from src import libtcodpy as libtcod
 
 SAND_HEIGHT = 0.14
 grassHeight = 0.16

@@ -4,13 +4,13 @@ Created on 21 Aug 2013
 @author: Emily
 '''
 
-import libtcodpy as libtcod
-import random
 import json
-import json_map
+import random
 
 import entities
+import json_map
 import utils
+from src import libtcodpy as libtcod
 
 MIN_BSP_SIZE = 5
 MIN_ROOM_SIZE = 2

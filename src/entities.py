@@ -3,11 +3,13 @@ Created on 16 Mar 2013
 
 @author: Emily
 """
-import libtcodpy as libtcod
-import R
 import math
-import economy
+
+import other
+
+import R
 import sentient
+from src import libtcodpy as libtcod
 
 
 class Object:
@@ -234,7 +236,7 @@ class Trader:
 
     def place_bid(self, trade_house, commodity, quantity, offerprice, time=5):
         # trade_house
-        offer = economy.Offer(self, price=offerprice, commodity=commodity, quantity=quantity)  #, time=time)
+        offer = other.Offer(self, price=offerprice, commodity=commodity, quantity=quantity)  #, time=time)
         self.trades["buys"][commodity].append(offer)
         trade_house.trades["buys"][commodity].append(offer)
 
@@ -242,7 +244,7 @@ class Trader:
 
         if price < 0:
             print "uh-oh a minus."
-        offer = economy.Offer(self, price=price, commodity=commodity, quantity=quantity)  # time=time)
+        offer = other.Offer(self, price=price, commodity=commodity, quantity=quantity)  # time=time)
         self.trades["asks"][commodity].append(offer)
         trade_house.trades["asks"][commodity].append(offer)
 

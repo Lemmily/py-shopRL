@@ -1,7 +1,8 @@
 import heapq
 import math
+
 import R
-import libtcodpy as libtcod
+from src import libtcodpy as libtcod
 
 __author__ = 'Emily'
 

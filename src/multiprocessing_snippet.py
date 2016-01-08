@@ -72,9 +72,10 @@ __author__ = 'Emily'
 ##                    else:
 ##                        increase = False
 ##                        incrementor = 0
-from multiprocessing import *
 import time
-import libtcodpy as libtcod
+from multiprocessing import *
+
+from src import libtcodpy as libtcod
 
 #actual size of the window
 SCREEN_WIDTH = 46

@@ -3,9 +3,11 @@ Created on 1 Mar 2013
 
 @author: Emily
 '''
-import libtcodpy as libtcod
 import textwrap
+
 import R
+from src import libtcodpy as libtcod
+
 
 class UI:    
     def __init__(self, con, game_msgs=[]):
@@ -17,7 +19,7 @@ class UI:
         global keys
         
         if len(options) > 26: raise ValueError("cannot have a menu with more than 26 options")
-        header_height = libtcod.console_get_height_rect(self.con, 0, 0,width,R.SCREEN_HEIGHT, header)
+        header_height = libtcod.console_get_height_rect(self.con, 0, 0, width, R.SCREEN_HEIGHT, header)
         if header_height == "":
             header_height = 0
         height = len(options) + header_height
@@ -37,8 +39,8 @@ class UI:
             y += 1
             letter_index += 1
     
-        x = R.SCREEN_WIDTH/2 - width/2
-        y = R.SCREEN_HEIGHT/2 - height/2
+        x = R.SCREEN_WIDTH / 2 - width / 2
+        y = R.SCREEN_HEIGHT / 2 - height / 2
         libtcod.console_blit(window, 0, 0, width, height, 0, x, y, 1.0, 0.7)
         
         
@@ -76,5 +78,5 @@ class UI:
                 del game_msgs[0]
     
                 #add the new line as a tuple, with text and the colour.
-            R.game_msgs.append( (line, colour) )
+            R.game_msgs.append((line, colour))
         R.msg_redraw = True

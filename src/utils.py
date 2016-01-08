@@ -4,8 +4,9 @@ Created on 10 Mar 2013
 @author: Emily
 '''
 
-import libtcodpy as libtcod
 import random
+
+from src import libtcodpy as libtcod
 
 
 def random_choice(chances_dict):

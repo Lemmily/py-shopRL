@@ -7,12 +7,12 @@ For each class it will be noted if it is for use in macro(between cities) or mic
 
 
 """
-import libtcodpy as libtcod
 import json
-import json_resources
-import R
 import random
 
+import R
+import json_resources
+from src import libtcodpy as libtcod
 
 data = json.loads(json_resources.raw_resources)
 # city = json.loads(json_resources.city_gatherers_templates)
@@ -68,7 +68,7 @@ def setup_resources():
                 'semi-arid desert': 5, 'arid desert': 0, 'river': 0}
 
     # ## define the actual resources. gather_amount is how many resources are gathered per round -
-    # ## half go to the government and aren't used in the economy. Each round, if a random number
+    # ## half go to the government and aren't used in the other. Each round, if a random number
     # ## between 1 and 1000 is less than break_chance, a goods made out of the resouce will be destroyed
     copper = Resource(name='copper', category='ores', resource_class='strategic', gather_amount=4, break_chance=200,
                       app_chances=ore_app, app_amt=amt)
@@ -451,16 +451,16 @@ class Offer:
         self.commodity = commodity
         self.price = price
         if quantity < 0:
-            quantity = 1  #TODO: find out why this can be negative. - probably th emodifier
+            quantity = 1  # TODO: find out why this can be negative. - probably the modifier
         self.quantity = quantity
         self.time = time
-        #self.resources = resources
+        # self.resources = resources
 
     def time_out(self):
         self.owner.rejected_offer(self.commodity, self.price, self.quantity)
 
 
-class Resource(object):
+class Resource:
     def __init__(self, name="", category="", resource_class="", gather_amount=0, break_chance=0, app_chances=0,
                  app_amt=0, type="none", quantity=0.0):
         self.name = name
@@ -525,9 +525,19 @@ class FinishedGood(object):
 
 
 class Agent(object):
-    # base class for members of the economy.
+    # base class for members of the other.
+    def __init__(self):
+        self.perceived_values = None
+        self.preferred = None
+        self.essential = None
+        self.consumed = None
+        self.inventory = None
+        self.gold = None
+        self.economy = None
+        self.last_turn = None
+
     def pay_taxes(self):
-        if self.economy != None:
+        if self.economy is not None:
             self.gold -= self.economy.local_taxes
             if self.economy.owner:
                 self.economy.owner.treasury += self.economy.local_taxes
@@ -599,7 +609,6 @@ class Agent(object):
                 max(self.perceived_values[type_of_item].center - N_DIF_ADJ,
                     (self.economy.local_taxes) + self.perceived_values[type_of_item].uncertainty)
 
-
     def eval_bid_rejected(self, type_of_item, price=None):
         # What to do when we've bid on something and didn't get it
         if self.economy.auctions[type_of_item].supply:
@@ -623,7 +632,7 @@ class Agent(object):
             self.perceived_values[type_of_item].uncertainty += REJECTED_UNCERTAINTY_AMOUNT
 
 
-class Resource_Gatherer(Agent):
+class ResourceGatherer(Agent):
     def __init__(self, name, economy, resource, gather_amount, consumed, essential, preferred):
         self.name = name
         self.economy = economy
@@ -795,7 +804,7 @@ class Resource_Gatherer(Agent):
             self.perceived_values[type_of_item].uncertainty += REJECTED_UNCERTAINTY_AMOUNT
 
 
-class Goods_Producer(Agent):
+class GoodsProducer(Agent):
     def __init__(self, name, economy, finished_goods, consumed, essential, preferred):
         self.name = name
         self.economy = economy
@@ -851,7 +860,7 @@ class Goods_Producer(Agent):
         self.turns_alive += 1
 
     def consume_food(self):
-        '''Eat and bid on foods'''
+        """Eat and bid on foods"""
         for token_of_item in self.economy.available_types['foods']:
             if token_of_item in self.inventory:
                 # # Only consume food every ~5 turns
@@ -987,7 +996,7 @@ class Merchant(object):
                 self.sell_perceived_values[token_of_item.name] = Value(START_VAL, START_UNCERT)
 
     def consume_food(self):
-        '''Eat and bid on foods'''
+        """Eat and bid on foods"""
         for token_of_item in self.current_location.available_types['foods']:
             if token_of_item in self.inventory:
                 # # Only consume food every ~5 turns
@@ -1012,11 +1021,10 @@ class Merchant(object):
                            token_to_bid=random.choice(self.current_location.available_types['foods']))
 
     def starve(self):
-        '''What happens when we run out of food'''
+        """What happens when we run out of food"""
         self.buy_economy.buy_merchants.remove(self)
         self.sell_economy.sell_merchants.remove(self)
         if self.economy.owner: self.economy.owner.former_agents.append(self)
-
 
     def bankrupt(self):
         self.buy_economy.buy_merchants.remove(self)
@@ -1044,9 +1052,9 @@ class Merchant(object):
                     self.current_location = self.buy_economy
 
     def pay_taxes(self, economy):
-        # Pay taxes. If the economy has an owner, pay the taxes to that treasury
+        # Pay taxes. If the other has an owner, pay the taxes to that treasury
         self.gold -= economy.local_taxes
-        # economy owner - should be the city
+        # other owner - should be the city
         if economy.owner:
             economy.owner.treasury += economy.local_taxes
 
@@ -1058,7 +1066,7 @@ class Merchant(object):
         return False
 
     def place_bid(self, economy, token_to_bid):
-        # # Place a bid in the economy
+        # # Place a bid in the other
         if self.current_location == self.buy_economy:
             est_price = self.buy_perceived_values[token_to_bid].center
             uncertainty = self.buy_perceived_values[token_to_bid].uncertainty
@@ -1139,7 +1147,7 @@ class Merchant(object):
         # What to do when we've bid on something and didn't get it
         if self.current_location.auctions[type_of_item].supply:
             if self.current_location == self.buy_economy:
-                if price == None:
+                if price is None:
                     self.buy_perceived_values[type_of_item].center += BID_REJECTED_ADJUSTMENT
                     self.buy_perceived_values[type_of_item].uncertainty += REJECTED_UNCERTAINTY_AMOUNT
                 else:
@@ -1243,19 +1251,19 @@ class Economy(object):
     def __init__(self, native_resources, local_taxes, owner=None):
         self.native_resources = native_resources
         self.available_types = {}
-        # Should be the city where this economy is located
+        # Should be the city where this other is located
         self.owner = owner
         # if self.owner == None:
         # self.owner = TempCity()
 
-        # Agents belonging to this economy
+        # Agents belonging to this other
         self.resource_gatherers = []
         self.goods_producers = []
         self.buy_merchants = []
         self.sell_merchants = []
 
         self.starving_agents = []
-        # Auctions that take place in this economy
+        # Auctions that take place in this other
         self.auctions = {}
         self.prices = {}
 
@@ -1263,7 +1271,7 @@ class Economy(object):
         self.local_taxes = local_taxes
 
     def add_commodity_to_economy(self, commodity):
-        # sets up the auctions and avilable for trade in the economy.
+        # sets up the auctions and avilable for trade in the other.
         category = COMMODITY_TOKENS[commodity].category
         if category in self.available_types.keys():
             if commodity not in self.available_types[category]:
@@ -1275,19 +1283,19 @@ class Economy(object):
 
     def add_resource_gatherer(self, resource):
         info = gatherers_by_token[resource]
-        gatherer = Resource_Gatherer(name=info['name'], economy=self, resource=resource,
-                                     gather_amount=COMMODITY_TOKENS[resource].gather_amount, consumed=info['consumed'],
-                                     essential=info['essential'], preferred=info['preferred'])
+        gatherer = ResourceGatherer(name=info['name'], economy=self, resource=resource,
+                                    gather_amount=COMMODITY_TOKENS[resource].gather_amount, consumed=info['consumed'],
+                                    essential=info['essential'], preferred=info['preferred'])
         self.resource_gatherers.append(gatherer)
-        # Test if it's in the economy and add it if not
+        # Test if it's in the other and add it if not
         self.add_commodity_to_economy(resource)
 
     def add_goods_producer(self, goods):
         info = producers_by_token[goods]
-        producer = Goods_Producer(name=info['name'], economy=self, finished_goods=COMMODITY_TOKENS[goods],
-                                  consumed=info['consumed'], essential=info['essential'], preferred=info['preferred'])
+        producer = GoodsProducer(name=info['name'], economy=self, finished_goods=COMMODITY_TOKENS[goods],
+                                 consumed=info['consumed'], essential=info['essential'], preferred=info['preferred'])
         self.goods_producers.append(producer)
-        # Test if it's in the economy and add it if not
+        # Test if it's in the other and add it if not
         self.add_commodity_to_economy(goods)
 
     def add_agent_based_on_token(self, token):
@@ -1469,19 +1477,19 @@ class City_Economy(object):
     def __init__(self, native_resources, local_taxes, owner=None):
         self.native_resources = native_resources
         self.available_types = {}
-        # Should be the city where this economy is located
+        # Should be the city where this other is located
         self.owner = owner
         # if self.owner == None:
         # self.owner = TempCity()
 
-        # Agents belonging to this economy
+        # Agents belonging to this other
         self.resource_gatherers = []
         self.goods_producers = []
         self.buy_merchants = []
         self.sell_merchants = []
 
         self.starving_agents = []
-        # Auctions that take place in this economy
+        # Auctions that take place in this other
         self.auctions = {}
         self.prices = {}
 
@@ -1489,7 +1497,7 @@ class City_Economy(object):
         self.local_taxes = local_taxes
 
     def add_commodity_to_economy(self, commodity):
-        # sets up the auctions and avilable for trade in the economy.
+        # sets up the auctions and avilable for trade in the other.
         category = COMMODITY_TOKENS[commodity].category
         if category in self.available_types.keys():
             if commodity not in self.available_types[category]:
@@ -1501,19 +1509,19 @@ class City_Economy(object):
 
     def add_resource_gatherer(self, resource):
         info = gatherers_by_token[resource]
-        gatherer = Resource_Gatherer(name=info['name'], economy=self, resource=resource,
-                                     gather_amount=COMMODITY_TOKENS[resource].gather_amount, consumed=info['consumed'],
-                                     essential=info['essential'], preferred=info['preferred'])
+        gatherer = ResourceGatherer(name=info['name'], economy=self, resource=resource,
+                                    gather_amount=COMMODITY_TOKENS[resource].gather_amount, consumed=info['consumed'],
+                                    essential=info['essential'], preferred=info['preferred'])
         self.resource_gatherers.append(gatherer)
-        # Test if it's in the economy and add it if not
+        # Test if it's in the other and add it if not
         self.add_commodity_to_economy(resource)
 
     def add_goods_producer(self, goods):
         info = producers_by_token[goods]
-        producer = Goods_Producer(name=info['name'], economy=self, finished_goods=COMMODITY_TOKENS[goods],
-                                  consumed=info['consumed'], essential=info['essential'], preferred=info['preferred'])
+        producer = GoodsProducer(name=info['name'], economy=self, finished_goods=COMMODITY_TOKENS[goods],
+                                 consumed=info['consumed'], essential=info['essential'], preferred=info['preferred'])
         self.goods_producers.append(producer)
-        # Test if it's in the economy and add it if not
+        # Test if it's in the other and add it if not
         self.add_commodity_to_economy(goods)
 
     def add_agent_based_on_token(self, token):
