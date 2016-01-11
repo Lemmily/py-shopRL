@@ -65,7 +65,7 @@ def setup_resources():
                         'semi-arid desert':5, 'arid desert':0, 'river':0}        
     
     ### define the actual resources. gather_amount is how many resources are gathered per round - 
-    ### half go to the government and aren't used in the economy. Each round, if a random number
+    ### half go to the government and aren't used in the other. Each round, if a random number
     ### between 1 and 1000 is less than break_chance, a good made out of the resouce will be destroyed
     copper = Resource(name='copper', category='ores', resource_class='strategic', gather_amount=4, break_chance=200, app_chances=ore_app, app_amt=amt)
     bronze = Resource(name='bronze', category='ores', resource_class='strategic', gather_amount=4, break_chance=100, app_chances=ore_app, app_amt=amt)
@@ -248,9 +248,9 @@ class FinishedGood(object):
         
 class Agent(object):
     def pay_taxes(self):
-        # Pay taxes. If the economy has an owner, pay the taxes to that treasury
+        # Pay taxes. If the other has an owner, pay the taxes to that treasury
         self.gold -= self.economy.local_taxes
-        # economy owner - should be the city
+        # other owner - should be the city
         if self.economy.owner:
             self.economy.owner.treasury += self.economy.local_taxes
         
@@ -262,7 +262,7 @@ class Agent(object):
         return False
         
     def place_bid(self, token_to_bid):
-        ## Place a bid in the economy
+        ## Place a bid in the other
         est_price = self.perceived_values[token_to_bid].center
         uncertainty = self.perceived_values[token_to_bid].uncertainty
         bid_price = roll(est_price - uncertainty, est_price + uncertainty)
@@ -766,9 +766,9 @@ class Merchant(object):
                 elif self.current_location == self.sell_economy: self.current_location = self.buy_economy
             
     def pay_taxes(self, economy):
-        # Pay taxes. If the economy has an owner, pay the taxes to that treasury
+        # Pay taxes. If the other has an owner, pay the taxes to that treasury
         self.gold -= economy.local_taxes
-        # economy owner - should be the city
+        # other owner - should be the city
         if economy.owner:
             economy.owner.treasury += economy.local_taxes
         
@@ -780,7 +780,7 @@ class Merchant(object):
         return False
         
     def place_bid(self, economy, token_to_bid):
-        ## Place a bid in the economy
+        ## Place a bid in the other
         if self.current_location == self.buy_economy:
             est_price = self.buy_perceived_values[token_to_bid].center
             uncertainty = self.buy_perceived_values[token_to_bid].uncertainty            
@@ -957,17 +957,17 @@ class Economy:
     def __init__(self, native_resources, local_taxes, owner=None):
         self.native_resources = native_resources
         self.available_types = {}
-        # Should be the city where this economy is located
+        # Should be the city where this other is located
         self.owner = owner
         
-        # Agents belonging to this economy
+        # Agents belonging to this other
         self.resource_gatherers = []
         self.good_producers = []
         self.buy_merchants = []
         self.sell_merchants = []
         
         self.starving_agents = []
-        # Auctions that take place in this economy
+        # Auctions that take place in this other
         self.auctions = {}
         self.prices = {}
         
@@ -996,14 +996,14 @@ class Economy:
         info = gatherers_by_token[resource]
         gatherer = ResourceGatherer(name=info['name'], economy=self, resource=resource, gather_amount=COMMODITY_TOKENS[resource].gather_amount, consumed=info['consumed'], essential=info['essential'], preferred=info['preferred'] )
         self.resource_gatherers.append(gatherer)
-        # Test if it's in the economy and add it if not
+        # Test if it's in the other and add it if not
         self.add_commodity_to_economy(resource)
         
     def add_goods_producer(self, good):
         info = producers_by_token[good]
         producer = GoodProducer(name=info['name'], economy=self, finished_good=COMMODITY_TOKENS[good], consumed=info['consumed'], essential=info['essential'], preferred=info['preferred'] )
         self.good_producers.append(producer)
-        # Test if it's in the economy and add it if not
+        # Test if it's in the other and add it if not
         self.add_commodity_to_economy(good)
         
     def add_merchant(self, sell_economy, traded_item, attached_to=None):
@@ -1012,7 +1012,7 @@ class Economy:
         
         self.buy_merchants.append(merchant)
         sell_economy.sell_merchants.append(merchant)
-        # Test if it's in the economy and add it if not
+        # Test if it's in the other and add it if not
         self.add_commodity_to_economy(traded_item)
         sell_economy.add_commodity_to_economy(traded_item)
         return merchant
@@ -1205,7 +1205,7 @@ class Economy:
             self.owner.food_demand.append(self.auctions['food'].demand)
             
     def graph_results(self, solid, dot):
-        # Spit out some useful info    about the economy    
+        # Spit out some useful info    about the other
         overall_history = []
         # Bad hack to transpose matix so plot() works correctly
         for i in xrange(len(self.auctions['food'].price_history)):

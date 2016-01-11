@@ -38,6 +38,19 @@ __author__ = 'Emily'
 #
 #         self.bidders = []
 
+class Economy:
+    def __init__(self):
+        self.businesses = []
+        self.trade_houses = []
+
+    def update(self, time=1):
+        for bus in self.businesses:
+            business.update(time)
+
+        for tra in self.trade_houses:
+            tra.update(time)
+
+
 class Resource:
     def __init__(self, name="", category="", type="none", quantity=0.0):
         self.name = name

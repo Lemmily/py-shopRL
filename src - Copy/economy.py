@@ -62,7 +62,7 @@ def setup_resources():
                         'semi-arid desert':5, 'arid desert':0, 'river':0}        
     
     ### define the actual resources. gather_amount is how many resources are gathered per round - 
-    ### half go to the government and aren't used in the economy. Each round, if a random number
+    ### half go to the government and aren't used in the other. Each round, if a random number
     ### between 1 and 1000 is less than break_chance, a goods made out of the resouce will be destroyed
     copper = Resource(name='copper', category='ores', resource_class='strategic', gather_amount=4, break_chance=200, app_chances=ore_app, app_amt=amt)
     bronze = Resource(name='bronze', category='ores', resource_class='strategic', gather_amount=4, break_chance=100, app_chances=ore_app, app_amt=amt)
@@ -484,7 +484,7 @@ class FinishedGood(object):
         
             
 class Agent(object):
-    #base class for members of the economy.
+    #base class for members of the other.
     def pay_taxes(self):
         if self.economy != None:
             self.gold -= self.economy.local_taxes
@@ -976,9 +976,9 @@ class Merchant(object):
                 elif self.current_location == self.sell_economy: self.current_location = self.buy_economy
             
     def pay_taxes(self, economy):
-        # Pay taxes. If the economy has an owner, pay the taxes to that treasury
+        # Pay taxes. If the other has an owner, pay the taxes to that treasury
         self.gold -= economy.local_taxes
-        # economy owner - should be the city
+        # other owner - should be the city
         if economy.owner:
             economy.owner.treasury += economy.local_taxes
         
@@ -990,7 +990,7 @@ class Merchant(object):
         return False
         
     def place_bid(self, economy, token_to_bid):
-        ## Place a bid in the economy
+        ## Place a bid in the other
         if self.current_location == self.buy_economy:
             est_price = self.buy_perceived_values[token_to_bid].center
             uncertainty = self.buy_perceived_values[token_to_bid].uncertainty            
@@ -1159,19 +1159,19 @@ class Economy(object):
     def __init__(self, native_resources, local_taxes, owner=None):
         self.native_resources = native_resources
         self.available_types = {}
-        # Should be the city where this economy is located
+        # Should be the city where this other is located
         self.owner = owner
         #if self.owner == None:
         #     self.owner = TempCity()
         
-        # Agents belonging to this economy
+        # Agents belonging to this other
         self.resource_gatherers = []
         self.goods_producers = []
         self.buy_merchants = []
         self.sell_merchants = []
         
         self.starving_agents = []
-        # Auctions that take place in this economy
+        # Auctions that take place in this other
         self.auctions = {}
         self.prices = {}
         
@@ -1179,7 +1179,7 @@ class Economy(object):
         self.local_taxes = local_taxes
     
     def add_commodity_to_economy(self, commodity):
-        #sets up the auctions and avilable for trade in the economy.
+        #sets up the auctions and avilable for trade in the other.
         category = COMMODITY_TOKENS[commodity].category
         if category in self.available_types.keys():
             if commodity not in self.available_types[category]:
@@ -1193,14 +1193,14 @@ class Economy(object):
         info = gatherers_by_token[resource]
         gatherer = Resource_Gatherer(name=info['name'], economy=self, resource=resource, gather_amount=COMMODITY_TOKENS[resource].gather_amount, consumed=info['consumed'], essential=info['essential'], preferred=info['preferred'] )
         self.resource_gatherers.append(gatherer)
-        # Test if it's in the economy and add it if not
+        # Test if it's in the other and add it if not
         self.add_commodity_to_economy(resource)
         
     def add_goods_producer(self, goods):
         info = producers_by_token[goods]
         producer = Goods_Producer(name=info['name'], economy=self, finished_goods=COMMODITY_TOKENS[goods], consumed=info['consumed'], essential=info['essential'], preferred=info['preferred'] )
         self.goods_producers.append(producer)
-        # Test if it's in the economy and add it if not
+        # Test if it's in the other and add it if not
         self.add_commodity_to_economy(goods)
     
     def add_agent_based_on_token(self, token):
@@ -1376,19 +1376,19 @@ class City_Economy(object):
     def __init__(self, native_resources, local_taxes, owner=None):
         self.native_resources = native_resources
         self.available_types = {}
-        # Should be the city where this economy is located
+        # Should be the city where this other is located
         self.owner = owner
         #if self.owner == None:
         #     self.owner = TempCity()
         
-        # Agents belonging to this economy
+        # Agents belonging to this other
         self.resource_gatherers = []
         self.goods_producers = []
         self.buy_merchants = []
         self.sell_merchants = []
         
         self.starving_agents = []
-        # Auctions that take place in this economy
+        # Auctions that take place in this other
         self.auctions = {}
         self.prices = {}
         
@@ -1396,7 +1396,7 @@ class City_Economy(object):
         self.local_taxes = local_taxes
     
     def add_commodity_to_economy(self, commodity):
-        #sets up the auctions and avilable for trade in the economy.
+        #sets up the auctions and avilable for trade in the other.
         category = COMMODITY_TOKENS[commodity].category
         if category in self.available_types.keys():
             if commodity not in self.available_types[category]:
@@ -1410,14 +1410,14 @@ class City_Economy(object):
         info = gatherers_by_token[resource]
         gatherer = Resource_Gatherer(name=info['name'], economy=self, resource=resource, gather_amount=COMMODITY_TOKENS[resource].gather_amount, consumed=info['consumed'], essential=info['essential'], preferred=info['preferred'] )
         self.resource_gatherers.append(gatherer)
-        # Test if it's in the economy and add it if not
+        # Test if it's in the other and add it if not
         self.add_commodity_to_economy(resource)
         
     def add_goods_producer(self, goods):
         info = producers_by_token[goods]
         producer = Goods_Producer(name=info['name'], economy=self, finished_goods=COMMODITY_TOKENS[goods], consumed=info['consumed'], essential=info['essential'], preferred=info['preferred'] )
         self.goods_producers.append(producer)
-        # Test if it's in the economy and add it if not
+        # Test if it's in the other and add it if not
         self.add_commodity_to_economy(goods)
     
     def add_agent_based_on_token(self, token):
