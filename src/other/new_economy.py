@@ -45,7 +45,7 @@ class Economy:
 
     def update(self, time=1):
         for bus in self.businesses:
-            business.update(time)
+            bus.update(time)
 
         for tra in self.trade_houses:
             tra.update(time)
@@ -57,11 +57,18 @@ class Resource:
         self.category = category
         self.quantity = quantity
         self.type = type
-        self.bought_for = 0.0
-        self.supplyDemand = 0.0
-        self.raw_materials = []
+        self.needs = []
+
+
+class Goods:
+    def __init__(self):
+        self.resource = None
+        self.quantity = 0.0
         self.raw_cost = 0.0  # how much JUST the base ingredient cost.
         self.total_cost = 0.0  # how much it cost to make ingredients + labour transport etc.
+        self.supplyDemand = 0.0
+        self.bought_for = 0.0
+        self.raw_materials = []
 
 
 class Agent:
@@ -114,6 +121,12 @@ class TradeHouse:
             # add the request
             self.auctions_by_commodity[request.commodity.name].add_request(request)
 
+    def update(self, time):
+        pass
+
+    def resolve_requests(self):
+        pass
+
 
 class Business:
     def __init__(self):
@@ -137,3 +150,6 @@ trade_house.make_request(Request(iron, False, agent, 20))
 trade_house.make_request(Request(iron, True, 5))
 trade_house.make_request(Request(iron, True, 5))
 trade_house.make_request(Request(iron, True, 5))
+
+
+trade_house.resolve_requests();
