@@ -227,7 +227,7 @@ class City:
                 #resource = "what"
                 resource = master_raw_materials[key][0][n]
                 if resource.type != "none":
-                    new_resource = Resource(type = resource.type, quantity = self.producing[key][1]*resource.quantity)
+                    new_resource = Resource(variant= resource.type, quantity =self.producing[key][1] * resource.quantity)
                     temp.append(new_resource) 
         
         
@@ -238,7 +238,7 @@ class City:
                     resource.quantity += test_for.quantity
                     
             if resource.quantity > 0:
-                self.desired[resource.type] = resource.quantity
+                self.desired[resource.variant] = resource.quantity
 #        print "desires :-"
 #        for resource in self.desired: 
 #            print resource.type + str(resource.quantity)

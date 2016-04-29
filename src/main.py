@@ -99,9 +99,9 @@ def new_game():
     for city in cities:
         # print city.name + str(city.x) + "/" +  str(city.y)
         src.R.ui.message(city.name + str(city.x) + "/" + str(city.y), libtcod.light_grey)
-        city.createBaseRelationships(cities)
+        city.create_base_relationships(cities)
 
-    #    for n in range(5):
+    # for n in range(5):
     #        city = City(name = libtcod.namegen_generate("city"), resource_list =master_resource_list)
     #        cities.append(city)
     #    city = None
@@ -113,7 +113,8 @@ def new_game():
     world_obj.append(you)
     for a in range(5):
         x, y = src.worldMap.place_on_land()
-        hero = src.R.hero = src.entities.Mover(x=x, y=y, name="hero " + str(a), pather=src.sentient.Pather(), ai=src.sentient.AI_Hero())
+        hero = src.R.hero = src.entities.Mover(x=x, y=y, name="hero " + str(a), pather=src.sentient.Pather(),
+                                               ai=src.sentient.AI_Hero())
         world_obj.append(hero)
 
     # hero = entities.Mover(39,17, name="tester", ai=sentient.AI_Hero())
@@ -185,7 +186,7 @@ def play_game():
             if player_action == "exit":
                 save_game()
                 break
-            if not pause:  #and not player_turn:
+            if not pause:  # and not player_turn:
                 advance_time()
                 # player_turn = True
 
@@ -216,7 +217,7 @@ def play_game():
             # for object in objects:
             #    object.clear(con)
 
-            #handle_mouse()
+            # handle_mouse()
 
 
 def advance_time():
@@ -224,7 +225,7 @@ def advance_time():
 
     turns += game_speed
 
-    if turns >= 60:  #// pass an hour.11
+    if turns >= 60:  # // pass an hour.11
         turns = 0
         # whenever the date/time changes:-
         # render_all()
@@ -249,7 +250,7 @@ def advance_time():
         #                    merchant.ai.take_turn()
         #                    #merchant.draw(cam_x,cam_y)
 
-        if ( date[0] % 3 ) == 0:
+        if (date[0] % 3) == 0:
             print "the time is ", str(date[0])
             city = cities[0]
             for merchant in city.trade_house.caravans_out:
@@ -257,13 +258,12 @@ def advance_time():
                 merchant.ai.take_turn()
 
             for city in cities:
-                city.productionRound_temp()
+                city.production_round_temp()
 
-
-        if date[0] is 24:  #// increase the day.
+        if date[0] is 24:  # // increase the day.
 
             for city in cities:
-                city.productionRound_temp()
+                city.production_round_temp()
                 for resource in src.R.resource_list:
                     city.trade_house.collect_info(resource)
                     other_city = city
@@ -273,15 +273,15 @@ def advance_time():
                     # for merchant in city.trade_house.caravans_in:
                     # merchant.take_turn()
 
-            oldDay = date[1][1]
+            old_day = date[1][1]
 
-            newDay = oldDay + 1
-            if newDay > 7:
+            new_day = old_day + 1
+            if new_day > 7:
                 # does this work weekly?
-                newDay = 1
+                new_day = 1
             date[0] = 0  # //set hours back to 0;
-            date[1][0] = DAYS[newDay - 1][0]  # increade day name
-            date[1][1] = newDay  # //change day reference value
+            date[1][0] = DAYS[new_day - 1][0]  # increade day name
+            date[1][1] = new_day  # //change day reference value
             date[1][2] += 1  # //increase the date by a day.
 
         if date[1][2] > date[2][2]:  # // if current day is more than the months max days, increase month.
@@ -327,11 +327,11 @@ def scrolling_map(p, hs, s, m):
 
 
 class RenderThread(threading.Thread):
-    def __init__(self, threadID, name, workQueue):
-        threading.Thread.__init__()
-        self.threadID = threadID
+    def __init__(self, thread_id, name, work_queue):
+        threading.Thread.__init__(self)
+        self.threadID = thread_id
         self.name = name
-        self.q = workQueue
+        self.q = work_queue
 
     def run(self):
         print "starting"
@@ -358,7 +358,8 @@ def render_wilderness():
     cam_x = scrolling_map(you.x, src.R.MAP_VIEW_WIDTH / 2, src.R.MAP_VIEW_WIDTH, src.R.MAP_WIDTH)
     cam_y = scrolling_map(you.y, src.R.MAP_VIEW_HEIGHT / 2, src.R.MAP_VIEW_HEIGHT, src.R.MAP_HEIGHT)
     # now draw the map!
-    for y in range(min(src.R.MAP_VIEW_HEIGHT, len(src.R.world.tiles[0]))):  # this refers to the SCREEN position. NOT map.
+    for y in range(
+            min(src.R.MAP_VIEW_HEIGHT, len(src.R.world.tiles[0]))):  # this refers to the SCREEN position. NOT map.
         for x in range(min(src.R.MAP_VIEW_WIDTH, len(src.R.world.tiles))):
             map_pos_x = x + cam_x
             map_pos_y = y + cam_y
@@ -371,7 +372,7 @@ def render_wilderness():
             # visible = libtcod.map_is_in_fov(fov_map, tile.x, tile.y)
             visible = True
             if not visible:
-                pass  #TODO: re-do the visible/ not visible code.
+                pass  # TODO: re-do the visible/ not visible code.
                 # if it"s not visible right now, the player can only see it if it"s explored
                 # if tile.explored:
                 # if wall:
@@ -427,18 +428,18 @@ def render_all():
             # wall = tile.block_sight
 
             if not visible:
-                pass #TODO: re-do the visible/ not visible code.
+                pass  # TODO: re-do the visible/ not visible code.
                 # if it"s not visible right the player can only see it if it"s explored
                 # if tile.explored:
-                    #if wall:
-                    #    libtcod.console_set_char_backgrnow, ound(con, x, y, color_dark_wall, libtcod.BKGND_SET)
-                    #    libtcod.console_set_char(con, x, y, " ")
-                    #else:
-                    #    libtcod.console_set_char_background(con, x, y, color_dark_ground, libtcod.BKGND_SET)
-                    #    libtcod.console_set_char(con, x, y, " ")
+                # if wall:
+                #    libtcod.console_set_char_backgrnow, ound(con, x, y, color_dark_wall, libtcod.BKGND_SET)
+                #    libtcod.console_set_char(con, x, y, " ")
+                # else:
+                #    libtcod.console_set_char_background(con, x, y, color_dark_ground, libtcod.BKGND_SET)
+                #    libtcod.console_set_char(con, x, y, " ")
             else:
                 # it"s visible
-                if tile.POI is None:
+                if tile.poi is None:
                     if traffic:  # for b&w image.
                         v = world.get_foot_traffic(map_pos_x, map_pos_y)
                         colour = libtcod.Color(v, v, v)
@@ -464,36 +465,38 @@ def render_all():
 
                     elif pathfinding:
                         char = " "
-                        if len(selected) > 0 and hasattr(selected[0], "ai") and selected[0].ai is not None: # and selected[0].ai.pather.end is not None:
+                        if len(selected) > 0 and hasattr(selected[0], "ai") and selected[
+                            0].ai is not None:  # and selected[0].ai.pather.end is not None:
                             if path_to_draw == 3:
-                                draw_path =  selected[0].ai.path3
+                                draw_path = selected[0].ai.path3
                                 pather = selected[0].ai.pather3
                             elif path_to_draw == 2:
-                                draw_path =  selected[0].ai.path2
+                                draw_path = selected[0].ai.path2
                                 pather = selected[0].ai.pather2
                             else:
-                                draw_path =  selected[0].ai.path
+                                draw_path = selected[0].ai.path
                                 pather = selected[0].ai.pather
 
-                            loc = (map_pos_x,map_pos_y)
+                            loc = (map_pos_x, map_pos_y)
                             loc_str = str(loc)
                             if path_to_draw < 3 and pather.node_costs.has_key(loc_str):
                                 v = float(pather.node_costs[loc_str])
                                 v /= pather.largest_cost
-                                v = int( v * 255 )
+                                v = int(v * 255)
                                 colour = libtcod.Color(v, v, v)
 
                                 if loc in draw_path:
-                                    char = "." # path tile
+                                    char = "."  # path tile
 
-                            elif path_to_draw == 3 and pather.node_costs.has_key(loc): #todo: hack for old pather, remove!!!
+                            elif path_to_draw == 3 and pather.node_costs.has_key(
+                                    loc):  # todo: hack for old pather, remove!!!
                                 v = float(pather.node_costs[loc])
                                 v /= pather.largest_cost
-                                v = int( v * 255 )
+                                v = int(v * 255)
                                 colour = libtcod.Color(v, v, v)
 
                                 if loc in draw_path:
-                                    char = "." # path tile
+                                    char = "."  # path tile
                             else:
                                 if tile.type == "water":
                                     colour = libtcod.Color(0, 10, 100)
@@ -525,9 +528,9 @@ def render_all():
                         # libtcod.console_set_char_foreground(con, x, y, libtcod.black)
                         # libtcod.console_set_char(con, x, y, libtcod.CHAR_BULLET)
                 else:
-                    libtcod.console_set_char_background(con, x, y, tile.POI.colour, libtcod.BKGND_SET)
+                    libtcod.console_set_char_background(con, x, y, tile.poi.colour, libtcod.BKGND_SET)
                     libtcod.console_set_char_foreground(con, x, y, libtcod.white)
-                    libtcod.console_set_char(con, x, y, tile.POI.char)
+                    libtcod.console_set_char(con, x, y, tile.poi.char)
                 # since it"s visible, explore it
                 tile.explored = True
 
@@ -540,8 +543,6 @@ def render_all():
             # objects.clear(cam_x, cam_y)
             objects.draw(cam_x, cam_y)
     you.draw(cam_x, cam_y)
-
-
 
     # libtcod.console_print_ex(message_bar, R.SCREEN_WIDTH - R.INFO_BAR_WIDTH, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse())
     # libtcod.console_set_default_background(con, libtcod.white)
@@ -565,13 +566,13 @@ def render_minimap():
 
 
 def render_local():
-    global map_, fov_recompute
-    
-    if len(src.R.map_) > src.R.MAP_VIEW_WIDTH:
+    global map_, fov_recompute, cam_x, cam_y
+
+    if len(src.R.active_map) > src.R.MAP_VIEW_WIDTH:
         cam_x = scrolling_map(you.x, src.R.MAP_VIEW_WIDTH_HALF + 1, src.R.MAP_VIEW_WIDTH, src.R.MAP_WIDTH)
     else:
         cam_x = 0
-    if len(src.R.map_[0]) > src.R.MAP_VIEW_HEIGHT:
+    if len(src.R.active_map[0]) > src.R.MAP_VIEW_HEIGHT:
         cam_y = scrolling_map(you.y, src.R.MAP_VIEW_HEIGHT_HALF, src.R.MAP_VIEW_HEIGHT, src.R.MAP_HEIGHT)
     else:
         cam_y = 0
@@ -583,13 +584,13 @@ def render_local():
         fov_recompute = False
         libtcod.map_compute_fov(src.R.locale.floors[you.depth].fov_map, you.x, you.y, 10, True, 0)
 
-        for sc_y in range(src.R.MAP_VIEW_HEIGHT):  #this refers to the SCREEN position. NOT map.
+        for sc_y in range(src.R.MAP_VIEW_HEIGHT):  # this refers to the SCREEN position. NOT map.
             for sc_x in range(src.R.MAP_VIEW_WIDTH):
                 x = sc_x + cam_x
                 y = sc_y + cam_y
 
-                if sc_x < len(src.R.map_) and sc_y < len(src.R.map_[0]):
-                        # and x < len(R.map_) and y < len(R.map_[0]):  #if it's within the bounds of the map.
+                if sc_x < len(src.R.active_map) and sc_y < len(src.R.active_map[0]):
+                    # and x < len(R.map_) and y < len(R.map_[0]):  #if it's within the bounds of the map.
                     tile = src.R.locale.floors[you.depth].tiles[x][y]
                     visible = libtcod.map_is_in_fov(src.R.locale.floors[you.depth].fov_map, x, y)
                     if not visible:
@@ -611,7 +612,7 @@ def render_local():
             if libtcod.map_is_in_fov(src.R.locale.floors[you.depth].fov_map, objects.x, objects.y):
                 objects.draw(cam_x, cam_y)
             # if it's explored but out of sight range - draw faded!
-            elif src.R.locale.floors[you.depth].tiles[objects.x][objects.y].explored == True:
+            elif src.R.locale.floors[you.depth].tiles[objects.x][objects.y].explored:
                 objects.draw_faded(cam_x, cam_y)
         you.draw(cam_x, cam_y)
 
@@ -621,12 +622,12 @@ def render_local():
     libtcod.console_flush()
 
 
-def is_wall(x, y, map_=None):
-    if map_ is None:
-        map_ = src.R.map_
+def is_wall(x, y, active_map=None):
+    if active_map is None:
+        active_map = src.R.active_map
 
-    if 0 <= x < len(map_) and 0 <= y < len(map_[x]):
-        if map_[x][y] != 0:
+    if 0 <= x < len(active_map) and 0 <= y < len(active_map[x]):
+        if active_map[x][y] != 0:
             return True
         else:
             return False
@@ -634,13 +635,13 @@ def is_wall(x, y, map_=None):
         return False
 
 
-def is_blocked(x, y, map=None):
-    if map is None:
-        map = src.R.map_
+def is_blocked(x, y, active_map=None):
+    if active_map is None:
+        active_map = src.R.active_map
 
-    if 0 <= x < len(map) and 0 <= y < len(map[x]):
+    if 0 <= x < len(active_map) and 0 <= y < len(active_map[x]):
         # Check the map first
-        if map[x][y] != 0:
+        if active_map[x][y] != 0:
             return True
         else:
             # now check for objects that block.
@@ -676,7 +677,8 @@ def update_msg_bar():
 def update_info_bar():
     # TODO: seperate the UI updating into THIS function. the rest of the game updates in the render_all.
     # Fetch all the code into this function basically.
-    # TODO: make a function for the ui to prin a message in this area. Possibly with choices whether to wipe it first or add to it.
+    # TODO: make a function for the ui to prin a message in this area.
+    # Possibly with choices whether to wipe it first or add to it.
 
     libtcod.console_clear(inf)
     y = 2
@@ -689,7 +691,7 @@ def update_info_bar():
 
             try:
                 if sel.component.trade_house:
-                    libtcod.console_print_ex( inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, sel.char)
+                    libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, sel.char)
                     resources = [obj + " " + str(sel.component.resources[obj][1]) for obj in sel.component.resources]
 
                     resources = "\n".join(resources)
@@ -703,7 +705,7 @@ def update_info_bar():
         libtcod.console_set_default_foreground(inf, colour)
         libtcod.console_print_ex(inf, 0, y, libtcod.BKGND_NONE, libtcod.LEFT, line)
         y += 1
-    #    y = 1
+    # y = 1
     #    for (line, colour) in test_msgs:
     #        libtcod.console_set_default_foreground(inf, colour)
     #        libtcod.console_print_ex(inf, 2, y, libtcod.BKGND_NONE, libtcod.LEFT, line)
@@ -730,7 +732,7 @@ def update_info_bar():
 #    
 
 def handle_mouse():
-    global selected
+    global selected, mouse
     mouse = libtcod.mouse_get_status()
 
     (x, y) = (mouse.cx, mouse.cy)
@@ -765,9 +767,9 @@ def handle_mouse():
                 selected.append(obj)
                 update_info_bar()
                 found = True
-        # if found == False and R.world.w >= (x + cam_x) and R.world.h >= (y + cam_y):
-        #     print str(R.world.tiles[x + cam_x][y + cam_y].temperature) + "/" + str(
-        #         R.world.tiles[x + cam_x][y + cam_y].elevation)
+                # if found == False and R.world.w >= (x + cam_x) and R.world.h >= (y + cam_y):
+                #     print str(R.world.tiles[x + cam_x][y + cam_y].temperature) + "/" + str(
+                #         R.world.tiles[x + cam_x][y + cam_y].elevation)
 
 
 def handle_keys():
@@ -783,7 +785,7 @@ def handle_keys():
         libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
     elif key.vk == libtcod.KEY_ESCAPE:
-        return "exit"  #exit game
+        return "exit"  # exit game
 
     elif key.vk == libtcod.KEY_SPACE:
         if pause:
@@ -792,7 +794,7 @@ def handle_keys():
             pause = True
             # return "pause"  #exit game
 
-    elif key.vk == libtcod.KEY_0:  #increase Speed.
+    elif key.vk == libtcod.KEY_0:  # increase Speed.
         if game_speed == SLOW_SPEED:
             game_speed = NORM_SPEED
         elif game_speed == NORM_SPEED:
@@ -802,7 +804,7 @@ def handle_keys():
         elif game_speed == FASTEST_SPEED:
             src.R.ui.message("can't go no fasterer! :)", libtcod.light_grey)
 
-    elif key.vk == libtcod.KEY_9:  #decrease speed
+    elif key.vk == libtcod.KEY_9:  # decrease speed
         if game_speed == SLOW_SPEED:
             src.R.ui.message("can't go no slower-er! :)", libtcod.light_grey)
         elif game_speed == NORM_SPEED:
@@ -948,10 +950,10 @@ def player_move_or_attack(dx, dy):
         you.move_p(dx, dy)
         fov_recompute = True
 
-        if you.x > len(src.R.map_) - 1:
-            you.x = len(src.R.map_) - 1
-        if you.y > len(src.R.map_[0]) - 1:
-            you.y = len(src.R.map_[0]) - 1
+        if you.x > len(src.R.active_map) - 1:
+            you.x = len(src.R.active_map) - 1
+        if you.y > len(src.R.active_map[0]) - 1:
+            you.y = len(src.R.active_map[0]) - 1
 
     clear_consoles()
     player_action()
@@ -972,7 +974,7 @@ def go_up():
                 you.x = src.R.locale.floors[you.depth].down[0]
                 you.y = src.R.locale.floors[you.depth].down[1]
 
-                src.R.map_ = src.R.locale.floors[you.depth].map
+                src.R.active_map = src.R.locale.floors[you.depth].map
                 src.R.locale_obj = src.R.locale.floors[you.depth].objects
                 fov_recompute = True
     else:
@@ -990,7 +992,7 @@ def go_down():
                 you.x = src.R.locale.floors[you.depth].up[0]
                 you.y = src.R.locale.floors[you.depth].up[1]
 
-                src.R.map_ = src.R.locale.floors[you.depth].map
+                src.R.active_map = src.R.locale.floors[you.depth].map
                 src.R.locale_obj = src.R.locale.floors[you.depth].objects
                 fov_recompute = True
 
@@ -1002,7 +1004,7 @@ def go_down():
         on_dun = False
         for dungeon in src.R.world.dungeons:
             if dungeon.x == you.x and dungeon.y == you.y:
-                src.R.map_ = dungeon.floors[0].map
+                src.R.active_map = dungeon.floors[0].map
                 src.R.locale = dungeon
                 src.R.locale_obj = dungeon.floors[0].objects
                 src.R.player_pos = (you.x, you.y)
@@ -1012,7 +1014,7 @@ def go_down():
                 on_dun = True
                 local = True
 
-        if not on_dun or (src.R.map_ is None or len(src.R.map_) <= 0):
+        if not on_dun or (src.R.active_map is None or len(src.R.active_map) <= 0):
             src.R.ui.message("There's nothing here!", colour=libtcod.white)
     player_action()
 
@@ -1037,6 +1039,7 @@ def inventory_menu():
     except:
         print "no item exists!"
 
+
 def player_menu():
     options = []
     for key in you.skills.dict.keys():
@@ -1044,6 +1047,7 @@ def player_menu():
         options.append(line)
 
     src.R.ui.menu("Skills:", options, 15)
+
 
 def city_production_menu():
     width, height = src.R.MAP_VIEW_WIDTH - 4, src.R.MAP_VIEW_HEIGHT - 4
@@ -1053,7 +1057,7 @@ def city_production_menu():
 
     pos_x = src.R.MAP_VIEW_WIDTH / 2 - width / 2
     pos_y = src.R.MAP_VIEW_HEIGHT / 2 - height / 2
-    for a in range(src.R.MAP_VIEW_WIDTH - 4):  #clear screen, colour dark grey, every cycle
+    for a in range(src.R.MAP_VIEW_WIDTH - 4):  # clear screen, colour dark grey, every cycle
         for b in range(src.R.MAP_VIEW_HEIGHT - 4):
             # libtcod.console_print_rect(window, a, b,
             libtcod.console_print_rect_ex(city_select_pop, a, b, src.R.MAP_VIEW_WIDTH - 4, src.R.MAP_VIEW_HEIGHT - 4,
@@ -1095,9 +1099,9 @@ def city_menu():
 
     pos_x = src.R.MAP_VIEW_WIDTH / 2 - width / 2
     pos_y = src.R.MAP_VIEW_HEIGHT / 2 - height / 2
-    for a in range(src.R.MAP_VIEW_WIDTH - 4):  #clear screen, colour dark grey, every cycle
+    for a in range(src.R.MAP_VIEW_WIDTH - 4):  # clear screen, colour dark grey, every cycle
         for b in range(src.R.MAP_VIEW_HEIGHT - 4):
-            #libtcod.console_print_rect(window, a, b, 
+            # libtcod.console_print_rect(window, a, b,
             libtcod.console_print_rect_ex(city_select_pop, a, b, src.R.MAP_VIEW_WIDTH - 4, src.R.MAP_VIEW_HEIGHT - 4,
                                           libtcod.BKGND_NONE, libtcod.LEFT, " ")
 
@@ -1106,7 +1110,7 @@ def city_menu():
     offset = 0
 
     key = libtcod.console_check_for_keypress()
-    while selected_city == None:  #or key.vk != libtcod.KEY_ENTER:
+    while selected_city is None:  # or key.vk != libtcod.KEY_ENTER:
         libtcod.console_clear(city_select_pop)
         libtcod.console_set_default_foreground(city_select_pop, libtcod.yellow)
         libtcod.console_print_ex(city_select_pop, 1, 1, libtcod.BKGND_NONE, libtcod.LEFT, "Select the city")
@@ -1124,11 +1128,11 @@ def city_menu():
         max_key = 48 + min(len(cities) - 1, 10)  # and again, picks the smaller f the two values.
         # to prevent it trying to be longer than amount of cities
 
-        if key.c == 122:  #z
+        if key.c == 122:  # z
             offset -= 1
             if offset < 0:
                 offset = 0
-        elif key.c == 120:  #x
+        elif key.c == 120:  # x
             offset += 1
             if 9 + offset > limit:
                 offset = limit - 10
@@ -1142,25 +1146,25 @@ def city_menu():
         elif key.c == 50:  # 2
             if max_key >= 50:
                 selected_city = cities[2 + offset]
-        elif key.c == 51:  #3
+        elif key.c == 51:  # 3
             if max_key >= 51:
                 selected_city = cities[3 + offset]
-        elif key.c == 52:  #4
+        elif key.c == 52:  # 4
             if max_key >= 52:
                 selected_city = cities[4 + offset]
-        elif key.c == 53:  #5
+        elif key.c == 53:  # 5
             if max_key >= 53:
                 selected_city = cities[5 + offset]
-        elif key.c == 54:  #6
+        elif key.c == 54:  # 6
             if max_key >= 54:
                 selected_city = cities[6 + offset]
-        elif key.c == 55:  #7
+        elif key.c == 55:  # 7
             if max_key >= 55:
                 selected_city = cities[7 + offset]
-        elif key.c == 56:  #8
+        elif key.c == 56:  # 8
             if max_key >= 56:
                 selected_city = cities[8 + offset]
-        elif key.c == 57:  #9
+        elif key.c == 57:  # 9
             if max_key >= 57:
                 selected_city = cities[9 + offset]
 
@@ -1172,12 +1176,12 @@ def city_menu():
         libtcod.console_blit(city_select_pop, 0, 0, width, height, 0, pos_x, pos_y, 1.0, 0.9)
         libtcod.console_flush()
 
-    for a in range(src.R.MAP_WIDTH - 4):  #clear screen, colour dark grey, every cycle
+    for a in range(src.R.MAP_WIDTH - 4):  # clear screen, colour dark grey, every cycle
         for b in range(src.R.MAP_HEIGHT - 4):
             # libtcod.console_print_rect(window, a, b,
             libtcod.console_print_rect_ex(city_select_pop, a, b, src.R.MAP_VIEW_WIDTH - 4, src.R.MAP_VIEW_HEIGHT - 4,
                                           libtcod.BKGND_NONE, libtcod.LEFT, " ")
-    if selected_city != None:
+    if selected_city is not None:
         key = libtcod.console_check_for_keypress()
         while not key.vk == libtcod.KEY_ENTER or key.vk == libtcod.KEY_BACKSPACE:
             current_offset = offset
@@ -1242,14 +1246,15 @@ def main_menu():
         # now show the imageAt twice the size.
 
         libtcod.console_set_default_foreground(0, libtcod.light_yellow)
-        libtcod.console_print_ex(0, src.R.SCREEN_WIDTH / 2, src.R.SCREEN_HEIGHT / 2 - 4, libtcod.BKGND_NONE, libtcod.CENTER,
+        libtcod.console_print_ex(0, src.R.SCREEN_WIDTH / 2, src.R.SCREEN_HEIGHT / 2 - 4, libtcod.BKGND_NONE,
+                                 libtcod.CENTER,
                                  'Trader-RL')
         libtcod.console_print_ex(0, src.R.SCREEN_WIDTH / 2, src.R.SCREEN_HEIGHT - 2, libtcod.BKGND_NONE, libtcod.CENTER,
                                  'By Lemmily')
 
         choice = src.R.ui.menu("", ["Play a new game", "Continue last game", "Quit"], 24)
 
-        if choice == 0:  #new game
+        if choice == 0:  # new game
             # game_screen_init()
             new_game()
             play_game()
@@ -1269,14 +1274,14 @@ def main_menu():
 def main_init():
     global con, con_char, inf, minmap, message_bar, date, ui, game_msgs
     # libtcod.console_set_custom_font("dejavu16x16.png", libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
-    libtcod.console_set_custom_font("data\ont_big.png", libtcod.FONT_LAYOUT_ASCII_INROW)
+    libtcod.console_set_custom_font("data/ont_big.png", libtcod.FONT_LAYOUT_ASCII_INROW)
     libtcod.console_init_root(src.R.SCREEN_WIDTH, src.R.SCREEN_HEIGHT, "Trader-RL", False)
     libtcod.sys_set_fps(src.R.LIMIT_FPS)
 
     con = src.R.con = libtcod.console_new(src.R.MAP_WIDTH, src.R.MAP_HEIGHT)
     con_char = src.R.con_char = libtcod.console_new(src.R.MAP_WIDTH, src.R.MAP_HEIGHT)
     inf = src.R.inf = libtcod.console_new(src.R.INFO_BAR_WIDTH, src.R.SCREEN_HEIGHT - src.R.PANEL_HEIGHT)
-    minmap = src.R.minmap = libtcod.console_new(src.R.INFO_BAR_WIDTH, src.R.PANEL_HEIGHT)
+    minmap = src.R.min_map = libtcod.console_new(src.R.INFO_BAR_WIDTH, src.R.PANEL_HEIGHT)
     message_bar = src.R.message_bar = libtcod.console_new(src.R.PANEL_WIDTH, src.R.PANEL_HEIGHT)
 
     game_msgs = src.R.game_msgs = []

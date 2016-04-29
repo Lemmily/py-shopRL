@@ -4,9 +4,8 @@ Created on 23 Mar 2013
 @author: Emily
 
 For each class it will be noted if it is for use in macro(between cities) or micro(in the cities between people) economy, or both.
-
-
 """
+
 import json
 import random
 
@@ -31,10 +30,10 @@ ASK_REJECTED_ADJUSTMENT = 5  # Adjust prices by this much when nobody buys our s
 REJECTED_UNCERTAINTY_AMOUNT = 2  # We get this much more uncertain about a price when an offer is rejected
 ACCEPTED_CERTAINTY_AMOUNT = 1  # Out uncertainty about a price decreases by this amount when an offer is accepted
 
-P_DIF_ADJ = 3  # When offer is accepted and exceeds what we thought the price value was, adjust it upward by this amount
-N_DIF_ADJ = 3  # When offer is accepted and is lower than what we thought the price value was, adjust it downward by this amount
-P_DIF_THRESH = 2.5  # Threshhold at which adjustment of P_DIF_ADJ is added to the perceived value of a commodity
-N_DIF_THRESH = 2.5  # Threshhold at which adjustment of P_DIF_ADJ is subtracted from the perceived value of a commodity
+P_DIF_ADJ = 3  # When offer is accepted and exceeds what we thought the price was, adjust it upward by this amount
+N_DIF_ADJ = 3  # When offer is accepted & is lower than we thought the price was, adjust it downward by this amount
+P_DIF_THRESH = 2.5  # Threshold at which adjustment of P_DIF_ADJ is added to the perceived value of a commodity
+N_DIF_THRESH = 2.5  # Threshold at which adjustment of P_DIF_ADJ is subtracted from the perceived value of a commodity
 
 GRANARY_THRESH = 5
 STARVATION_THRESH = 10
@@ -95,16 +94,16 @@ def setup_resources():
     ##
     COMMODITY_TYPES = {}
     COMMODITY_TOKENS = {}
-    ## Key = category, value = list of resources
+    # #Key = category, value = list of resources
     for resource in RESOURCES:
         COMMODITY_TOKENS[resource.name] = resource
 
-        if not resource.category in RESOURCE_TYPES:
+        if resource.category not in RESOURCE_TYPES:
             RESOURCE_TYPES[resource.category] = [resource]
         else:
             RESOURCE_TYPES[resource.category].append(resource)
 
-        if not resource.category in COMMODITY_TYPES.keys():
+        if resource.category not in COMMODITY_TYPES.keys():
             COMMODITY_TYPES[resource.category] = [resource]
         else:
             COMMODITY_TYPES[resource.category].append(resource)
@@ -115,7 +114,7 @@ def setup_resources():
             else:
                 STRATEGIC_TYPES[resource.category].append(resource)
 
-    #### Goods made from resources. in_amt is how many resources it consumers to create the # of items specified by out_amt
+    # Goods made from resources. in_amt is how many resources it consumers to create the # of items specified by out_amt
     copper_tools = FinishedGood(category='tools', material=copper, in_amt=2, out_amt=1)
     bronze_tools = FinishedGood(category='tools', material=bronze, in_amt=2, out_amt=1)
     iron_tools = FinishedGood(category='tools', material=iron, in_amt=2, out_amt=1)
@@ -132,26 +131,26 @@ def setup_resources():
              iron_sword, copper_sword]
     GOODS_TYPES = {}
     GOODS_BY_RESOURCE_TOKEN = {}
-    ## Key = category, calue = list of resources
+    # Key = category, calue = list of resources
     for goods in GOODS:
         COMMODITY_TOKENS[goods.name] = goods
 
-        if not goods.category in GOODS_TYPES:
+        if goods.category not in GOODS_TYPES:
             GOODS_TYPES[goods.category] = [goods]
         else:
             GOODS_TYPES[goods.category].append(goods)
 
-        if not goods.category in COMMODITY_TYPES.keys():
+        if goods.category not in COMMODITY_TYPES.keys():
             COMMODITY_TYPES[goods.category] = [goods]
         else:
             COMMODITY_TYPES[goods.category].append(goods)
 
-        if not goods.category in GOODS_BY_RESOURCE_TOKEN.keys():
+        if goods.category not in GOODS_BY_RESOURCE_TOKEN.keys():
             GOODS_BY_RESOURCE_TOKEN[goods.material.name] = [goods]
         else:
             GOODS_BY_RESOURCE_TOKEN[goods.material.name].append(goods)
 
-    ################### AGENT TYPES ####################
+    # ################## AGENT TYPES ####################
     # These dicts look up agent info based on the resource or goods that the agent produces
     #
     # Consumed items are consumed each turn, regardless of whether they produce anything..
@@ -299,8 +298,8 @@ class TradeHouse:
         amount_cost = 0.0
 
         for offer in self.trades[transaction_type][commodity]:
-            amount += offer.quantity;
-            amount_cost += (offer.quantity * offer.price);
+            amount += offer.quantity
+            amount_cost += (offer.quantity * offer.price)
 
         return amount, amount_cost
         # print "%.2f" % a
@@ -347,7 +346,6 @@ class TradeHouse:
                 # buys.remove(buyer)
                 buyer.owner.sold_out(buyer, False)
 
-
     def resolve_offers_city(self, commodity, city):
         buys = self.trades["buys"][commodity]  # passing these like this means the root list does not change.
         asks = city.trade_house.trades["asks"][commodity]
@@ -359,7 +357,7 @@ class TradeHouse:
         total_traded = 0
         while len(self.trades["buys"][commodity]) > 0 and len(city.trade_house.trades["asks"][commodity]) > 0:
             buyer = self.trades["buys"][commodity][0]  # buy offer
-            seller = city.trade_house.trades["asks"][commodity][0]  # sell ofeer
+            seller = city.trade_house.trades["asks"][commodity][0]  # sell offer
 
             quantity_traded = min(buyer.quantity, seller.quantity)
             clearing_price = (buyer.price + seller.price) / 2
@@ -402,7 +400,6 @@ class TradeHouse:
     #             self.caravans_in.append(merchant)
     #             self.caravans_out.append(merchant)
 
-
     def check_for_time_out(self, asks, buys, city=None, other_city=None):
         for i in range(len(asks)):
             asks[i].time -= 1
@@ -435,7 +432,7 @@ class TradeHouse:
 
         trader.goal_city = city
         trader.trading_for = 5
-        #TODO
+        # TODO
 
 
 class Offer:
@@ -461,8 +458,8 @@ class Offer:
 
 
 class Resource:
-    def __init__(self, name="", category="", resource_class="", gather_amount=0, break_chance=0, app_chances=0,
-                 app_amt=0, type="none", quantity=0.0):
+    def __init__(self, name="", category="", resource_class="", gather_amount=0, break_chance=0, app_chances=(),
+                 app_amt=0, variant="none", quantity=0.0):
         self.name = name
         self.category = category
         self.resource_class = resource_class
@@ -471,20 +468,21 @@ class Resource:
         self.app_chances = app_chances
         self.app_amt = app_amt
 
-        self.type = type
+        self.variant = variant
         self.quantity = quantity
         self.bought_for = 0.0
-        self.supplyDemand = 0.0
+        self.supply_demand = 0.0
         self.raw_materials = []
         self.raw_costs = 0.0  # how much it cost to make
 
 
 class Cargo(Resource):
-    def __init__(self, type="none", quantity=0.0):
-        self.type = type
+    def __init__(self, variant="none", quantity=0.0):
+        Resource.__init__(self)
+        self.variant = variant
         self.quantity = quantity
         self.bought_for = 0.0
-        self.supplyDemand = 0.0
+        self.supply_demand = 0.0
         self.raw_materials = []
         self.raw_costs = 0.0  # how much it cost to make
 
@@ -495,7 +493,7 @@ class Cargo(Resource):
         """
         quantity is what's needed for NEW stack. returns the new resource.
         """
-        resource = Resource(self.name, 0);
+        resource = Resource(self.name, 0)
 
         if self.quantity > quantity:
             self.quantity -= quantity
@@ -599,7 +597,7 @@ class Agent(object):
         if self.perceived_values[type_of_item].uncertainty >= MIN_CERTAINTY_VALUE:
             self.perceived_values[type_of_item].uncertainty -= ACCEPTED_CERTAINTY_AMOUNT
 
-        our_mean = (self.perceived_values[type_of_item].center)
+        our_mean = self.perceived_values[type_of_item].center
 
         if price > our_mean * P_DIF_THRESH:
             self.perceived_values[type_of_item].center += P_DIF_ADJ
@@ -607,12 +605,12 @@ class Agent(object):
             # We never let it's worth drop under a certain % of tax money.
             self.perceived_values[type_of_item].center = \
                 max(self.perceived_values[type_of_item].center - N_DIF_ADJ,
-                    (self.economy.local_taxes) + self.perceived_values[type_of_item].uncertainty)
+                    self.economy.local_taxes + self.perceived_values[type_of_item].uncertainty)
 
     def eval_bid_rejected(self, type_of_item, price=None):
         # What to do when we've bid on something and didn't get it
         if self.economy.auctions[type_of_item].supply:
-            if price == None:
+            if price is None:
                 self.perceived_values[type_of_item].center += BID_REJECTED_ADJUSTMENT
                 self.perceived_values[type_of_item].uncertainty += REJECTED_UNCERTAINTY_AMOUNT
             else:
@@ -631,9 +629,13 @@ class Agent(object):
                                                              type_of_item].center - ASK_REJECTED_ADJUSTMENT
             self.perceived_values[type_of_item].uncertainty += REJECTED_UNCERTAINTY_AMOUNT
 
+    def check_production_cost(self):
+        pass
+
 
 class ResourceGatherer(Agent):
     def __init__(self, name, economy, resource, gather_amount, consumed, essential, preferred):
+        Agent.__init__(self)
         self.name = name
         self.economy = economy
         self.resource = resource
@@ -686,7 +688,7 @@ class ResourceGatherer(Agent):
         self.turns_alive += 1
 
     def consume_food(self):
-        '''Eat and bid on foods - exclude farmers'''
+        """Eat and bid on foods - exclude farmers"""
         if 'Farmer' in self.name and self.able_to_produce:
             self.turns_since_food = 0
 
@@ -711,8 +713,8 @@ class ResourceGatherer(Agent):
     def starve(self):
         R.ui.message(self.name + " has starved!", libtcod.dark_sea, R.date)
         self.economy.resource_gatherers.remove(self)
-        if self.economy.owner: self.economy.owner.former_agents.append(self)
-
+        if self.economy.owner:
+            self.economy.owner.former_agents.append(self)
 
     def eval_need(self):
         critical_items, other_items = self.check_for_needed_items()
@@ -806,6 +808,7 @@ class ResourceGatherer(Agent):
 
 class GoodsProducer(Agent):
     def __init__(self, name, economy, finished_goods, consumed, essential, preferred):
+        Agent.__init__(self)
         self.name = name
         self.economy = economy
         self.finished_goods = finished_goods
@@ -837,7 +840,6 @@ class GoodsProducer(Agent):
                 self.perceived_values[token_of_item.name] = Value(START_VAL, START_UNCERT)
             for token_of_item in COMMODITY_TYPES['foods']:
                 self.perceived_values[token_of_item.name] = Value(START_VAL, START_UNCERT)
-
             for i in xrange(1):
                 self.inventory.append(token_of_item.name)
 
@@ -928,7 +930,7 @@ class GoodsProducer(Agent):
                 break
 
                 # Take into account the taxes we pay
-        production_cost += (self.economy.local_taxes)
+        production_cost += self.economy.local_taxes
 
         return production_cost
 
@@ -968,6 +970,8 @@ class GoodsProducer(Agent):
 
 class Merchant(object):
     def __init__(self, name, home_economy, traded_item, consumed, essential, preferred, attached):
+        self.sell_economy = None
+        self.buy_economy = None
         self.turns_alive = 0
         self.buys = 0
         self.sells = 0
@@ -1082,7 +1086,8 @@ class Merchant(object):
             quantity = self.INVENTORY_SIZE - (len(self.inventory) + 1)
         else:
             quantity = roll(1, 2)
-        # print self.name, 'bidding on', quantity, token_to_bid, 'for', bid_price, 'at', self.current_location.owner.name
+        # print self.name, 'bidding on', quantity, token_to_bid, 'for', bid_price, 'at',
+        # self.current_location.owner.name
         # print self.name, 'bidding for', quantity, token_to_bid
         if quantity > 0:
             self.last_turn.append('Bid on ' + str(quantity) + ' ' + token_to_bid + ' for ' + str(bid_price))
@@ -1104,7 +1109,8 @@ class Merchant(object):
         quantity_to_sell = self.inventory.count(sell_item)
         # print self.name, 'selling', quantity_to_sell, sell_item
         if quantity_to_sell > 0:
-            # print self.name, 'selling', quantity_to_sell, sell_item, 'for', sell_price, 'at', self.current_location.owner.name
+            # print self.name, 'selling', quantity_to_sell, sell_item, 'for', sell_price, 'at',
+            # self.current_location.owner.name
             self.last_turn.append(
                 'Offered to sell ' + str(quantity_to_sell) + ' ' + sell_item + ' for ' + str(sell_price))
             economy.auctions[sell_item].sells.append(
@@ -1118,7 +1124,7 @@ class Merchant(object):
             if self.buy_perceived_values[type_of_item].uncertainty >= MIN_CERTAINTY_VALUE:
                 self.buy_perceived_values[type_of_item].uncertainty -= ACCEPTED_CERTAINTY_AMOUNT
 
-            our_mean = (self.buy_perceived_values[type_of_item].center)
+            our_mean = self.buy_perceived_values[type_of_item].center
 
             if price > our_mean * P_DIF_THRESH:
                 self.buy_perceived_values[type_of_item].center += P_DIF_ADJ
@@ -1126,13 +1132,13 @@ class Merchant(object):
                 # We never let it's worth drop under a certain % of tax money.
                 self.buy_perceived_values[type_of_item].center = \
                     max(self.buy_perceived_values[type_of_item].center - N_DIF_ADJ,
-                        (self.buy_economy.local_taxes) + self.buy_perceived_values[type_of_item].uncertainty)
+                        self.buy_economy.local_taxes + self.buy_perceived_values[type_of_item].uncertainty)
 
         elif self.current_location == self.sell_economy:
             if self.sell_perceived_values[type_of_item].uncertainty >= MIN_CERTAINTY_VALUE:
                 self.sell_perceived_values[type_of_item].uncertainty -= ACCEPTED_CERTAINTY_AMOUNT
 
-            our_mean = (self.sell_perceived_values[type_of_item].center)
+            our_mean = self.sell_perceived_values[type_of_item].center
 
             if price > our_mean * P_DIF_THRESH:
                 self.sell_perceived_values[type_of_item].center += P_DIF_ADJ
@@ -1140,8 +1146,7 @@ class Merchant(object):
                 # We never let it's worth drop under a certain % of tax money.
                 self.sell_perceived_values[type_of_item].center = \
                     max(self.sell_perceived_values[type_of_item].center - N_DIF_ADJ,
-                        (self.sell_economy.local_taxes) + self.sell_perceived_values[type_of_item].uncertainty)
-
+                        self.sell_economy.local_taxes + self.sell_perceived_values[type_of_item].uncertainty)
 
     def eval_bid_rejected(self, type_of_item, price=None):
         # What to do when we've bid on something and didn't get it
@@ -1187,7 +1192,8 @@ class Merchant(object):
 
     def check_min_sell_price(self):
         production_cost = self.buy_perceived_values[self.traded_item].center
-        # These items are required for production, but not used. Find the item's cost * (break chance/1000) to find avg cost
+        # These items are required for production, but not used. Find the item's cost *
+        # (break chance/1000) to find avg cost
         for type_of_item in self.consumed + self.essential + self.preferred:
             for token_of_item in COMMODITY_TYPES[type_of_item]:
                 if token_of_item in self.inventory:
@@ -1195,9 +1201,8 @@ class Merchant(object):
                         COMMODITY_TOKENS[token_of_item].break_chance / 1000)))
                     break
         # Take into account the taxes we pay
-        production_cost += (self.buy_economy.local_taxes)
+        production_cost += self.buy_economy.local_taxes
         return production_cost
-
 
     def eval_sell_rejected(self, type_of_item):
         # What to do when we put something up for sale and nobody bought it
@@ -1227,7 +1232,7 @@ class Value:
 
 
 class Auction:
-    # Seperate "auction" for each commodity
+    # Separate "auction" for each commodity
     # Runs each round of bidding, as well as archives historical price info
     def __init__(self, commodity):
         self.commodity = commodity
@@ -1299,8 +1304,8 @@ class Economy(object):
         self.add_commodity_to_economy(goods)
 
     def add_agent_based_on_token(self, token):
-        ''' If we only have a token and don't know whether it's a resource or a commodity,
-        this function helps us figure out which method to call'''
+        """ If we only have a token and don't know whether it's a resource or a commodity,
+        this function helps us figure out which method to call"""
         for resource in RESOURCES:
             if resource.name == token:
                 self.add_resource_gatherer(token)
@@ -1402,12 +1407,12 @@ class Economy(object):
                     # decide privce amount
                     quantity = min(buyer.quantity, seller.quantity)
                     price = int(round(
-                        buyer.price + seller.price) / 2)  #this is where powers of persuasion could come into play.
+                        buyer.price + seller.price) / 2)  # this is where powers of persuasion could come into play.
 
                     buyer.owner.eval_trade_accepted(buyer.commodity, price)
                     seller.owner.eval_trade_accepted(seller.commodity, price)
 
-                    #updating the inventories and wealth
+                    # updating the inventories and wealth
                     for i in xrange(quantity):
                         buyer.owner.inventory.append(buyer.commodity)
                         buyer.quantity -= 1
@@ -1448,8 +1453,8 @@ class Economy(object):
                 # Track mean price for last N turns
                 auction.update_mean_price()
                 # print (auction.commodity + ': ' + str(auction.mean_price) + '. This round: ' +
-                #str(len(prices[commodity])) + ' ' + commodity + ' averaged at $' + str(price_mean) +
-                #' (' + str(num_bids) + ' bids, ' + str(num_sells) + ' sells)')
+                # str(len(prices[commodity])) + ' ' + commodity + ' averaged at $' + str(price_mean) +
+                # ' (' + str(num_bids) + ' bids, ' + str(num_sells) + ' sells)')
             elif auction.commodity is not 'nothing':
                 auction.price_history.append(auction.price_history[-1])
                 # print (commodity + ' was not sold this round (' + str(num_bids) + ' bids, ' + str(num_sells) + ' sells)')
@@ -1460,8 +1465,7 @@ class Economy(object):
                 self.owner.warehouses[commodity].in_history.append(auction.warehouse_contribution)
             auction.warehouse_contribution = 0
 
-
-            ## Merchants evaluate whether or not to move on to the next city
+            # Merchants evaluate whether or not to move on to the next city
         # for merchant in self.buy_merchants + self.sell_merchants:
         # if merchant.current_location == self:
         # merchant.increment_cycle()
@@ -1473,7 +1477,7 @@ class Economy(object):
             self.owner.food_demand.append(self.auctions['food'].demand)
 
 
-class City_Economy(object):
+class CityEconomy(object):
     def __init__(self, native_resources, local_taxes, owner=None):
         self.native_resources = native_resources
         self.available_types = {}
@@ -1495,9 +1499,10 @@ class City_Economy(object):
 
         # Amount of gold paid in taxes each turn
         self.local_taxes = local_taxes
+        self.price_mean = 0
 
     def add_commodity_to_economy(self, commodity):
-        # sets up the auctions and avilable for trade in the other.
+        # sets up the auctions and available for trade in the other.
         category = COMMODITY_TOKENS[commodity].category
         if category in self.available_types.keys():
             if commodity not in self.available_types[category]:
@@ -1525,8 +1530,8 @@ class City_Economy(object):
         self.add_commodity_to_economy(goods)
 
     def add_agent_based_on_token(self, token):
-        ''' If we only have a token and don't know whether it's a resource or a commodity,
-        this function helps us figure out which method to call'''
+        """ If we only have a token and don't know whether it's a resource or a commodity,
+        this function helps us figure out which method to call"""
         for resource in RESOURCES:
             if resource.name == token:
                 self.add_resource_gatherer(token)
@@ -1628,12 +1633,12 @@ class City_Economy(object):
                     # decide privce amount
                     quantity = min(buyer.quantity, seller.quantity)
                     price = int(round(
-                        buyer.price + seller.price) / 2)  #this is where powers of persuasion could come into play.
+                        buyer.price + seller.price) / 2)  # this is where powers of persuasion could come into play.
 
                     buyer.owner.eval_trade_accepted(buyer.commodity, price)
                     seller.owner.eval_trade_accepted(seller.commodity, price)
 
-                    #updating the inventories and wealth
+                    # updating the inventories and wealth
                     for i in xrange(quantity):
                         buyer.owner.inventory.append(buyer.commodity)
                         buyer.quantity -= 1
@@ -1674,11 +1679,12 @@ class City_Economy(object):
                 # Track mean price for last N turns
                 auction.update_mean_price()
                 # print (auction.commodity + ': ' + str(auction.mean_price) + '. This round: ' +
-                #str(len(prices[commodity])) + ' ' + commodity + ' averaged at $' + str(price_mean) +
-                #' (' + str(num_bids) + ' bids, ' + str(num_sells) + ' sells)')
+                # str(len(prices[commodity])) + ' ' + commodity + ' averaged at $' + str(price_mean) +
+                # ' (' + str(num_bids) + ' bids, ' + str(num_sells) + ' sells)')
             elif auction.commodity is not 'nothing':
                 auction.price_history.append(auction.price_history[-1])
-                # print (commodity + ' was not sold this round (' + str(num_bids) + ' bids, ' + str(num_sells) + ' sells)')
+                # print (commodity + ' was not sold this round (' + str(num_bids) +
+                # ' bids, ' + str(num_sells) + ' sells)')
 
             # # Add information about how much stuff we've taken into that warehouse
             if self.owner:
@@ -1686,8 +1692,7 @@ class City_Economy(object):
                 self.owner.warehouses[commodity].in_history.append(auction.warehouse_contribution)
             auction.warehouse_contribution = 0
 
-
-            ## Merchants evaluate whether or not to move on to the next city
+            # Merchants evaluate whether or not to move on to the next city
         # for merchant in self.buy_merchants + self.sell_merchants:
         # if merchant.current_location == self:
         # merchant.increment_cycle()
@@ -1706,6 +1711,5 @@ def main():
 
 def setup_city_economy():
     pass
-
 
 # main()

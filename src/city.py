@@ -1,22 +1,17 @@
-'''
+"""
 Created on 4 Mar 2013
 
 @author: Emily
-'''
-
+"""
 import math
-import random
 
-import R
 import entities
-from economy import Resource, TradeHouse
 import utils
-from src import libtcodpy as libtcod
+from economy import *
 
 # master_commodity_list = [   "wool", "cloth", "clothes",
 #                            "wood", "food", "ore", 
 #                            "metal", "tools", "weapons"];
-from src.economy import Resource, TradeHouse
 
 master_commodity_list = ["raw",
                          "produce",
@@ -30,12 +25,11 @@ class Settlement:
         self.population = 0
         self.colour = libtcod.Color(20, 20, 20)
         self.char = "+"
-        # TODO: THIS probably needs it's own dedicated trader. not the same as just a "person" takes into account populations etc? Iuno.
-        self.trader = None
+        self.trader = None  # TODO: THIS probably needs it's own dedicated trader. not the same as just a "person" takes into account populations etc? Iuno.
 
 
 class City:
-    def __init__(self, x, y, POI, name="name", resource_list=[]):
+    def __init__(self, x, y, POI, name="name", resource_list=()):
         self.POI = POI
         self.x = x
         self.y = y
@@ -59,13 +53,13 @@ class City:
         self.trader.believed_prices = {}
         for resource in R.resource_list:
             self.trader.believed_prices[resource] = [38.00, 10.00]  # name as key. then [believed price, deviance]
-            self.trader.resources[resource] = [resource, 10.00]  # resource name as key, then the name and the quantity.
+            self.trader.resources[resource] = [resource, 10.00]  # resource as key, then the name and the quantity.
         self.trader.believed_prices["produce"] = [50.0, 30.0]
 
         self.producing = {}  # these will be stored as ["resource_name", quantity generated per hour.0]
         self.define_generation_goods()
         # self.pickGeneratedResources(resource_list) #TODO: re-initialise this.
-        self.findDesiredResources()
+        self.find_desired_resources()
         self.relationships = {}  # name of city, or city object.
 
         self.in_city = []
@@ -83,8 +77,8 @@ class City:
         check = False
         if not bonus:
             for resource in needed[key][0]:
-                if resource.type != "none":
-                    if self.trader.resources[resource.type][1] >= resource.quantity:
+                if resource.variant != "none":
+                    if self.trader.resources[resource.variant][1] >= resource.quantity:
                         check = True
                     else:
                         return False
@@ -92,7 +86,7 @@ class City:
                     return True
         else:
             for resource in needed[key][1]:
-                if resource.type != "none" and self.trader.resources[resource.type][1] >= resource.quantity:
+                if resource.variant != "none" and self.trader.resources[resource.variant][1] >= resource.quantity:
                     check = True
                 else:
                     return False
@@ -102,19 +96,19 @@ class City:
 
         if self.check_for_resources(key, needed, True):  # check for the "bonus" item.
             for resource in needed[key][0]:
-                if resource.type != "none":
-                    self.trader.resources[resource.type][1] -= resource.quantity
+                if resource.variant != "none":
+                    self.trader.resources[resource.variant][1] -= resource.quantity
             for resource in needed[key][1]:
                 if chance_roll(20):
-                    self.trader.resources[resource.type][1] -= 1
+                    self.trader.resources[resource.variant][1] -= 1
 
             self.trader.resources[key][1] += 1 * 1.25  # 1.25 is modifier
             self.activity_log["produced"].append([self.name + " produced an excess of " + key, libtcod.gold])
 
         else:  # don't have or need a bonus item.
             for resource in needed[key][0]:
-                if resource.type != "none":
-                    self.resources[resource.type][1] -= resource.quantity
+                if resource.variant != "none":
+                    self.resources[resource.variant][1] -= resource.quantity
             self.trader.resources[key][1] += 1
             self.activity_log["produced"].append([self.name + " produced " + key, libtcod.amber])
 
@@ -140,7 +134,7 @@ class City:
                 price = self.trader.get_price(commodity, self.trade_house)
                 self.trader.place_ask(self.trade_house, commodity, leftover, price)
 
-    def productionRound_temp(self):
+    def production_round_temp(self):
 
         for key in self.producing:
             if self.producing[key][1] > 0:
@@ -155,7 +149,7 @@ class City:
         self.sell_spare()
         # self.trade_house.sell_spare("trade")
 
-    def productionRound(self):
+    def production_round(self):
         for key in self.producing:
             if self.producing[key][1] > 0:
                 quantity = self.producing[key][1]
@@ -163,13 +157,13 @@ class City:
                     if self.check_for_resources(key, master_raw_materials):
                         self.produce(key, master_raw_materials)
 
-    def getCityRelationship(self, city):
+    def get_city_relationship(self, city):
         return self.relationships[city]
 
-    def changeCityRelationship(self, city, quantity):
+    def change_city_relationship(self, city, quantity):
         self.relationships[city] += quantity
 
-    def createBaseRelationships(self, city_list):
+    def create_base_relationships(self, city_list):
         """
         input a list of all the cities /the ones it should know.
         """
@@ -182,7 +176,7 @@ class City:
         self.producing["raw"] = ["raw", libtcod.random_get_int(0, 0, 16)]
         self.producing["produce"] = ["produce", libtcod.random_get_int(0, 0, 15)]
 
-    def pickGeneratedResources(self, resource_list):
+    def pick_generated_resources(self, resource_list):
 
         limit = len(resource_list) - 1
         # selections = {}
@@ -210,9 +204,9 @@ class City:
                 print resource + str(self.producing[resource][1])
         print "\n"
 
-        self.findDesiredResources()
+        self.find_desired_resources()
 
-    def findDesiredResources(self):
+    def find_desired_resources(self):
         self.desired = {}
         for resource in R.resource_list:
             self.desired[resource] = 0
@@ -222,8 +216,8 @@ class City:
             for n in range(len(master_raw_materials[key][0])):
                 # resource = "what"
                 resource = master_raw_materials[key][0][n]
-                if resource.type != "none":
-                    new_resource = Resource(type=resource.type, quantity=self.producing[key][1] * resource.quantity)
+                if resource.variant != "none":
+                    new_resource = Resource(variant=resource.variant, quantity=self.producing[key][1] * resource.quantity)
                     temp.append(new_resource)
 
         for name in master_commodity_list:
@@ -233,10 +227,10 @@ class City:
                     resource.quantity += test_for.quantity
 
             if resource.quantity > 0:
-                self.desired[resource.type] = resource.quantity
+                self.desired[resource.variant] = resource.quantity
             #        print "desires :-"
             #        for resource in self.desired:
-            #            print resource.type + str(resource.quantity)
+            #            print resource.variant + str(resource.quantity)
             #        print "-----------------"
 
     def settle_desires(self):
@@ -270,15 +264,15 @@ class Action:
 
 
 class Component:
-    def __init__(self, parent_settlement):
-        self.parent = parent_settlement
+    def __init__(self, parentSettlement):
+        self.parent = parentSettlement
 
 
 class ProductionComponent(Component):
     """Component for each material produced there? they can be added and removed then."""
 
-    def __init__(self, parent_settlement):
-        Component.__init__(self, parent_settlement)
+    def __init__(self, parentSettlement):
+        Component.__init__(self, parentSettlement)
 
 
 def chance_roll(chance=50):

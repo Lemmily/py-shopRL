@@ -1,8 +1,8 @@
-'''
+"""
 Created on 21 Aug 2013
 
 @author: Emily
-'''
+"""
 
 import json
 import random
@@ -18,7 +18,9 @@ MIN_ROOM_SIZE = 2
 MONSTERS = json.loads(json_map.monsters)
 ITEMS = ["sword", "potion", "shield", "armour", "leggings", "scroll", "wand", "book", "food"]
 # TODO: This stuff should be handled elsewhere.
-class Tile():
+
+
+class Tile:
     def __init__(self, x, y, blocks, blocks_sight=True, char=" "):
         self.x = x
         self.y = y
@@ -30,7 +32,7 @@ class Tile():
         self.blocks = blocks
         self.blocks_sight = blocks_sight
         self.explored = False
-        self.continent = -1  # this is here so the pathfinding can check it.
+        self.continent = -1  # this is here so the pathfinding can check it. can be used for
 
 
 class Rect:
@@ -46,24 +48,27 @@ class Rect:
         self.y = y
 
     def intersect_other(self, other):
-        if other.x > self.x and other.x < self.x + self.w:
+        if self.x < other.x < self.x + self.w:
             return True
-        elif other.y > self.y and other.y < self.y + self.h:
+        elif self.y < other.y < self.y + self.h:
             return True
 
         else:
             return False
 
-    def bsp(self, parent=None):
+
+class BspRect(Rect):
+    def __init__(self, w, h, x, y, parent=None):
+        Rect.__init__(self, w, h, x, y)
         self.babies = []
         self.parent = parent
         self.end = False
 
 
-class Dungeon():
+class Dungeon:
     def __init__(self, x, y, POI):
-        self.x = x
-        self.y = y
+        self.x = x  # world location
+        self.y = y  # world location.
         self.POI = POI
         self.name = "Dungeon"  # TODO: Make a name generator.
         self.level = 1
@@ -78,7 +83,7 @@ class Dungeon():
         This will be called and the numbers of monsters inside will shift and change, depending on different thibgs"""
         pass
 
-    def addMonster(self, type=""):
+    def add_monster(self, type=""):
         # todo: add this to the floor instead of whole dungeon - for initial whole dungeone is fine.
         if type == "":
             keys = []
@@ -86,7 +91,7 @@ class Dungeon():
                 keys.append(key)
             type = libtcod.random_get_int(0, 0, len(keys) - 1)
         tile = None
-        while tile == None:
+        while tile is None:
             x = libtcod.random_get_int(0, 0, len(self.tiles))
             y = libtcod.random_get_int(0, 0, len(self.tiles[0]))
             if self.get_floor_tile(x, y).blocks is not True:
@@ -94,7 +99,7 @@ class Dungeon():
 
         return create_monster(type, tile)
 
-    def addFloor(self, level=-1):
+    def add_floor(self, level=-1):
         pass
 
     def generate_floors(self, level=1, num=5):
@@ -114,26 +119,26 @@ class Dungeon():
             for n in range(item_num):
                 item = random.choice(ITEMS)
                 # colour = libtcod.Color(item["colour"][0],item["colour"][1],item["colour"][2])
-                #temp = entities.Object(0,0, char=item["char"], name=item["name"], colour=colour, blocks=False, always_visible=False)
+                # temp = entities.Object(0,0, char=item["char"], name=item["name"], colour=colour, blocks=False, always_visible=False)
                 a_items.append(item)
             floor = Floor(ID, a_monst, a_items)
             self.floors.append(floor)
 
 
 class Floor:
-    def __init__(self, ID, monst, items):
-        self.ID = ID
+    def __init__(self, id, monst, items):
+        self.ID = id
         self.num_monster = monst
         self.num_items = items
         self.w = 30
         self.h = 20
         self.map = [[1
-                     for y in range(self.h)]
-                    for x in range(self.w)]
+                     for _ in range(self.h)]
+                    for _ in range(self.w)]
 
         self.tiles = [[None
-                       for y in range(self.h)]
-                      for x in range(self.w)]
+                       for _ in range(self.h)]
+                      for _ in range(self.w)]
 
         self.up = (self.w / 2, self.h / 2)
         self.down = (self.w / 2 + 4, self.h / 2 + 4)
@@ -171,7 +176,6 @@ class Floor:
         self.make_line(self.rects[0].x, self.rects[0].y, self.rects[1].x, self.rects[1].y)
         self.place_rooms()
 
-
     def construct_objects(self):
         stair = entities.Object(self.up[0], self.up[1], char="<", name="stair", colour=libtcod.purple, blocks=False,
                                 always_visible=False)
@@ -198,9 +202,7 @@ class Floor:
 
         return rect
 
-
     def make_room_random(self):
-
         unplaced = True
 
         if len(self.rects) > 0:
@@ -208,7 +210,7 @@ class Floor:
                 w = libtcod.random_get_int(0, 4, 9)
                 h = libtcod.random_get_int(0, 4, 9)
                 count = 0
-                while (count < 5):
+                while count < 5:
                     x = libtcod.random_get_int(0, 1, len(self.map) - w - 1)
                     y = libtcod.random_get_int(0, 1, len(self.map) - h - 1)
                     rect = Rect(w, h, x, y)
@@ -296,13 +298,11 @@ class Floor:
                     for xo in range(lx, bx):
                         self.map[xo][ly] = 0
 
-
     def make_corridors(self, st_x, st_y, en_x, en_y):
         bx = 0
         by = 0
         for x in range(st_x, st_y):
             pass
-
 
     def make_fov_map(self):
 
@@ -318,37 +318,46 @@ class Floor:
             for y in range(len(self.map[0])):
                 if self.is_wall(x, y):
                     if self.is_wall(x, y + 1) and self.is_wall(x, y - 1):  # above and below.
-                        if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):  #left and right.
+                        if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):
+                            # left and right.
                             if self.is_wall(x + 1, y + 1) and self.is_wall(x - 1, y + 1) and self.is_wall(x + 1,
                                                                                                           y - 1) and self.is_wall(
                                             x - 1, y - 1):
-                                #Completeley surrounded by wall.
+                                # Completely surrounded by wall.
                                 tile = ord(" ")
                             elif self.is_wall(x + 1, y - 1) and self.is_wall(x - 1, y - 1) and self.is_wall(x + 1,
-                                                                                                            y + 1):  #bottom left empty.
+                                                                                                            y + 1):
+                                # bottom left empty.
                                 tile = 191
                             elif self.is_wall(x + 1, y + 1) and self.is_wall(x - 1, y + 1) and self.is_wall(x + 1,
-                                                                                                            y - 1):  #top left empty.
+                                                                                                            y - 1):
+                                # top left empty.
                                 tile = 217
 
                             elif self.is_wall(x + 1, y - 1) and self.is_wall(x - 1, y - 1) and self.is_wall(x - 1,
-                                                                                                            y + 1):  #bottom right empty
+                                                                                                            y + 1):
+                                # bottom right empty
                                 tile = 218
                             elif self.is_wall(x + 1, y + 1) and self.is_wall(x - 1, y + 1) and self.is_wall(x - 1,
-                                                                                                            y - 1):  # top right empty.
+                                                                                                            y - 1):
+                                # top right empty.
                                 tile = 192
 
                             elif self.is_wall(x + 1, y - 1) and self.is_wall(x - 1,
-                                                                             y - 1):  #bottom left and right empty. T shaped
+                                                                             y - 1):
+                                # bottom left and right empty. T shaped
                                 tile = 194
                             elif self.is_wall(x + 1, y + 1) and self.is_wall(x - 1,
-                                                                             y + 1):  #top left and right empty.T shaped
+                                                                             y + 1):
+                                # top left and right empty.T shaped
                                 tile = 193
                             elif self.is_wall(x - 1, y - 1) and self.is_wall(x - 1,
-                                                                             y + 1):  #top right and bottom right empty.T shaped
+                                                                             y + 1):
+                                # top right and bottom right empty.T shaped
                                 tile = 195
                             elif self.is_wall(x + 1, y - 1) and self.is_wall(x + 1,
-                                                                             y + 1):  #top right and bottom right empty.T shaped
+                                                                             y + 1):
+                                # top right and bottom right empty.T shaped
                                 tile = 180
                             else:
                                 tile = 197
@@ -366,7 +375,8 @@ class Floor:
                         else:
                             tile = 179
                     elif self.is_wall(x, y + 1):  # below
-                        if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):  #left and right
+                        if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):
+                            # left and right
                             if self.is_wall(x + 1, y + 1) and self.is_wall(x - 1, y + 1):
                                 tile = 196
                             else:
@@ -379,7 +389,8 @@ class Floor:
                             tile = 179
 
                     elif self.is_wall(x, y - 1):  # above
-                        if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):  #left and right
+                        if self.is_wall(x + 1, y) and self.is_wall(x - 1, y):
+                            # left and right
                             if self.is_wall(x + 1, y - 1) and self.is_wall(x - 1, y - 1):
                                 tile = 196
                             else:
@@ -405,7 +416,6 @@ class Floor:
                     tile = 056
                     self.tiles[x][y] = Tile(x, y, False, char=chr(tile))
 
-
     def is_wall(self, x, y):
         if 0 <= x < len(self.map) and 0 <= y < len(self.map[x]):
             if self.map[x][y] != 0:
@@ -417,15 +427,13 @@ class Floor:
 
     def bsp_gen(self):
 
-
         w = self.w - 2
         h = self.h - 2
 
-        whole_map = Rect(w, h, 1, 1)
-        whole_map.bsp()
+        whole_map = BspRect(w, h, 1, 1)
 
         self.new_split(whole_map)
-        self.convert_to_rects(whole_map)
+        self.convert_to_rect(whole_map)
 
     def split(self, rect):
         if rect.w - 1 >= MIN_BSP_SIZE * 1.5 or rect.h - 1 >= MIN_BSP_SIZE * 1.5:
@@ -439,10 +447,8 @@ class Floor:
                     x = rect.x + 1
                     w = rect.w / 2 - 1
 
-                baby = Rect(rect.w - w, rect.h, rect.x, rect.y)
-                baby.bsp(rect)
-                baby_2 = Rect(w, rect.h, x, rect.y)
-                baby_2.bsp(rect)
+                baby = BspRect(rect.w - w, rect.h, rect.x, rect.y, rect)
+                baby_2 = BspRect(w, rect.h, x, rect.y, rect)
 
                 rect.babies.append(baby)
                 rect.babies.append(baby_2)
@@ -457,8 +463,7 @@ class Floor:
                         y = rect.y + 1
                         h = rect.h / 2
 
-                    baby = Rect(rect.w, rect.h - h, rect.x, rect.y)
-                    baby.bsp(rect)
+                    baby = BspRect(rect.w, rect.h - h, rect.x, rect.y, rect)
                     rect.babies.append(baby)
 
                 else:
@@ -472,10 +477,8 @@ class Floor:
                         y = rect.y + 1
                         h = rect.h / 2
 
-                    baby = Rect(rect.w, rect.h - h, rect.x, rect.y)
-                    baby.bsp(rect)
-                    baby_2 = Rect(rect.w, h, rect.x, y)
-                    baby_2.bsp(rect)
+                    baby = BspRect(rect.w, rect.h - h, rect.x, rect.y, rect)
+                    baby_2 = BspRect(rect.w, h, rect.x, y, rect)
 
                     rect.babies.append(baby)
                     rect.babies.append(baby_2)
@@ -484,9 +487,8 @@ class Floor:
             rect.end = True
 
         for baby in rect.babies:
-            if baby.end != True:
+            if baby.end is not True:
                 self.split(baby)
-
 
     def new_split(self, rect):
         if rect.w > MIN_BSP_SIZE * 2 and rect.h > MIN_BSP_SIZE * 2:
@@ -496,10 +498,8 @@ class Floor:
                 x = libtcod.random_get_int(0, rect.x + MIN_BSP_SIZE, rect.x + rect.w - MIN_BSP_SIZE)
                 w = (rect.x + rect.w) - x
 
-                baby = Rect(rect.w - w, rect.h, rect.x, rect.y)
-                baby.bsp(rect)
-                baby_2 = Rect(w - 1, rect.h, x, rect.y)
-                baby_2.bsp(rect)
+                baby = BspRect(rect.w - w, rect.h, rect.x, rect.y, rect)
+                baby_2 = BspRect(w - 1, rect.h, x, rect.y, rect)
 
                 rect.babies.append(baby)
                 rect.babies.append(baby_2)
@@ -508,10 +508,8 @@ class Floor:
 
                 h = (rect.y + rect.h) - y
 
-                baby = Rect(rect.w, rect.h - h, rect.x, rect.y)
-                baby.bsp(rect)
-                baby_2 = Rect(rect.w, h - 1, rect.x, y)
-                baby_2.bsp(rect)
+                baby = BspRect(rect.w, rect.h - h, rect.x, rect.y, rect)
+                baby_2 = BspRect(rect.w, h - 1, rect.x, y, rect)
 
                 rect.babies.append(baby)
                 rect.babies.append(baby_2)
@@ -519,23 +517,22 @@ class Floor:
             rect.end = True
 
         for baby in rect.babies:
-            if baby.end != True:
+            if baby.end is not True:
                 self.new_split(baby)
 
-
-    def convert_to_rects(self, rect):
+    def convert_to_rect(self, rect):
         pool = []
         orig_rect = rect
         while len(orig_rect.babies) > 0:
-            if len(rect.babies) == 0 and rect.parent != None:
+            if len(rect.babies) == 0 and rect.parent is not None:
                 for baby in rect.parent.babies:
-                    if baby.end == True:
+                    if baby.end is True:
                         pool.append(baby)
                     rect.parent.babies.remove(baby)
                 rect = rect.parent
             if len(rect.babies) > 0:
                 rect = rect.babies[0]
-            elif rect.parent != None:
+            elif rect.parent is not None:
                 rect = rect.parent
             else:
                 break
@@ -574,7 +571,7 @@ class Floor:
                     if len(self.rects) > 0:
                         found = False
                         for other in self.rects:
-                            if new.intersect_other(other) == True:
+                            if new.intersect_other(other) is True:
                                 found = False
                                 break
                         if not found:
@@ -588,7 +585,7 @@ def create_monster(type, level, tile):
     BLUEPRINT = MONSTERS[level][type]
     colour = libtcod.Color(BLUEPRINT[2][0], BLUEPRINT[2][1], BLUEPRINT[2][2])
     monster = entities.Mover(x=tile.x, y=tile.y, char=BLUEPRINT[1], name=BLUEPRINT[0], colour=colour,
-                             always_visible=True);
+                             always_visible=True)
     stats = entities.Stats(array=BLUEPRINT[4])
     monster.stats = stats
     return monster
