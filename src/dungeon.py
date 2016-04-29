@@ -1,8 +1,8 @@
-'''
+"""
 Created on 21 Aug 2013
 
 @author: Emily
-'''
+"""
 
 import json
 import random
@@ -18,7 +18,9 @@ MIN_ROOM_SIZE = 2
 MONSTERS = json.loads(json_map.monsters)
 ITEMS = ["sword", "potion", "shield", "armour", "leggings", "scroll", "wand", "book", "food"]
 # TODO: This stuff should be handled elsewhere.
-class Tile():
+
+
+class Tile:
     def __init__(self, x, y, blocks, blocks_sight=True, char=" "):
         self.x = x
         self.y = y
@@ -46,9 +48,9 @@ class Rect:
         self.y = y
 
     def intersect_other(self, other):
-        if other.x > self.x and other.x < self.x + self.w:
+        if self.x < other.x < self.x + self.w:
             return True
-        elif other.y > self.y and other.y < self.y + self.h:
+        elif self.y < other.y < self.y + self.h:
             return True
 
         else:
@@ -60,7 +62,7 @@ class Rect:
         self.end = False
 
 
-class Dungeon():
+class Dungeon:
     def __init__(self, x, y, POI):
         self.x = x
         self.y = y
@@ -78,7 +80,7 @@ class Dungeon():
         This will be called and the numbers of monsters inside will shift and change, depending on different thibgs"""
         pass
 
-    def addMonster(self, type=""):
+    def add_monster(self, type=""):
         # todo: add this to the floor instead of whole dungeon - for initial whole dungeone is fine.
         if type == "":
             keys = []
@@ -86,7 +88,7 @@ class Dungeon():
                 keys.append(key)
             type = libtcod.random_get_int(0, 0, len(keys) - 1)
         tile = None
-        while tile == None:
+        while tile is None:
             x = libtcod.random_get_int(0, 0, len(self.tiles))
             y = libtcod.random_get_int(0, 0, len(self.tiles[0]))
             if self.get_floor_tile(x, y).blocks is not True:
@@ -94,7 +96,7 @@ class Dungeon():
 
         return create_monster(type, tile)
 
-    def addFloor(self, level=-1):
+    def add_floor(self, level=-1):
         pass
 
     def generate_floors(self, level=1, num=5):
@@ -114,7 +116,7 @@ class Dungeon():
             for n in range(item_num):
                 item = random.choice(ITEMS)
                 # colour = libtcod.Color(item["colour"][0],item["colour"][1],item["colour"][2])
-                #temp = entities.Object(0,0, char=item["char"], name=item["name"], colour=colour, blocks=False, always_visible=False)
+                # temp = entities.Object(0,0, char=item["char"], name=item["name"], colour=colour, blocks=False, always_visible=False)
                 a_items.append(item)
             floor = Floor(ID, a_monst, a_items)
             self.floors.append(floor)
@@ -171,7 +173,6 @@ class Floor:
         self.make_line(self.rects[0].x, self.rects[0].y, self.rects[1].x, self.rects[1].y)
         self.place_rooms()
 
-
     def construct_objects(self):
         stair = entities.Object(self.up[0], self.up[1], char="<", name="stair", colour=libtcod.purple, blocks=False,
                                 always_visible=False)
@@ -198,9 +199,7 @@ class Floor:
 
         return rect
 
-
     def make_room_random(self):
-
         unplaced = True
 
         if len(self.rects) > 0:
@@ -208,7 +207,7 @@ class Floor:
                 w = libtcod.random_get_int(0, 4, 9)
                 h = libtcod.random_get_int(0, 4, 9)
                 count = 0
-                while (count < 5):
+                while count < 5:
                     x = libtcod.random_get_int(0, 1, len(self.map) - w - 1)
                     y = libtcod.random_get_int(0, 1, len(self.map) - h - 1)
                     rect = Rect(w, h, x, y)
@@ -296,13 +295,11 @@ class Floor:
                     for xo in range(lx, bx):
                         self.map[xo][ly] = 0
 
-
     def make_corridors(self, st_x, st_y, en_x, en_y):
         bx = 0
         by = 0
         for x in range(st_x, st_y):
             pass
-
 
     def make_fov_map(self):
 
@@ -322,7 +319,7 @@ class Floor:
                             if self.is_wall(x + 1, y + 1) and self.is_wall(x - 1, y + 1) and self.is_wall(x + 1,
                                                                                                           y - 1) and self.is_wall(
                                             x - 1, y - 1):
-                                #Completeley surrounded by wall.
+                                # Completely surrounded by wall.
                                 tile = ord(" ")
                             elif self.is_wall(x + 1, y - 1) and self.is_wall(x - 1, y - 1) and self.is_wall(x + 1,
                                                                                                             y + 1):  #bottom left empty.
@@ -405,7 +402,6 @@ class Floor:
                     tile = 056
                     self.tiles[x][y] = Tile(x, y, False, char=chr(tile))
 
-
     def is_wall(self, x, y):
         if 0 <= x < len(self.map) and 0 <= y < len(self.map[x]):
             if self.map[x][y] != 0:
@@ -417,7 +413,6 @@ class Floor:
 
     def bsp_gen(self):
 
-
         w = self.w - 2
         h = self.h - 2
 
@@ -425,7 +420,7 @@ class Floor:
         whole_map.bsp()
 
         self.new_split(whole_map)
-        self.convert_to_rects(whole_map)
+        self.convert_to_rect(whole_map)
 
     def split(self, rect):
         if rect.w - 1 >= MIN_BSP_SIZE * 1.5 or rect.h - 1 >= MIN_BSP_SIZE * 1.5:
@@ -484,9 +479,8 @@ class Floor:
             rect.end = True
 
         for baby in rect.babies:
-            if baby.end != True:
+            if baby.end is not True:
                 self.split(baby)
-
 
     def new_split(self, rect):
         if rect.w > MIN_BSP_SIZE * 2 and rect.h > MIN_BSP_SIZE * 2:
@@ -519,23 +513,22 @@ class Floor:
             rect.end = True
 
         for baby in rect.babies:
-            if baby.end != True:
+            if baby.end is not True:
                 self.new_split(baby)
 
-
-    def convert_to_rects(self, rect):
+    def convert_to_rect(self, rect):
         pool = []
         orig_rect = rect
         while len(orig_rect.babies) > 0:
-            if len(rect.babies) == 0 and rect.parent != None:
+            if len(rect.babies) == 0 and rect.parent is not None:
                 for baby in rect.parent.babies:
-                    if baby.end == True:
+                    if baby.end is True:
                         pool.append(baby)
                     rect.parent.babies.remove(baby)
                 rect = rect.parent
             if len(rect.babies) > 0:
                 rect = rect.babies[0]
-            elif rect.parent != None:
+            elif rect.parent is not None:
                 rect = rect.parent
             else:
                 break
@@ -574,7 +567,7 @@ class Floor:
                     if len(self.rects) > 0:
                         found = False
                         for other in self.rects:
-                            if new.intersect_other(other) == True:
+                            if new.intersect_other(other) is True:
                                 found = False
                                 break
                         if not found:

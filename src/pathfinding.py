@@ -183,7 +183,7 @@ class Pather:
             #check to see if the end has been reached.
             if current_node.is_equal_to_node(end_node):# and current_node == self.open_list[0]: #why does this need to be 0?
                 best_path = []
-                while current_node != None:
+                while current_node is not None:
                     best_path.insert(0, current_node.grid)
                     current_node = current_node.parent_node
                 #return the path of grid points.
@@ -267,7 +267,7 @@ class Pather:
 
         mid = (high + low) / 2
 
-        if (length <= 0):
+        if length <= 0:
             return -1
         else:
             if length == 1:
@@ -308,7 +308,7 @@ class Pather:
                         print "not repturning as not the same grid"
                         return -1
                 else:
-                    if cost < self.open_list[low].cost and cost > self.open_list[high].cost:
+                    if self.open_list[low].cost > cost > self.open_list[high].cost:
                         if self.open_list[mid].cost >= cost:
                             index = self.get_node_binary(cost, grid, mid, low)
                         elif self.open_list[mid].cost < cost:
@@ -325,7 +325,7 @@ class Pather:
         if high == -1:
             high = length - 1
         mid = (high + low) / 2
-        if (length <= 0):
+        if length <= 0:
             return 0
         else:
             if length == 1:
@@ -352,9 +352,9 @@ class Pather:
                     elif self.open_list[0].cost <= cost:
                         index = 0
                 else:
-                    if self.open_list[mid].cost > cost and self.open_list[mid + 1].cost < cost:
+                    if self.open_list[mid].cost > cost > self.open_list[mid + 1].cost:
                         return mid + 1
-                    elif self.open_list[0].cost < cost and self.open_list[mid - 1].cost > cost:
+                    elif self.open_list[0].cost < cost < self.open_list[mid - 1].cost:
                         return mid
                     elif self.open_list[0].cost > cost:
                         index = self.add_to_open_list_(cost, node, high, mid + 1)
@@ -610,8 +610,8 @@ class PathFinder():
         return path
 
     def a_star(self, graph, start, goal):
-        #todo: factor in the technology - can the ship travel the distances between nodes?
-        #todo: possibly have a seperate function that constructs a graph of reachable nodes to use for this.
+        # todo: factor in the technology - can the ship travel the distances between nodes?
+        # todo: possibly have a seperate function that constructs a graph of reachable nodes to use for this.
         self.frontier = PriorityQueue()
         self.frontier.put(start, 0)
 
@@ -631,7 +631,7 @@ class PathFinder():
                 new_cost = self.node_costs[str(current)] + graph.cost(current, next)
                 if str(next) not in self.node_costs or new_cost < self.node_costs[str(next)]:
                     self.node_costs[str(next)] = new_cost
-                    #cost, plus distance to end.
+                    # cost, plus distance to end.
                     priority = new_cost + heuristic(goal, next)
                     self.frontier.put(next, priority)
                     self.came_from[next] = current
@@ -678,9 +678,9 @@ class Node():
 
 
 def heuristic(a, b):
-   (x1, y1) = a
-   (x2, y2) = b
-   return abs(x1 - x2) + abs(y1 - y2)
+    (x1, y1) = a
+    (x2, y2) = b
+    return abs(x1 - x2) + abs(y1 - y2)
 
 
 def heuristic_straightline(node, end):

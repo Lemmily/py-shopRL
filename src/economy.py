@@ -4,9 +4,8 @@ Created on 23 Mar 2013
 @author: Emily
 
 For each class it will be noted if it is for use in macro(between cities) or micro(in the cities between people) economy, or both.
-
-
 """
+
 import json
 import random
 
@@ -95,7 +94,7 @@ def setup_resources():
     ##
     COMMODITY_TYPES = {}
     COMMODITY_TOKENS = {}
-    ## Key = category, value = list of resources
+    # #Key = category, value = list of resources
     for resource in RESOURCES:
         COMMODITY_TOKENS[resource.name] = resource
 
@@ -136,17 +135,17 @@ def setup_resources():
     for goods in GOODS:
         COMMODITY_TOKENS[goods.name] = goods
 
-        if not goods.category in GOODS_TYPES:
+        if goods.category not in GOODS_TYPES:
             GOODS_TYPES[goods.category] = [goods]
         else:
             GOODS_TYPES[goods.category].append(goods)
 
-        if not goods.category in COMMODITY_TYPES.keys():
+        if goods.category not in COMMODITY_TYPES.keys():
             COMMODITY_TYPES[goods.category] = [goods]
         else:
             COMMODITY_TYPES[goods.category].append(goods)
 
-        if not goods.category in GOODS_BY_RESOURCE_TOKEN.keys():
+        if goods.category not in GOODS_BY_RESOURCE_TOKEN.keys():
             GOODS_BY_RESOURCE_TOKEN[goods.material.name] = [goods]
         else:
             GOODS_BY_RESOURCE_TOKEN[goods.material.name].append(goods)

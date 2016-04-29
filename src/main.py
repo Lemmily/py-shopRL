@@ -1037,6 +1037,7 @@ def inventory_menu():
     except:
         print "no item exists!"
 
+
 def player_menu():
     options = []
     for key in you.skills.dict.keys():
@@ -1044,6 +1045,7 @@ def player_menu():
         options.append(line)
 
     src.R.ui.menu("Skills:", options, 15)
+
 
 def city_production_menu():
     width, height = src.R.MAP_VIEW_WIDTH - 4, src.R.MAP_VIEW_HEIGHT - 4
@@ -1053,7 +1055,7 @@ def city_production_menu():
 
     pos_x = src.R.MAP_VIEW_WIDTH / 2 - width / 2
     pos_y = src.R.MAP_VIEW_HEIGHT / 2 - height / 2
-    for a in range(src.R.MAP_VIEW_WIDTH - 4):  #clear screen, colour dark grey, every cycle
+    for a in range(src.R.MAP_VIEW_WIDTH - 4):  # clear screen, colour dark grey, every cycle
         for b in range(src.R.MAP_VIEW_HEIGHT - 4):
             # libtcod.console_print_rect(window, a, b,
             libtcod.console_print_rect_ex(city_select_pop, a, b, src.R.MAP_VIEW_WIDTH - 4, src.R.MAP_VIEW_HEIGHT - 4,
@@ -1106,7 +1108,7 @@ def city_menu():
     offset = 0
 
     key = libtcod.console_check_for_keypress()
-    while selected_city == None:  #or key.vk != libtcod.KEY_ENTER:
+    while selected_city is None:  #or key.vk != libtcod.KEY_ENTER:
         libtcod.console_clear(city_select_pop)
         libtcod.console_set_default_foreground(city_select_pop, libtcod.yellow)
         libtcod.console_print_ex(city_select_pop, 1, 1, libtcod.BKGND_NONE, libtcod.LEFT, "Select the city")
@@ -1142,25 +1144,25 @@ def city_menu():
         elif key.c == 50:  # 2
             if max_key >= 50:
                 selected_city = cities[2 + offset]
-        elif key.c == 51:  #3
+        elif key.c == 51:  # 3
             if max_key >= 51:
                 selected_city = cities[3 + offset]
-        elif key.c == 52:  #4
+        elif key.c == 52:  # 4
             if max_key >= 52:
                 selected_city = cities[4 + offset]
-        elif key.c == 53:  #5
+        elif key.c == 53:  # 5
             if max_key >= 53:
                 selected_city = cities[5 + offset]
-        elif key.c == 54:  #6
+        elif key.c == 54:  # 6
             if max_key >= 54:
                 selected_city = cities[6 + offset]
-        elif key.c == 55:  #7
+        elif key.c == 55:  # 7
             if max_key >= 55:
                 selected_city = cities[7 + offset]
-        elif key.c == 56:  #8
+        elif key.c == 56:  # 8
             if max_key >= 56:
                 selected_city = cities[8 + offset]
-        elif key.c == 57:  #9
+        elif key.c == 57:  # 9
             if max_key >= 57:
                 selected_city = cities[9 + offset]
 
@@ -1177,7 +1179,7 @@ def city_menu():
             # libtcod.console_print_rect(window, a, b,
             libtcod.console_print_rect_ex(city_select_pop, a, b, src.R.MAP_VIEW_WIDTH - 4, src.R.MAP_VIEW_HEIGHT - 4,
                                           libtcod.BKGND_NONE, libtcod.LEFT, " ")
-    if selected_city != None:
+    if selected_city is not None:
         key = libtcod.console_check_for_keypress()
         while not key.vk == libtcod.KEY_ENTER or key.vk == libtcod.KEY_BACKSPACE:
             current_offset = offset
@@ -1249,7 +1251,7 @@ def main_menu():
 
         choice = src.R.ui.menu("", ["Play a new game", "Continue last game", "Quit"], 24)
 
-        if choice == 0:  #new game
+        if choice == 0:  # new game
             # game_screen_init()
             new_game()
             play_game()
@@ -1269,7 +1271,7 @@ def main_menu():
 def main_init():
     global con, con_char, inf, minmap, message_bar, date, ui, game_msgs
     # libtcod.console_set_custom_font("dejavu16x16.png", libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
-    libtcod.console_set_custom_font("data\ont_big.png", libtcod.FONT_LAYOUT_ASCII_INROW)
+    libtcod.console_set_custom_font("data/ont_big.png", libtcod.FONT_LAYOUT_ASCII_INROW)
     libtcod.console_init_root(src.R.SCREEN_WIDTH, src.R.SCREEN_HEIGHT, "Trader-RL", False)
     libtcod.sys_set_fps(src.R.LIMIT_FPS)
 
