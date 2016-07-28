@@ -543,7 +543,7 @@ class Map:
         self.hm = libtcod.heightmap_new(self.w, self.h)
         self.map_noise1d = None
         self.map_noise2d = None
-        self.generate(51708288)  # 51708288)   55920912
+        self.generate()  # 51708288)  # 51708288)   55920912
 
         # self.hm2 = libtcod.heightmap_new(self.w, self.h)
         # self.hm3 = libtcod.heightmap_new(self.w, self.h)
@@ -702,7 +702,8 @@ class Map:
         pather = pathfinding.Pather()
         for town in self.cities:
             for other_city in self.cities:
-                if town == other_city:
+                chance = libtcod.random_get_int(0, 0, 15) < 2
+                if town == other_city or not chance:
                     continue
                 else:
                     path = pather.new_find_path((town.x, town.y), (other_city.x, other_city.y), self.tiles) or []
@@ -1453,9 +1454,9 @@ class Map:
             # if the hill overlaps the edge, dont add it.
             if 2 * radius > xh or xh > self.w - 2 * radius or 2 * radius > yh or yh > self.h - 2 * radius:
                 # or xh == yh or xh == 0:
-                print "doofus", xh, yh
+                print "hill not added", xh, yh
             else:
-                print xh, yh, height
+                print "hill added: ", xh, yh, height
                 libtcod.heightmap_add_hill(hm, xh, yh, radius, height)
 
     def dig_border_hills(self, hm, base_radius, radius_var, height):

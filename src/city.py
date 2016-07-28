@@ -129,10 +129,11 @@ class City:
             needed = 0.0
             needed += self.desired[commodity] * 3
             needed += consumption * 5
-            if self.trader.resources[commodity][1] > needed:
-                leftover = self.trader.resources[commodity][1] - needed
-                price = self.trader.get_price(commodity, self.trade_house)
-                self.trader.place_ask(self.trade_house, commodity, leftover, price)
+            # TODO: re-add this when appropriate
+            # if self.trader.resources[commodity][1] > needed:
+            #     leftover = self.trader.resources[commodity][1] - needed
+            #     price = self.trader.get_price(commodity, self.trade_house)
+            #     self.trader.place_ask(self.trade_house, commodity, leftover, price)
 
     def production_round_temp(self):
 
@@ -145,7 +146,7 @@ class City:
                 if utils.roll_100() > 75:
                     self.produce("trade", master_raw_materials)
         self.consume()
-        self.settle_desires()
+        #  self.settle_desires() TODO:re-add
         self.sell_spare()
         # self.trade_house.sell_spare("trade")
 

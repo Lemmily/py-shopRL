@@ -301,20 +301,22 @@ class AI_Hero(Basic_AI):
         #     self.assess_motives()
 
         if len(self.path) == 0:
-            goal = choice(R.cities)
+            goal = choice(R.pois)
             while goal == self.goal:
-                goal = choice(R.cities)
+                goal = choice(R.pois)
             self.goal = goal
             new_x = goal.x
             new_y = goal.y
             # pathy_path = self.pather.new_find_path((self.parent.x,self.parent.y),(new_x,new_y), R.tiles)
-            pathy_path = self.pather.find_path(R.world, (self.parent.x, self.parent.y), (new_x, new_y))
-            if pathy_path is not None:
-                self.path = list(pathy_path)
-                print self.parent.name + "'s first path is " + str(len(self.path)) + " long!"
+            # print "first path calculating -------- "
+            # pathy_path = self.pather.find_path(R.world, (self.parent.x, self.parent.y), (new_x, new_y))
+            # if pathy_path is not None:
+            #     self.path = list(pathy_path)
+            #     print self.parent.name + "'s first path is " + str(len(self.path)) + " long!"
+            print "\nbest path calculating --------"
             pathy_path = self.pather2.new_find_path((self.parent.x, self.parent.y), (new_x, new_y), R.tiles)
             if pathy_path is not None:
-                self.path2 = list(pathy_path)
+                self.path = list(pathy_path)
                 print self.parent.name + "'s second path is " + str(len(self.path2)) + " long!"
 
         else:
@@ -327,7 +329,7 @@ class AI_Hero(Basic_AI):
             self.path.remove(grid)
 
     def move_to_goal(self, x, y):
-        self.owner.move(x, y)
+        self.parent.move(x, y)
 
 
 class Motive(object):

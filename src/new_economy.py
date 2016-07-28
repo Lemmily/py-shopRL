@@ -87,7 +87,7 @@ class Goods:
         self.quantity = 0.0
         self.raw_cost = 0.0  # how much JUST the base ingredient cost.
         self.total_cost = 0.0  # how much it cost to make ingredients + labour transport etc.
-        self.supplyDemand = 0.0
+        self.supply_demand = 0.0
         self.bought_for = 0.0
         self.raw_materials = []
 
@@ -112,6 +112,7 @@ class Agent:
         # price - the agreed price that they will purchase for.
         pass
 
+
 class Job:
     """
     A job can be made up of several tasks.
@@ -119,7 +120,6 @@ class Job:
     1. Acquire correct items
     2. Do intermediary craft step
     3. Craft Item.
-
     """
 
     def __init__(self, owner, task, resource):
@@ -242,7 +242,7 @@ class TradeHouse:
 
 class Business:
     def __init__(self):
-        self.unactive_agents = []
+        self.inactive_agents = []
         self.unowned_jobs = {}
         self.jobs = {}  # key :job type or importance??, value: list of jobs?
         self.active_agents = {}  # key : ??? , value: ??
@@ -254,9 +254,9 @@ class Business:
 
     def update(self, dt):
         for job in self.unowned_jobs:
-            if len(self.unactive_agents) > 0:
-                agent = self.unactive_agents[0]
-                self.unactive_agents.remove(0)
+            if len(self.inactive_agents) > 0:
+                agent = self.inactive_agents[0]
+                self.inactive_agents.remove(0)
                 agent.job = job
                 job.owner = agent
                 self.active_agents[job] = agent

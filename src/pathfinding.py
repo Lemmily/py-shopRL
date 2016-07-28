@@ -132,10 +132,10 @@ class Pather:
             if current.is_equal_to_node(end_node) and current == end_node:
                 t1 = libtcod.sys_elapsed_seconds()
                 path = self.reconstruct_path(self.came_from, start_node, end_node)
-                print "path of length: ", len(path), " succeeded in %s" % (t1 - t0), "explored ", len(
+                print "\tpath of length: ", len(path), " succeeded in %s" % (t1 - t0), "explored ", len(
                     self.node_costs.keys())
 
-                print "heuristic_cost:", self.heuristic_cost, " Actual cost:", self.node_costs[end_node]
+                print "\theuristic_cost:", self.heuristic_cost, " Actual cost:", self.node_costs[end_node]
                 # return current #TODO: reconstruct path.
                 path.reverse()
                 return path
@@ -191,7 +191,7 @@ class Pather:
                     current_node = current_node.parent_node
                 # return the path of grid points.
                 t1 = libtcod.sys_elapsed_seconds()
-                print "path of length: ", len(best_path), " succeeded in %s" % (t1 - t0), "explored ", \
+                print "\tpath of length: ", len(best_path), " succeeded in %s" % (t1 - t0), "explored ", \
                     len(self.node_costs.keys()), "and open nodes left: " + str(len(self.open_list))
                 # print "open_list is " + str(len(self.open_list)) + " long"
                 # print "path succeeded in %s" % (t1 - t0)
@@ -610,7 +610,7 @@ class PathFinder():
         path = self.reconstruct_path(came_from, start, goal)
         path.reverse()
         t1 = libtcod.sys_elapsed_seconds()
-        print "path of length: ", len(path), " succeeded in %s" % (t1 - t0), "explored ", len(self.node_costs.keys())
+        print "\tpath of length: ", len(path), " succeeded in %s" % (t1 - t0), "explored ", len(self.node_costs.keys())
         return path
 
     def a_star(self, graph, start, goal):

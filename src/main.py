@@ -176,10 +176,10 @@ def play_game():
             # #Clear the characters from screen.
             for object_ in src.R.world_obj:
                 object_.clear(cam_x, cam_y)
-
-            for city in cities:
-                for merchant in city.trade_house.caravans_out:
-                    merchant.clear(cam_x, cam_y)
+            #
+            # for city in cities:
+            #     for merchant in city.trade_house.caravans_out:
+            #         merchant.clear(cam_x, cam_y)
 
             # handles the keys and exit if needed.
             player_action = handle_keys()
@@ -465,17 +465,23 @@ def render_all():
 
                     elif pathfinding:
                         char = " "
-                        if len(selected) > 0 and hasattr(selected[0], "ai") and selected[
-                            0].ai is not None:  # and selected[0].ai.pather.end is not None:
-                            if path_to_draw == 3:
-                                draw_path = selected[0].ai.path3
-                                pather = selected[0].ai.pather3
-                            elif path_to_draw == 2:
-                                draw_path = selected[0].ai.path2
-                                pather = selected[0].ai.pather2
-                            else:
-                                draw_path = selected[0].ai.path
-                                pather = selected[0].ai.pather
+                        if len(selected) > 0 and hasattr(selected[0], "ai") and selected[0].ai is not None:
+                            # and selected[0].ai.pather.end is not None:
+
+                            # TODO: this is now only drawing one path.
+
+                            draw_path = selected[0].ai.path
+                            pather = selected[0].ai.pather2
+
+                            # if path_to_draw == 3:
+                            #     draw_path = selected[0].ai.path3
+                            #     pather = selected[0].ai.pather3
+                            # elif path_to_draw == 2:
+                            #     draw_path = selected[0].ai.path2
+                            #     pather = selected[0].ai.pather2
+                            # else:
+                            #     draw_path = selected[0].ai.path
+                            #     pather = selected[0].ai.pather
 
                             loc = (map_pos_x, map_pos_y)
                             loc_str = str(loc)
