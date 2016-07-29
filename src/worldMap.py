@@ -227,7 +227,8 @@ class ParticleMap:
                     if MOVED:
                         removed = False
 
-                        if particle.x < R.MAP_WIDTH and particle.x >= 0 and particle.y < R.MAP_HEIGHT and particle.y >= 0:
+                        #  if we're still inside the map boundaries:-
+                        if R.MAP_WIDTH > particle.x >= 0 and R.MAP_HEIGHT > particle.y >= 0:
                             # all is fine to move around.
                             if particle.x == R.MAP_WIDTH - 1:
                                 if utils.chance_roll(particle.speed):
@@ -239,7 +240,7 @@ class ParticleMap:
                             if particle.y == R.MAP_HEIGHT - 1:
                                 particle.move_to(particle.x, 0)
 
-
+                        #  if it's outside the map sizes then do this:-
                         elif particle.x >= R.MAP_WIDTH or particle.x < 0 or particle.y >= R.MAP_HEIGHT or particle.y < 0:
                             print "the end of the map!"
                             if utils.chance_roll(90):
@@ -543,8 +544,8 @@ class Map:
         self.hm = libtcod.heightmap_new(self.w, self.h)
         self.map_noise1d = None
         self.map_noise2d = None
-        self.generate(0)  # 51708288)  # 51708288)   55920912   48748976
-
+        self.generate()  # 51708288)  # 51708288)   55920912   48748976
+        # 52078016
         # self.hm2 = libtcod.heightmap_new(self.w, self.h)
         # self.hm3 = libtcod.heightmap_new(self.w, self.h)
         #
@@ -667,26 +668,26 @@ class Map:
 
         return
 
-    def flood_fill(self, tile, id=-1):
+    def flood_fill(self, tile, con_id=-1):
         # Recursion error. Max recursion depth exceeded.
         if tile.type == "water":
             print "huh, found water", tile.x, tile.y
             return
 
-        if id == -1:
-            id = len(self.continents)
-            continent = Continent(id, self.w, self.h)
+        if con_id == -1:
+            con_id = len(self.continents)
+            continent = Continent(con_id, self.w, self.h)
             self.continents.append(continent)
         to_fill = set()
         to_fill.add(tile)
 
         while len(to_fill) > 0:
             tile = to_fill.pop()
-            if tile.type == "water" or tile.continent == id:
+            if tile.type == "water" or tile.continent == con_id:
                 print "huh, found water or already done", tile.x, tile.y
                 continue
             else:
-                tile.continent = id
+                tile.continent = con_id
                 if tile.x + 1 < len(self.tiles):  # the right
                     to_fill.add(self.tiles[tile.x + 1][tile.y])
                 if tile.x - 1 > 0:  # the left
@@ -706,8 +707,14 @@ class Map:
                 o_x = (0.0 + other_city.x) / (0.0 + R.MAP_WIDTH)
                 y = (0.0 + town.y) / (0.0 + R.MAP_HEIGHT)
                 o_y = (0.0 + other_city.y) / (0.0 + R.MAP_HEIGHT)
-                num = abs(libtcod.noise_get_fbm(self.map_noise2d, [0.0, x/o_x, y/o_y], 32.0, libtcod.NOISE_PERLIN)) * 15
-                chance = num < 1.5
+
+                if o_x == 0:
+                    o_x = 0.1
+                if o_y == 0:
+                    o_y = 0.1
+                num = abs(
+                    libtcod.noise_get_fbm(self.map_noise2d, [0.0, x / o_x, y / o_y], 32.0, libtcod.NOISE_PERLIN)) * 15
+                chance = num < 1.2
 
                 if town == other_city or not chance:
                     print "Did not connect", num
@@ -748,13 +755,16 @@ class Map:
         if hm is None:
             hm = self.hm
 
-        if (self.w % zone) > 0:
+        zone_x = R.MAP_WIDTH / R.INFO_BAR_WIDTH
+        zone_y = R.MAP_HEIGHT / R.PANEL_HEIGHT
+
+        if (self.w % zone_x) > 0:
             print "doesn't smoothly fit - W"
-        if (self.h % zone) > 0:
+        if (self.h % zone_y) > 0:
             print "doesn't smoothly fit - H"
 
         self.mini_map = [[None
-                          for _ in range(int(self.h / zone))]
+                          for _ in range(int(self.h / zone_x))]
                          for _ in range(int(self.w / zone))]
 
         for a in range(len(self.tiles) / zone):
@@ -762,12 +772,12 @@ class Map:
                 cell_x = 0
                 cell_y = 0
                 tiles = [[0, []], [0, []]]
-                x = a * zone
-                y = b * zone
-                for cell_x in range(zone):
+                x = a * zone_x
+                y = b * zone_y
+                for cell_x in range(zone_x):
                     if x + cell_x > len(self.tiles) - 1:
                         break
-                    for cell_y in range(zone):
+                    for cell_y in range(zone_y):
                         if y + cell_y > len(self.tiles[cell_x]) - 1:
                             break
                         # TODO: put in catches for the "end" bits where there is less tiles left than the "zone".
@@ -1162,7 +1172,7 @@ class Map:
         else:
             rand = libtcod.random_new_from_seed(seed)  # specified seed
 
-        print rand
+        print seed, ": ", rand
         self.map_noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY,
                                              rand)
         self.map_noise2d = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY,
@@ -1230,7 +1240,7 @@ class Map:
         print "total time.. %s" % (t1 - t00)
 
     def compute_precipitations(self):
-        #if R.DEBUG:
+        # if R.DEBUG:
         t0 = libtcod.sys_elapsed_seconds()
         water_add = 0.0
         slope_coef = 2.0
@@ -1365,7 +1375,7 @@ class Map:
 
     def generate_land(self, hm_wo_erosion):
 
-        #if R.DEBUG:
+        # if R.DEBUG:
         t0 = libtcod.sys_elapsed_seconds()
 
         print self.hm.w, self.hm.h

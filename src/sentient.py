@@ -137,10 +137,10 @@ class AI_CityTrader(Basic_AI):
         self.trader = entities.Trader()
         self.trader.parent = self
         self.parent = parent
-        self.goal_city = None  # goal for trading mish.
+        self.goal_city = None  # goal for trading mission.
         self.resting = 0  # 0 is no, any other number is days.
-        self.trading = 0  # 0 is no, any othe rnumber is days left.
-        self.city_gold = 0  # how much the trader has to spend when on trade mish.
+        self.trading = 0  # 0 is no, any other number is days left.
+        self.city_gold = 0  # how much the trader has to spend when on trade mission.
         self.t_h = trade_house
         self.path = None
 
@@ -188,7 +188,7 @@ class AI_CityTrader(Basic_AI):
                     if self.path is None:
                         self.goal_city = None
                         # shift itself back to the parent city.
-                        self.goal_city = None
+
                         self.path = self.parent.pather.find_path((self.parent.x, self.parent.y), (x, y))
 
                         # pass
@@ -201,7 +201,8 @@ class AI_CityTrader(Basic_AI):
                     else:
                         pass
                         #         self.t_h.caravans_in.append(self)
-                        # if self.goal_city != None and self.parent.x == self.t_h.parent.x and self.parent.y == self.t_h.parent.y:
+                        # if self.goal_city != None and self.parent.x == self.t_h.parent.x
+                        # and self.parent.y == self.t_h.parent.y:
                         #   if self.t_h.caravans_in.count(self) > 0:
                         #       self.t_h.caravans_in.remove(self)
         else:

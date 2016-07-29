@@ -301,7 +301,7 @@ def advance_time():
             date[3] += 1  # increase year
 
             ##
-            ### Do anything that needs to be the start of the year here. AND use the new year
+            ###  Do anything that needs to be the start of the year here. AND use the new year
             ##
         update_msg_bar()  # update the date.
 
