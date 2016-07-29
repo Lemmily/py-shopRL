@@ -188,7 +188,7 @@ class AI_CityTrader(Basic_AI):
                     if self.path is None:
                         self.goal_city = None
                         # shift itself back to the parent city.
-                        self.goal_city = None
+
                         self.path = self.parent.pather.find_path((self.parent.x, self.parent.y), (x, y))
 
                         # pass

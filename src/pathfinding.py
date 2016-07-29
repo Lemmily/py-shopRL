@@ -654,7 +654,7 @@ class PathFinder():
         return path
 
 
-class Node():
+class Node:
     def __init__(self, name, location, cost):  # parent=None, end=None):
         self.name = name
         self.location = location  # tuple?
@@ -664,7 +664,7 @@ class Node():
 
     def cost(self, node):
         """
-
+        #TODO: add in some kind of height change cost - for either up or down change should be an increase in cost.
         :param node: other node
         :return: direct cost of entry of other node plus distance.
         """

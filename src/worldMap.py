@@ -543,8 +543,8 @@ class Map:
         self.hm = libtcod.heightmap_new(self.w, self.h)
         self.map_noise1d = None
         self.map_noise2d = None
-        self.generate(0)  # 51708288)  # 51708288)   55920912   48748976
-
+        self.generate()  # 51708288)  # 51708288)   55920912   48748976
+        # 52078016
         # self.hm2 = libtcod.heightmap_new(self.w, self.h)
         # self.hm3 = libtcod.heightmap_new(self.w, self.h)
         #
@@ -706,8 +706,13 @@ class Map:
                 o_x = (0.0 + other_city.x) / (0.0 + R.MAP_WIDTH)
                 y = (0.0 + town.y) / (0.0 + R.MAP_HEIGHT)
                 o_y = (0.0 + other_city.y) / (0.0 + R.MAP_HEIGHT)
+
+                if o_x == 0:
+                    o_x = 0.1
+                if o_y == 0:
+                    o_y = 0.1
                 num = abs(libtcod.noise_get_fbm(self.map_noise2d, [0.0, x/o_x, y/o_y], 32.0, libtcod.NOISE_PERLIN)) * 15
-                chance = num < 1.5
+                chance = num < 1.2
 
                 if town == other_city or not chance:
                     print "Did not connect", num
@@ -748,13 +753,16 @@ class Map:
         if hm is None:
             hm = self.hm
 
-        if (self.w % zone) > 0:
+        zone_x = R.MAP_WIDTH / R.INFO_BAR_WIDTH
+        zone_y = R.MAP_HEIGHT / R.PANEL_HEIGHT
+
+        if (self.w % zone_x) > 0:
             print "doesn't smoothly fit - W"
-        if (self.h % zone) > 0:
+        if (self.h % zone_y) > 0:
             print "doesn't smoothly fit - H"
 
         self.mini_map = [[None
-                          for _ in range(int(self.h / zone))]
+                          for _ in range(int(self.h / zone_x))]
                          for _ in range(int(self.w / zone))]
 
         for a in range(len(self.tiles) / zone):
@@ -762,12 +770,12 @@ class Map:
                 cell_x = 0
                 cell_y = 0
                 tiles = [[0, []], [0, []]]
-                x = a * zone
-                y = b * zone
-                for cell_x in range(zone):
+                x = a * zone_x
+                y = b * zone_y
+                for cell_x in range(zone_x):
                     if x + cell_x > len(self.tiles) - 1:
                         break
-                    for cell_y in range(zone):
+                    for cell_y in range(zone_y):
                         if y + cell_y > len(self.tiles[cell_x]) - 1:
                             break
                         # TODO: put in catches for the "end" bits where there is less tiles left than the "zone".
@@ -1162,7 +1170,7 @@ class Map:
         else:
             rand = libtcod.random_new_from_seed(seed)  # specified seed
 
-        print rand
+        print seed, ": ", rand
         self.map_noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY,
                                              rand)
         self.map_noise2d = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY,

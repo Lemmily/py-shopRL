@@ -85,8 +85,8 @@ class Goods:
     def __init__(self):
         self.resource = None
         self.quantity = 0.0
-        self.raw_cost = 0.0  # how much JUST the base ingredient cost.
-        self.total_cost = 0.0  # how much it cost to make ingredients + labour transport etc.
+        self.raw_cost = 0.0  # how much JUST the base ingredients cost.
+        self.total_cost = 0.0  # base cost PLUS labour/transport/building etc.
         self.supply_demand = 0.0
         self.bought_for = 0.0
         self.raw_materials = []
