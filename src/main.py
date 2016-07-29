@@ -190,9 +190,6 @@ def play_game():
                 advance_time()
                 # player_turn = True
 
-            handle_mouse()
-            render_all()
-
         else:
 
             #            for object_ in R.locale_obj:
@@ -206,8 +203,8 @@ def play_game():
                 save_game()
                 break
 
-            handle_mouse()
-            render_local()
+        handle_mouse()
+        render()
 
         if src.R.msg_redraw is True:
             update_msg_bar()
@@ -344,6 +341,7 @@ def render():
         render_local()
     else:
         render_all()
+    render_minimap()
 
 
 def render_wilderness():

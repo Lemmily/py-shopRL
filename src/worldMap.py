@@ -543,7 +543,7 @@ class Map:
         self.hm = libtcod.heightmap_new(self.w, self.h)
         self.map_noise1d = None
         self.map_noise2d = None
-        self.generate()  # 51708288)  # 51708288)   55920912
+        self.generate(0)  # 51708288)  # 51708288)   55920912   48748976
 
         # self.hm2 = libtcod.heightmap_new(self.w, self.h)
         # self.hm3 = libtcod.heightmap_new(self.w, self.h)
@@ -702,8 +702,15 @@ class Map:
         pather = pathfinding.Pather()
         for town in self.cities:
             for other_city in self.cities:
-                chance = libtcod.random_get_int(0, 0, 15) < 2
+                x = (0.0 + town.x) / (0.0 + R.MAP_WIDTH)
+                o_x = (0.0 + other_city.x) / (0.0 + R.MAP_WIDTH)
+                y = (0.0 + town.y) / (0.0 + R.MAP_HEIGHT)
+                o_y = (0.0 + other_city.y) / (0.0 + R.MAP_HEIGHT)
+                num = abs(libtcod.noise_get_fbm(self.map_noise2d, [0.0, x/o_x, y/o_y], 32.0, libtcod.NOISE_PERLIN)) * 15
+                chance = num < 1.5
+
                 if town == other_city or not chance:
+                    print "Did not connect", num
                     continue
                 else:
                     path = pather.new_find_path((town.x, town.y), (other_city.x, other_city.y), self.tiles) or []
@@ -712,7 +719,7 @@ class Map:
                         self.tiles[node[0]][node[1]].bg = libtcod.Color(200, 200, 10)
                         self.tiles[node[0]][node[1]].cost = PATH_COST
                         self.tiles[node[0]][node[1]].type = "path"
-                    print "........................connected ", town.name, " and ", other_city.name
+                    print "........................connected ", town.name, " and ", other_city.name, " with " + str(num)
 
     def add_foot_traffic(self, x, y):
         self.traffic[x][y] += 1
@@ -890,7 +897,7 @@ class Map:
                     self.tiles[cell_x][cell_y].type = "coast"
 
                 elif value < MOUNTAIN_THRESHOLD:  # grass
-                    ran_1 = 255 - (value + libtcod.random_get_int(0, -5, 5))
+                    ran_1 = (value + libtcod.random_get_int(0, -5, 5))
                     if ran_1 > 255:
                         ran_1 = 255
                     self.tiles[cell_x][cell_y] = Tile(cell_x, cell_y, False,
@@ -1075,7 +1082,6 @@ class Map:
                     self.tiles[x][y].temp_cel = temp
 
     def normalise_temperatures(self):
-
         largest = 0
         smallest = 999999
         # find the high and low temps.

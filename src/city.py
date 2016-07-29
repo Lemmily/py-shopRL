@@ -25,7 +25,9 @@ class Settlement:
         self.population = 0
         self.colour = libtcod.Color(20, 20, 20)
         self.char = "+"
-        self.trader = None  # TODO: THIS probably needs it's own dedicated trader. not the same as just a "person" takes into account populations etc? Iuno.
+# TODO: probably needs it's own dedicated trader. not the same as just a "person" so takes into account populations etc?
+# TODO: This could also be
+        self.trader = None
 
 
 class City:
@@ -57,6 +59,7 @@ class City:
         self.trader.believed_prices["produce"] = [50.0, 30.0]
 
         self.producing = {}  # these will be stored as ["resource_name", quantity generated per hour.0]
+        self.desired = {}
         self.define_generation_goods()
         # self.pickGeneratedResources(resource_list) #TODO: re-initialise this.
         self.find_desired_resources()
@@ -114,8 +117,8 @@ class City:
 
     def consume(self):
         # consumption_rate = 0.0
-        CR = float(self.population) / 10.0
-        consumption_rate = (math.ceil(CR * 100.0) / 100.0) * 2
+        cr = float(self.population) / 10.0
+        consumption_rate = (math.ceil(cr * 100.0) / 100.0) * 2
         for commodity in self.resources:
             if self.resources[commodity][1] > consumption_rate:
                 self.resources[commodity][1] -= consumption_rate
@@ -123,8 +126,8 @@ class City:
                 self.trade_house.trades["desires"][commodity].append([commodity, consumption_rate * 5])
 
     def sell_spare(self):
-        CR = float(self.population) / 10.0
-        consumption = math.ceil(CR * 100.0) / 100.0
+        cr = float(self.population) / 10.0
+        consumption = math.ceil(cr * 100.0) / 100.0
         for commodity in R.resource_list:
             needed = 0.0
             needed += self.desired[commodity] * 3
@@ -208,7 +211,6 @@ class City:
         self.find_desired_resources()
 
     def find_desired_resources(self):
-        self.desired = {}
         for resource in R.resource_list:
             self.desired[resource] = 0
         temp = []
@@ -218,7 +220,8 @@ class City:
                 # resource = "what"
                 resource = master_raw_materials[key][0][n]
                 if resource.variant != "none":
-                    new_resource = Resource(variant=resource.variant, quantity=self.producing[key][1] * resource.quantity)
+                    new_resource = Resource(variant=resource.variant,
+                                            quantity=self.producing[key][1] * resource.quantity)
                     temp.append(new_resource)
 
         for name in master_commodity_list:
@@ -229,10 +232,10 @@ class City:
 
             if resource.quantity > 0:
                 self.desired[resource.variant] = resource.quantity
-            #        print "desires :-"
-            #        for resource in self.desired:
-            #            print resource.variant + str(resource.quantity)
-            #        print "-----------------"
+                #        print "desires :-"
+                #        for resource in self.desired:
+                #            print resource.variant + str(resource.quantity)
+                #        print "-----------------"
 
     def settle_desires(self):
         trades = self.trade_house.trades
@@ -250,7 +253,7 @@ class City:
                 price = self.trader.get_price(key, self.trade_house)
 
                 if price < 0:
-                    raise "error: price is a minus."
+                    raise Exception("error: price is a minus.")
                 trading = self.trader.check_for_offer(True, key, total_needed, actual, quantity, price)
                 if trading < total_needed:
                     self.trader.place_bid(self.trade_house, key, quantity - trading + int(trading * 0.1), price)
@@ -265,15 +268,15 @@ class Action:
 
 
 class Component:
-    def __init__(self, parentSettlement):
-        self.parent = parentSettlement
+    def __init__(self, parent_settlement):
+        self.parent = parent_settlement
 
 
 class ProductionComponent(Component):
     """Component for each material produced there? they can be added and removed then."""
 
-    def __init__(self, parentSettlement):
-        Component.__init__(self, parentSettlement)
+    def __init__(self, parent_settlement):
+        Component.__init__(self, parent_settlement)
 
 
 def chance_roll(chance=50):
