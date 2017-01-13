@@ -223,8 +223,8 @@ class ParticleMap:
                     else:
                         dx = 2
 
-                    MOVED = particle.move(dx, dy)
-                    if MOVED:
+                    moved = particle.move(dx, dy)
+                    if moved:
                         removed = False
 
                         #  if we're still inside the map boundaries:-
@@ -509,6 +509,27 @@ class ParticleMap:
                     # end particle map.
 
 
+class AnotherMap:
+    def __init__(self, w, h):
+        self.w = w
+        self.h = h
+        self.hm = libtcod.heightmap_new(self.w, self.h)
+        self.temperature_map = libtcod.heightmap_new(self.w, self.h)
+        self.precipitation_map = libtcod.heightmap_new(self.w, self.h)
+
+    def generate(self, seed=None):
+        if seed is None:
+            rand = libtcod.random_new()  # random seed
+        else:
+            rand = libtcod.random_new_from_seed(seed)  # specified seed
+
+        print seed, ": ", rand
+        self.hm = libtcod.heightmap_new(self.w, self.h)
+        hm_wo_erosion = libtcod.heightmap_new(self.w, self.h)
+        self.temperature_map = libtcod.heightmap_new(self.w, self.h)
+        self.precipitation_map = libtcod.heightmap_new(self.w, self.h)
+
+
 class Map:
     def __init__(self, w, h):
         self.continents = []
@@ -544,8 +565,8 @@ class Map:
         self.hm = libtcod.heightmap_new(self.w, self.h)
         self.map_noise1d = None
         self.map_noise2d = None
-        self.generate()  # 51708288)  # 51708288)   55920912   48748976
-        # 52078016
+        self.generate()  # 37863632, 51708288)  # 51708288)   55920912   48748976, 52281072
+        # 52078016 46094176
         # self.hm2 = libtcod.heightmap_new(self.w, self.h)
         # self.hm3 = libtcod.heightmap_new(self.w, self.h)
         #

@@ -72,6 +72,7 @@ class Pather:
         self.largest_cost = 0
         self.heuristic_cost = 0
         self.actual_cost = 0
+        self.path = []
 
     def check_blocked(self, point):
         x = point[0]
@@ -497,6 +498,7 @@ class Pather:
             current = came_from[current]
             path.append(current.grid)
 
+        self.path = path
         return path
 
 
@@ -563,7 +565,7 @@ class PriorityQueue:
         return heapq.heappop(self.elements)[1]
 
 
-class PathFinder():
+class PathFinder:
     def __init__(self):
         self.frontier = PriorityQueue()
         self.came_from = {}
@@ -572,7 +574,7 @@ class PathFinder():
 
     def dijkstra_search(self, graph, start, goal):
         # todo: factor in the technology - can the ship travel the distances between nodes?
-        # todo: possibly havea seperate function that constructs a graph of reachable nodes to use for this.
+        # todo: possibly have a separate function that constructs a graph of reachable nodes to use for this.
         self.frontier = PriorityQueue()
         self.frontier.put(start, 0)
 
@@ -615,7 +617,7 @@ class PathFinder():
 
     def a_star(self, graph, start, goal):
         # todo: factor in the technology - can the ship travel the distances between nodes?
-        # todo: possibly have a seperate function that constructs a graph of reachable nodes to use for this.
+        # todo: possibly have a separate function that constructs a graph of reachable nodes to use for this.
         self.frontier = PriorityQueue()
         self.frontier.put(start, 0)
 

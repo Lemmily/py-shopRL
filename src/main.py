@@ -164,12 +164,20 @@ def play_game():
     mouse = libtcod.Mouse()
     key = libtcod.Key()
 
-    start_time = libtcod.sys_elapsed_seconds()
+    start_time = libtcod.sys_elapsed_milli()
+    last_time = 330
     while not libtcod.console_is_window_closed():
 
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
 
-        delta_time = libtcod.sys_get_last_frame_length()
+        # delta_time = libtcod.sys_get_last_frame_length()
+        # last_time += delta_time
+        #
+        # if last_time < src.R.FRAMETIME:
+        #     continue
+        #
+        # last_time = 0
+
         # render the screen
         if not local:
 
@@ -341,7 +349,7 @@ def render():
         render_local()
     else:
         render_all()
-    render_minimap()
+    # render_minimap()
 
 
 def render_wilderness():
@@ -466,10 +474,11 @@ def render_all():
                         if len(selected) > 0 and hasattr(selected[0], "ai") and selected[0].ai is not None:
                             # and selected[0].ai.pather.end is not None:
 
+                            ##################
                             # TODO: this is now only drawing one path.
-
                             draw_path = selected[0].ai.path
                             pather = selected[0].ai.pather2
+                            ##########################
 
                             # if path_to_draw == 3:
                             #     draw_path = selected[0].ai.path3
@@ -483,7 +492,7 @@ def render_all():
 
                             loc = (map_pos_x, map_pos_y)
                             loc_str = str(loc)
-                            if path_to_draw < 3 and pather.node_costs.has_key(loc_str):
+                            if path_to_draw < 3 and loc_str in pather.node_costs:
                                 v = float(pather.node_costs[loc_str])
                                 v /= pather.largest_cost
                                 v = int(v * 255)
@@ -492,8 +501,7 @@ def render_all():
                                 if loc in draw_path:
                                     char = "."  # path tile
 
-                            elif path_to_draw == 3 and pather.node_costs.has_key(
-                                    loc):  # todo: hack for old pather, remove!!!
+                            elif path_to_draw == 3 and loc in pather.node_costs:  # todo: hack for old pather, remove!!!
                                 v = float(pather.node_costs[loc])
                                 v /= pather.largest_cost
                                 v = int(v * 255)
@@ -725,15 +733,15 @@ def update_info_bar():
 #    (x, y) = (mouse.cx, mouse.cy)
 #    x += cam_x
 #    y += cam_y
-#    
+#
 #    names = [obj.name for obj in R.cities
 #        if obj.x == x and obj.y == y] #and libtcod.map_is_in_fov(fov_map, obj.x, obj.y)]
 #    if len(names) > 0:
 #        names = ", ".join(names)
 #        return names.capitalize() + str(x) + " " + str(y)
 #    else:
-#        return str(R.world.tiles[x][y].temperature)# 
-#    
+#        return str(R.world.tiles[x][y].temperature)#
+#
 
 def handle_mouse():
     global selected, mouse
@@ -1304,3 +1312,12 @@ def main_init():
 
 
 main_menu()
+
+# ##from threading thingies.
+# if __name__ == "__main__":
+#     libtcod.console_set_custom_font("data/font.png", libtcod.FONT_LAYOUT_ASCII_INCOL)
+#     libtcod.console_init_root(R.SCREEN_WIDTH, R.SCREEN_HEIGHT, "Trader-RL", False)
+#     libtcod.sys_set_fps(R.LIMIT_FPS)
+#     con = libtcod.console_new(R.SCREEN_WIDTH, R.SCREEN_HEIGHT)
+#     game = Game(con)
+#     game.run()

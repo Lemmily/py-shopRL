@@ -5,6 +5,7 @@
 # EMAIL  : stavros@cs.toronto.edu
 # WWW    : stavros.lostre.org/pyPlan
 
+
 class WorldModel:
     # A world model is initialized with a list of facts
     def __init__(self, facts):

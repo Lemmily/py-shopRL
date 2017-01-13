@@ -23,7 +23,10 @@ skill_list_1 = [
      ["none"]],
     ["Dodge", "dex", False, "Improves your chance of dodging attacks and traps", ["none"], ["none"]],
     ["Fighting", "dex", False, "Improves your chance of hitting and your damage in melee", ["none"], ["none"]],
-]
+    ["Blacksmith", "dex", False, "Skill in crafting metal objects", ["none"], ["Weaponsmith", "Armoursmith"]],
+    ["Weaponsmith", "dex", False, "Skill in weapon crafting.", ["Blacksmith"], ["none"]],
+    ["Armoursmith", "dex", False, "Skill in armour crafting.", ["Armoursmith"], ["none"]]
+    ]
 
 
 class Skills:
@@ -232,7 +235,7 @@ class AI_Hero(Basic_AI):
         for example:
             the hero has just finished fighting a monster.
             it now needs to assess its health levels and if they are low find some sort of healing.
-            this function should "deal" out the motivaitons. they are tallied by assess_motives()
+            this function should "deal" out the motivations. they are tallied by assess_motives()
 
             and then acted upon in TODO: action function
         """
@@ -314,7 +317,7 @@ class AI_Hero(Basic_AI):
             # if pathy_path is not None:
             #     self.path = list(pathy_path)
             #     print self.parent.name + "'s first path is " + str(len(self.path)) + " long!"
-            print "\nbest path calculating --------"
+            # print "\nbest path calculating --------"
             pathy_path = self.pather2.new_find_path((self.parent.x, self.parent.y), (new_x, new_y), R.tiles)
             if pathy_path is not None:
                 self.path = list(pathy_path)

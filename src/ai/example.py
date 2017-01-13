@@ -5,9 +5,9 @@ __author__ = 'James'
 # EMAIL  : stavros@cs.toronto.edu
 # WWW    : stavros.lostre.org/pyPlan
 
-from goap import Action
-from goap import WorldModel
-from goap import PlanningTask
+from GOAP import Action
+from GOAP import WorldModel
+from GOAP import PlanningTask
 
 
 def example1():

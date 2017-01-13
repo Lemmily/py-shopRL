@@ -2,6 +2,7 @@ import random
 # from threading import Thread
 import threading
 import time
+
 from src import R
 from src.entities import Object
 import libtcodpy as libtcod
@@ -52,9 +53,9 @@ class Game:
             self.handle_mouse()
             self.handle_keyboard()
             self.update()
-            # self.render_all()
-            libtcod.console_blit(self.console, 0, 0, R.SCREEN_WIDTH, R.SCREEN_HEIGHT, 0, 0, 0, 1.0, 0.7)
-            libtcod.console_flush()
+            # # self.render_all()
+            # libtcod.console_blit(self.console, 0, 0, R.SCREEN_WIDTH, R.SCREEN_HEIGHT, 0, 0, 0, 1.0, 0.7)
+            # libtcod.console_flush()
 
         self.render_thread.join()
         R.playing = False
@@ -184,3 +185,8 @@ def scrolling_map(p, hs, s, m):
 # class CalculationThread(Thread):
 #     def __init__(self, p_target):
 #         super(target=p_target)
+
+console = libtcod.console
+con = libtcod.console_new(src.R.MAP_WIDTH, src.R.MAP_HEIGHT)
+game = Game()
+game.run()

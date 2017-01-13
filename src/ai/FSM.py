@@ -14,6 +14,7 @@ class Stack:
     def append(self, obj):
         self.data.append(obj)
 
+
 class FSM:
 
     def __init__(self):
