@@ -123,9 +123,9 @@ def new_game():
     render_all()
 
     world.connect_cities()
-    # world.connect_cities()
-    # world.connect_cities()
-    # world.connect_cities()
+    world.connect_cities()
+    world.connect_cities()
+    world.connect_cities()
     # world.connect_cities()
     # world.connect_cities()
     #    point = (0,0)

@@ -565,7 +565,8 @@ class Map:
         self.hm = libtcod.heightmap_new(self.w, self.h)
         self.map_noise1d = None
         self.map_noise2d = None
-        self.generate(46094176)  # 37863632, 51708288)  # 51708288)   55920912   48748976, 52281072
+        self.generate() # Mountain pass:- 58557872
+        # 37863632, 51708288)  # 51708288)   55920912   48748976, 52281072
         # 52078016 46094176
         # self.hm2 = libtcod.heightmap_new(self.w, self.h)
         # self.hm3 = libtcod.heightmap_new(self.w, self.h)
