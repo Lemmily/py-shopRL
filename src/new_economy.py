@@ -127,6 +127,7 @@ class Job:
         self.resource = resource
         self.is_finished = False
         self.owner = owner
+        self.inactive_time = 0
 
     def work_on_job(self, time):
         self.current_task.work(time * self.owner.get_productivity())
@@ -196,6 +197,7 @@ class TradeHouse:
         # self.agents_with_jobs = {}
         self.auctions_by_commodity = {}
         self.auctions = []
+        self.time_since_update = 0
 
     def make_request(self, request):
         if request.commodity.name in self.auctions_by_commodity:
@@ -211,7 +213,10 @@ class TradeHouse:
             self.auctions_by_commodity[request.commodity.name].add_request(request)
 
     def update(self, time):
-        pass
+        self.time_since_update += time
+
+        if self.time_since_update > 10:
+            self.resolve_requests()
 
     def resolve_requests(self):
         for commodity in self.auctions_by_commodity.keys():
@@ -254,12 +259,26 @@ class Business:
 
     def update(self, dt):
         for job in self.unowned_jobs:
-            if len(self.inactive_agents) > 0:
-                agent = self.inactive_agents[0]
-                self.inactive_agents.remove(0)
-                agent.job = job
-                job.owner = agent
-                self.active_agents[job] = agent
+            job.inactive_time += dt
+        #     if len(self.inactive_agents) > 0:
+        #         agent = self.inactive_agents[0]
+        #         self.inactive_agents.remove(0)
+        #         agent.job = job
+        #         job.owner = agent
+        #         self.active_agents[job] = agent
+
+    def get_new_job(self, agent):
+        print "get new job for ", agent
+
+        if len(self.inactive_agents) < 0:
+            print "there are no jobs available"
+            return None
+
+        job = self.inactive_agents.pop(0)
+        print "job was inactive for:- " + str(job.inactive_time)
+        job.inactive_time = 0
+
+        return
 
 
 def run_test():
@@ -292,6 +311,7 @@ def run_test():
 
         business.update(dt)
         trade_house.update(dt)
+        pyTime.sleep(1)
 
 
 run_test()

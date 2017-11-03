@@ -42,7 +42,7 @@ HUMIDITY_MAX = 255
 TEMP_MAX = 255  # FOR THE MAP. not celsius. in colour hex.
 MONSTERS = json.loads(json_map.monsters)
 ITEMS = ["sword", "potion", "shield", "armour", "leggings", "scroll", "wand", "book",
-         "food"]  # TODO: This stuff should be handled elsewhere. I want this file to handle world creation ONLY.
+         "food"]  # TODO: This stuff should be handled elsewhere. I want this file to handle WORLD creation ONLY.
 
 
 # print MONSTERS["1"]
@@ -565,7 +565,7 @@ class Map:
         self.hm = libtcod.heightmap_new(self.w, self.h)
         self.map_noise1d = None
         self.map_noise2d = None
-        self.generate()  # 37863632, 51708288)  # 51708288)   55920912   48748976, 52281072
+        self.generate(46094176)  # 37863632, 51708288)  # 51708288)   55920912   48748976, 52281072
         # 52078016 46094176
         # self.hm2 = libtcod.heightmap_new(self.w, self.h)
         # self.hm3 = libtcod.heightmap_new(self.w, self.h)
@@ -590,18 +590,38 @@ class Map:
         #
         # # self.add_noise()
 
-        self.turn_to_tiles()
+        #self.turn_to_tiles()
+
+        t00 = t0 = libtcod.sys_elapsed_seconds()
         self.separate_continents()
+        t1 = libtcod.sys_elapsed_seconds()
+        print "Separate Continents... %s" % (t1 - t0)
+        t0 = t1
         self.determine_temperatures()
+        t1 = libtcod.sys_elapsed_seconds()
+        print "Determine Temperatures... %s" % (t1 - t0)
+        t0 = t1
         # self.normalise_temperatures()
         self.wind_gen = ParticleMap(self, 1500)
+        t1 = libtcod.sys_elapsed_seconds()
+        print "Normalise Temperatures... %s" % (t1 - t0)
+        t0 = t1
         self.generate_mini_map(10)
+        t1 = libtcod.sys_elapsed_seconds()
+        print "Generate Mini-Map... %s" % (t1 - t0)
+        t0 = t1
         self.cities = []
         self.dungeons = []
         self.pois = []
         # self.world_noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY, rand)
         self.generate_city(4 + abs(libtcod.noise_get(self.map_noise1d, [0.5, 0.9, 1.0])) * 30)
+        t1 = libtcod.sys_elapsed_seconds()
+        print "Generate cities on Map... %s" % (t1 - t0)
+        t0 = t1
         self.generate_dungeons(10)
+        t1 = libtcod.sys_elapsed_seconds()
+        print "generate dungeons on Map... %s" % (t1 - t0)
+        t0 = t1
 
     def generate_city(self, num):
 
@@ -628,9 +648,10 @@ class Map:
                     self.pois.append(temp_city)
                     self.tiles[xh][yh].poi = temp_city
                     placed = True
+                    i += 1
                     print "City succeeded", xh, yh, temp_city.name
                 else:
-                    print "failed", xh, yh
+                    # print "failed", xh, yh
                     i += 1
 
     def generate_dungeons(self, num):
@@ -669,7 +690,7 @@ class Map:
     def flood_fill_recur(self, tile, continent_id=-1):
         # Recursion error. Max recursion depth exceeded.
         if tile.type == "water":
-            print "huh, found water", tile.x, tile.y
+            #print "huh, found water", tile.x, tile.y
             return
         if continent_id == -1:
             continent_id = len(self.continents)
@@ -692,7 +713,7 @@ class Map:
     def flood_fill(self, tile, con_id=-1):
         # Recursion error. Max recursion depth exceeded.
         if tile.type == "water":
-            print "huh, found water", tile.x, tile.y
+            # print "huh, found water", tile.x, tile.y
             return
 
         if con_id == -1:
@@ -705,7 +726,7 @@ class Map:
         while len(to_fill) > 0:
             tile = to_fill.pop()
             if tile.type == "water" or tile.continent == con_id:
-                print "huh, found water or already done", tile.x, tile.y
+                # print "huh, found water or already done", tile.x, tile.y
                 continue
             else:
                 tile.continent = con_id
@@ -733,8 +754,8 @@ class Map:
                     o_x = 0.1
                 if o_y == 0:
                     o_y = 0.1
-                num = abs(
-                    libtcod.noise_get_fbm(self.map_noise2d, [0.0, x / o_x, y / o_y], 32.0, libtcod.NOISE_PERLIN)) * 15
+                num = abs(libtcod.noise_get_fbm(self.map_noise2d, [0.0, x/o_x, y/o_y], 32.0, libtcod.NOISE_PERLIN)) * 15
+
                 chance = num < 1.2
 
                 if town == other_city or not chance:
@@ -1057,7 +1078,8 @@ class Map:
                     max_ = float(self.equator)
                     pre = distance_from_equator / max_
                     if y == 10:
-                        print " "
+                        continue
+                        # print " "
                     if distance_from_equator == max_:
                         pre = 1
                     percent = pre * 100
@@ -1093,7 +1115,8 @@ class Map:
                     max_ = float(self.equator)
                     pre = distance_from_equator / max_
                     if y == 10:
-                        print " "
+                        continue
+                        # print " "
                     if distance_from_equator == max_:
                         pre = 1
                     percent = pre * 100
@@ -1193,7 +1216,7 @@ class Map:
         else:
             rand = libtcod.random_new_from_seed(seed)  # specified seed
 
-        print seed, ": ", rand
+        print "given: ", seed, "generated: ", rand
         self.map_noise1d = libtcod.noise_new(1, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY,
                                              rand)
         self.map_noise2d = libtcod.noise_new(2, libtcod.NOISE_DEFAULT_HURST, libtcod.NOISE_DEFAULT_LACUNARITY,
@@ -1240,6 +1263,9 @@ class Map:
         t0 = t1
 
         self.set_land_mass(0.4, SAND_HEIGHT)
+        t1 = libtcod.sys_elapsed_seconds()
+        print "set land mass... %s" % (t1 - t0)
+        t0 = t1
 
         # do rivers
 
@@ -1248,17 +1274,23 @@ class Map:
         # do temps and biomes
         self.determine_temperatures()  # own hacky version?
         # self.normalise_temperatures()
+        t1 = libtcod.sys_elapsed_seconds()
+        print "determine temperatures... %s" % (t1 - t0)
+        t0 = t1
 
         # do colours n shit
 
         libtcod.heightmap_normalize(self.hm, 0, 255)
-
         t1 = libtcod.sys_elapsed_seconds()
-        print "turn to tiles... %s" % (t1 - t0)
-        self.turn_to_tiles()
+        print "normalise heightmaps... %s" % (t1 - t0)
         t0 = t1
 
-        print "total time.. %s" % (t1 - t00)
+        self.turn_to_tiles()
+        t1 = libtcod.sys_elapsed_seconds()
+        print "turn to tiles... %s" % (t1 - t0)
+        t0 = t1
+
+        print "total generation time.. %s" % (t1 - t00)
 
     def compute_precipitations(self):
         # if R.DEBUG:
@@ -1462,7 +1494,8 @@ class Map:
             # radius = libtcod.random_get_float(0,hill_min_r, hill_max_r)
             # (max - min) + 1) + min;
             num = libtcod.noise_get(self.map_noise1d, [base_radius / (i + 1), i / hill_min_r, hill_max_r]) * base_radius
-            if num == 0: num += 0.1
+            if num == 0:
+                num += 0.1
             radius = (abs(num) - hill_min_r + 1) + hill_max_r
             if radius <= 1.0 or num == 0.0:
                 print "radius less than one"
@@ -1491,7 +1524,8 @@ class Map:
             # if the hill overlaps the edge, dont add it.
             if 2 * radius > xh or xh > self.w - 2 * radius or 2 * radius > yh or yh > self.h - 2 * radius:
                 # or xh == yh or xh == 0:
-                print "hill not added", xh, yh
+                # print "hill not added", xh, yh
+                pass
             else:
                 print "hill added: ", xh, yh, height
                 libtcod.heightmap_add_hill(hm, xh, yh, radius, height)
@@ -1805,7 +1839,7 @@ def main():
         handle_mouse()
 
 # cProfile.run('main()')
-# main()
+#main()
 #
 
 # buh = Dungeon(0,0,1)

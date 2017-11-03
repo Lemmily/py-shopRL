@@ -351,6 +351,25 @@ class Motive(object):
 def pick_personality():
     pass
 
+
+# ######################
+# States~
+# ######################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # hero_man = Object(x=0, y=0, char="@", name="blob", colour=libtcod.white, blocks=False, always_visible=False,
 #                    ai=AI_Hero())
 # hero_man.ai.add_motive(5, "wealth", "adventure")
@@ -364,3 +383,7 @@ def pick_personality():
 # hero_man.ai.add_motive(5, "wealth", "sell")
 # hero_man.ai.add_motive(5, "comfort", "health")
 # hero_man.ai.assess_motives()
+
+
+
+
